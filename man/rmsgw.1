@@ -1,0 +1,271 @@
+.\"
+.\"			r m s g w . 1
+.\" $Revision: 88 $
+.\" $Author: eckertb $
+.\" $Id: rmsgw.1 88 2009-02-08 13:51:58Z eckertb $
+.\"
+.\" RMS Gateway
+.\"
+.\" Copyright (c) 2004-2008 Hans-J. Barthen - DL5DI
+.\" Copyright (c) 2008 Brian R. Eckert - W3SG
+.\"
+.\" Questions or problems regarding this program can be emailed
+.\" to linux-rmsgw@w3sg.org
+.\"
+.\" This program is free software; you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation; either version 2 of the License, or
+.\" (at your option) any later version.
+.\"
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License
+.\" along with this program; if not, write to the Free Software
+.\" Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+.\"
+.TH RMSGW 1 "Linux RMS Gateway" "W3SG/DL5DI" "W3SG/DL5DI"
+.SH NAME
+rmsgw \- Linux RMS Gateway Program
+.SH SYNOPSIS
+.B rmsgw -h
+.br
+.B rmsgw
+.RB [ \-c
+.IR configfile ]
+.RB [ \-p | -o
+.IR packlen ]
+.RB [ \-l
+.IR logmask ]
+.RB [ \-g
+.IR gatewaycall ]
+.RB [ \-b
+.IR bannertextfile ]
+.RB [ \-P
+.IR ax25port ]
+.I usercall
+.SH DESCRIPTION
+The 
+.B rmsgw
+program implements the Winlink2000 RMS Gateway capability for Linux systems.
+This gateway is not part of the main Winlink2000 development, and is developed
+and maintained separately (see below).
+.P
+All logging for the gateway is done through the standard
+.BR syslog (3)
+facility, and must be configured along with the gateway itself for
+proper logging operation.
+Selection of the syslog facility is done through the gateway's
+configuration file (see
+.IR rms-config (5)),
+and the priority logmask is selectable either through the config file or
+the
+.B \-l
+command line option.
+.P
+The 
+.B rmsgw
+program is run by AX.25 when there is an incoming connection on a TNC
+which has been configured in
+.IR /etc/ax25/ax25d.conf.
+The
+.I usercall
+is normally supplied by
+.I ax25d
+through the
+.I ax25d.conf
+file,
+which is able to provide the callsign of the incoming connection via
+its substitution mechanism.
+See
+.BR ax25d.conf (5).
+.P
+The configuration for
+.B rmsgw
+is read from either the default
+.I /etc/rmsgw/gateway.conf
+or a configuration file specified with
+.BR \-c.
+The main operational parameters are specified in the configuration file,
+with command line options available to over-ride certain settings which
+may need to change in multi-channel TNC setups where the general
+configuration can be shared. For each AX.25 port, it is possible
+to provide command line options which provide for any differences and
+uniqueness for a particular incoming connection on a defined port (as
+specified in
+.IR /etc/ax25/axports ).
+.P
+After the configuration is read, the gateway attempts to connect to a
+Winlink2000 CMS host to begin the gatewaying of data between the
+connected RF client and the CMS.
+.P
+The CMS host list used is specified in the
+.I /etc/rmsgw/hosts
+file (see
+.BR cms-hosts (5)),
+which contains CMS port and password data along with the CMS host name.
+The gateway will round-robin its connections among the configured hosts.
+The status files for each host are maintained in
+.IR /etc/rmsgw/stat ,
+where a file entry for each CMS host name will appear if the host has
+had a connection or attempted connection. The access time of the file
+indicates when the host was last tried,
+and the gateway will attempt to connect to the CMS host that was
+least recently tried.
+.P
+New CMS hosts can be introduced to the
+.I /etc/rmsgw/hosts
+file without concern for an absent status file, since the gateway will
+prefer a new host ahead of previously used hosts.
+This way, a new host will enter the rotation cycle at the front of the
+list when the gateway attempts its CMS connection.
+.P
+On accepting a connection from the AX.25 port,
+the gateway will send a greeting string identifying the gateway,
+followed by the banner text contained in the configured or specified
+.I bannertextfile
+.RI ( /etc/rmsgw/banner in the default configuration ),
+after which it will attempt its CMS connections as mentioned above.
+.SH OPTIONS
+.TP
+.BI \-c\  configfile
+Instead of using the standard configfile,
+.IR /etc/rmsgw/gateway.conf ,
+the file indicated by
+.I configfile
+is used to set the run-time configuration.
+.TP
+.BI \-p\  packlen
+Sets the packet length for the RF data exchange.
+.TP
+.BI \-o\  packlen
+Same as
+.BR \-p.
+This option is deprecated, and
+.B \-p
+should be used instead.
+.TP
+.BI \-l\  logmask
+Set the
+.BR syslog (3)
+logmask for the gateway. Setting the logmask determines the lowest
+.BR syslog (3)
+.I priority
+that will be written to the logfile. The recognized strings,
+in order of their priority from highest to lowest are:
+.BR emerg ,
+.BR alert ,
+.BR crit ,
+.BR err ,
+.BR warning ,
+.BR notice ,
+.BR info ,
+and
+.BR debug .
+As you lower the priority, more and more messages will be logged via syslog.
+The
+.B debug
+priority is useful when trying to determine the source of problems either
+during development and testing, or during the initial setup and testing;
+it should not be used for normal operations. The default is, and most sites
+will likely want to use
+.BR info .
+.IP
+Gateway login/logout messages are logged with a priority of
+.BR notice .
+Setting the
+.B \-l
+option on the command line over-rides the internal default and the
+.B LOGMASK
+setting in
+.IR /etc/rmsgw/gateway.conf ,
+or a config file specified using
+.BR \-c .
+See
+.BR rms-config (5).
+.TP
+.BI \-g\  gatewaycall
+Set the gateway callsign and SSID for communicating with a CMS host.
+The callsign is the sysop's station callsign suffixed with an appropriate
+SSID, typically '-10';
+for example:
+.BR W3SG-10 .
+.IP
+Calling
+.B rmsgw
+with the
+.B \-g
+option over-rides the
+.B GWCALL
+setting in the configuration file.
+.IP
+For simple, single channel configurations,
+the config file setting is sufficient,
+and the
+.B \-g
+option is not needed.
+However more complex setups using
+multiple TNC channels and AX.25 port configurations
+must rely on this option in their
+.I /etc/ax25/ax25d.conf
+to properly identify the channel
+being accessed.
+See
+.B "AX25 EXAMPLES"
+below.
+.TP
+.BI \-b\  bannertextfile
+Set the file containing the banner text to be sent to the AX.25
+port for an incoming RF connection.
+Setting the
+.B \-b
+option on the command line over-rides the
+.B BANNERFILE
+setting in the configuration file.
+.TP
+.BI \-P\  ax25port
+Specifies the AX.25 port name for the connection. The port name
+is supplied by
+.B ax25d
+and is used to lookup the RMS channel information in
+.IR /etc/rmsgw/channels.xml .
+.SH AX25 EXAMPLES
+.SH FILES
+.TP
+.I /etc/rmsgw/gateway.conf
+The default gateway configuration file.
+See
+.BR rms-config (5).
+.TP
+.I /etc/rmsgw/hosts
+The CMS host table.
+See
+.BR cms-hosts (5).
+.TP
+.I /etc/rmsgw/channels.xml
+The RMS gateway channel definitions.
+See
+.BR rms-channels (5).
+.TP
+.I /etc/rmsgw/banner
+Banner file, whose contents are sent back through AX.25 after accepting
+an RF connection.
+.TP
+.I /etc/rmsgw/gwhelp
+General help file displayed when executing
+.BR \"rmsgw -h\" .
+.SH SEE ALSO
+.BR rmsgw_aci (1),
+.BR syslog (3),
+.BR syslog.conf (5),
+.BR syslogd.conf (5),
+.BR ax25d.confg (5),
+.BR rms-config (5),
+.BR cms-hosts (5),
+.BR rms-channels (5)
+.SH AUTHORS
+Hans-J. Barthen - DL5DI <dl5di@gmx.de>
+.br
+Brian R. Eckert - W3SG <eckertb@w3sg.org>

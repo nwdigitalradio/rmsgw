@@ -1,0 +1,49 @@
+#!/bin/bash
+#
+# Copyright 2012 - Dan Smith, KK7DS (dsmith@danplanet.com)
+#
+# This file is a replacement script for rmschanstat. Instead of grepping
+# through the process tree looking for kissattach and its IP address,
+# it uses /etc/axports and the hardware address attached to each interface
+# to determine if it is up or down. See rmschanstat for usage.
+
+TYPE="$1"
+NAME="$2"
+
+function usage() {
+	echo $1
+	echo Usage:
+	echo   ifstatus TYPE NAME
+}
+
+if [ -z "$1" ]; then
+	usage
+	exit 1
+fi
+
+if [ "$TYPE" != "ax25" ]; then
+	usage "Only AX25 ports are supported"
+	exit 1
+fi	
+
+basecall=$(grep $NAME /etc/ax25/axports | awk '{print $2}')
+
+if [ -z "$basecall" ]; then
+	echo Port $NAME not found in list: $(awk '{print $1}' /etc/ax25/axports)
+	exit 1
+fi
+
+iface=$(ifconfig | egrep "HWaddr $basecall +" | awk '{print $1}')
+
+if echo $iface | grep -q '^ax[0-9]+$'; then
+	echo Invalid interface $iface found for port $NAME
+	exit 1
+fi
+
+if ! ip link show dev $iface | egrep -q '\bUP\b'; then
+	echo Interface $iface for call $basecall port $NAME is down
+	exit 1
+fi
+
+echo Interface $iface for call $basecall port $NAME is up
+exit 0

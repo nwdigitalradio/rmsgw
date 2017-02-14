@@ -1,0 +1,84 @@
+.\"
+.\"			g e t s y s o p . p y . 8
+.\" $Revision: 166 $
+.\" $Author: eckertb $
+.\" $Id: getsysop.py.8 166 2014-06-05 11:43:45Z eckertb $
+.\"
+.\" RMS Gateway
+.\"
+.\" Copyright (c) 2004-2014 Hans-J. Barthen - DL5DI
+.\" Copyright (c) 2008-2014 Brian R. Eckert - W3SG
+.\"
+.\" Questions or problems regarding this program can be emailed
+.\" to linux-rmsgw@w3sg.org
+.\"
+.\" This program is free software; you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation; either version 2 of the License, or
+.\" (at your option) any later version.
+.\"
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License
+.\" along with this program; if not, write to the Free Software
+.\" Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+.\"
+.TH GETSYSOP.PY 8 "Linux RMS Gateway" "W3SG/DL5DI" "W3SG/DL5DI"
+.SH NAME
+getsysop.py \- Python script to lookup an RMS gateway sysop record.
+.SH SYNOPSIS
+.B getsysop.py -h
+.br
+.B getsysop.py
+.RB [ -d ]
+.RB [ \-c
+.IR callsign ]
+.SH DESCRIPTION
+The
+.B getsysop.py
+Python script makes WL2K webservice calls to lookup
+the sysop record for the callsign set by the
+.I GWCALL
+parameter in the
+.I gateway.conf
+file and prints it to
+.BR stdout .
+Alternatively, the script will use a callsign
+given with a
+.B \-c
+option on the command line for the lookup.
+The callsign must not include an SSID.
+When the callsign is obtained from
+.I gateway.conf
+the script will drop the SSID.
+.P
+Debugging output is turned on using the
+.B \-d
+command line argument.
+.SH "EXIT STATUS"
+.TP
+.B 0
+Successful completion.
+.TP
+.B 1
+WL2k webservice call failed.
+.TP
+.B 2
+No record exists.
+.SH FILES
+.TP
+.I /etc/rmsgw/gateway.conf
+The default gateway configuration file.
+.TP
+.I /etc/rmsgw/winlinkservice.xml
+The winlink webservice call configuratiion file.
+.SH "SEE ALSO"
+.BR mksysop.py (8),
+.BR updatesysop.py (8)
+.SH AUTHORS
+Hans-J. Barthen - DL5DI <dl5di@gmx.de>
+.br
+Brian R. Eckert - W3SG <eckertb@w3sg.org>

@@ -1,0 +1,181 @@
+.\"
+.\"			r m s - c o n f i g . 5
+.\" $Revision: 151 $
+.\" $Author: eckertb $
+.\" $Id: rms-config.5 151 2013-07-04 14:22:24Z eckertb $
+.\"
+.\" RMS Gateway
+.\"
+.\" Copyright (c) 2004-2011 Hans-J. Barthen - DL5DI
+.\" Copyright (c) 2008-2011 Brian R. Eckert - W3SG
+.\"
+.\" Questions or problems regarding this program can be emailed
+.\" to linux-rmsgw@w3sg.org
+.\"
+.\" This program is free software; you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation; either version 2 of the License, or
+.\" (at your option) any later version.
+.\"
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License
+.\" along with this program; if not, write to the Free Software
+.\" Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+.\"
+.TH RMS-CONFIG 4 "Linux RMS Gateway" "W3SG/DL5DI" "W3SG/DL5DI"
+.SH NAME
+gateway.conf \- RMS Gateway configuration file
+.SH DESCRIPTION
+The gateway configuration file,
+.I gateway.conf
+by default, is found in the directory
+.IR /etc/rmsgw .
+.P
+It contains a series of name-value pairs of parameters for operation
+of the Linux RMS Gateway in for form:
+.IP
+.nf
+NAME=VALUE
+.fi
+.P
+This form makes the configuration file easily usable in shell scripts,
+since the can be directly "sourced" to set variables in the script as follows:
+.IP
+.nf
+\&\. /etc/rmsgs/gateway.conf
+.fi
+.P
+.SH CONFIGURATION PARAMETERS
+.TP
+.B GWCALL
+Sets the callsign and SSID for the gateway. E.g.:
+.BR DL5DI-10 .
+The GWCALL
+.I must
+be set to the callsign
+.I and
+the SSID as regsited in the Winlink network. To do otherwise will
+generate erroneous status and version reports in the system.
+.TP
+.B AUTHMODE
+AUTHMODE is set to either
+.I SGL
+for Secure Gateway Logon, or
+.I TEL
+for the old TELNET logon method.
+As of June 30, 2013, your implementation should be
+.I only
+for a Secure Gateway Logon.
+The TELNET will cease to be supported sometime shortly after
+June 30, 2013.
+.TP
+.B GRIDSQUARE
+Sets the Maidenhead Gridsquare Locator for the gateway. E.g.:
+.BR FN20dt .
+.TP
+.B CHANNELFILE
+Sets the pathname for the channels file used for the gateway.
+The default is
+.IR /etc/rmsgw/channels . See
+.BR rms-channels (5).
+.TP
+.B BANNERFILE
+Sets the pathname of the bannertext file. The default is
+.IR /etc/rmsgw/banner .
+.TP
+.B LOGFACILITY
+Sets the syslog facility to be used for logging. See
+.BR syslog (3)
+and
+.BR syslog.conf (5).
+The default is
+.BR LOCAL0 .
+Note that in a multi-channel gateway, it is possible to use
+a separate config file and therefore different syslog facilities for
+different channels through this setting.
+.IP
+Note also that the setting of the facility is
+.I not
+case sensitive.
+.TP
+.B LOGMASK
+Sets the syslog logmask to control the the priority level of messages to
+be written to the syslog. See
+.BR syslog (3)
+and
+.BR syslog.conf (5).
+Setting the logmask determines the lowest
+.BR syslog (3)
+.I priority
+that will be written to the logfile. The recognized strings,
+in order of their priority from highest to lowest are:
+.BR emerg ,
+.BR alert ,
+.BR crit ,
+.BR err ,
+.BR warning ,
+.BR notice ,
+.BR info ,
+and
+.BR debug .
+As you lower the priority, more and more messages will be logged via syslog.
+The
+.B debug
+priority is useful when trying to determine the source of problems either
+during development and testing, or during the initial setup and testing;
+it should not be used for normal operations. The default is, and most sites
+will likely want to use the default value of
+.BR info .
+.IP
+The priority values, like the facility value can be upper or lower case.
+.SH EXAMPLE
+Following is an example of the W3SG-10 gateway (a simple setup). Please
+be sure to change the
+.B GWCALL
+and
+.B GRIDSQUARE
+values to match your station, if you copy this example.
+.nf
+GWCALL=W3SG-10
+GRIDSQUARE=FN20dt
+CHANNELFILE=/etc/rmsgw/channels.xml
+BANNERFILE=/etc/rmsgw/banner
+LOGFACILITY=LOCAL0
+LOGMASK=DEBUG
+AUTHMODE=SGL
+.fi
+.SH FILES
+.TP
+.I /etc/rmsgw/gateway.conf
+The default gateway configuration file.
+.TP
+.I /etc/rmsgw/channels
+The RMS gateway channel definitions.
+See
+.BR rms-channels (5).
+.TP
+.I /etc/rmsgw/banner
+Banner file, whose contents are sent back through AX.25 after accepting
+an RF connection.
+.TP
+.I /etc/rmsgw/gwhelp
+General help file displayed when executing
+.BR \"rmsgw -h\" .
+.SH SEE ALSO
+.BR rmsgw (1),
+.BR rmsgw_aci (1),
+.BR syslog (3),
+.BR syslog.conf (5),
+.BR syslogd.conf (5),
+.BR ax25d.confg (5),
+.BR cms-hosts (5),
+.BR rms-channels (5)
+.SH AUTHORS
+Hans-J. Barthen - DL5DI <dl5di@gmx.de>
+.br
+Brian R. Eckert - W3SG <eckertb@w3sg.org>
+

@@ -1,0 +1,66 @@
+.\"
+.\"			c m s - h o s t s . 5
+.\" $Revision: 38 $
+.\" $Author: eckertb $
+.\" $Id: cms-hosts.5 38 2008-05-29 20:18:32Z eckertb $
+.\"
+.\" RMS Gateway
+.\"
+.\" Copyright (c) 2004-2008 Hans-J. Barthen - DL5DI
+.\" Copyright (c) 2008 Brian R. Eckert - W3SG
+.\"
+.\" Questions or problems regarding this program can be emailed
+.\" to linux-rmsgw@w3sg.org
+.\"
+.\" This program is free software; you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation; either version 2 of the License, or
+.\" (at your option) any later version.
+.\"
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License
+.\" along with this program; if not, write to the Free Software
+.\" Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+.\"
+.TH CMS-HOSTS 1 "Linux RMS Gateway" "W3SG/DL5DI" "W3SG/DL5DI"
+.SH NAME
+hosts \- RMS Gateway CMS host table
+.SH DESCRIPTION
+The
+.I /etc/rmsgw/hosts
+file contains one line for each CMS host used by the RMS Gateway
+for passing data to and from the Winlink2000 system. The has file
+has three colon (":") delimited fields:
+.IP
+CMS hostname (FQDN)
+.IP
+CMS host port
+.IP
+CMS host password
+.P
+Lines beginning with a "#" are comment lines and are ignored by the
+gateway's host processing functions.
+Normally this file will not need modification, but should a CMS host
+be down for an extended time, it may be of value to comment out
+that host to avoid trying a CMS that is know to be unavailable.
+Also, if new hosts are added to the Winlink2000 system, changes may be
+necessary between releases to add the new host for use by the gateway
+.SH FILES
+.TP
+.I /etc/rmsgw/hosts
+The CMS host table used by the RMS Gateway
+See
+.BR rmsgw (1).
+.SH SEE ALSO
+.BR rmsgw (1),
+.BR rmsgw_aci (1),
+.BR rms-config (5),
+.BR rms-channels (5)
+.SH AUTHORS
+Hans-J. Barthen - DL5DI <dl5di@gmx.de>
+.br
+Brian R. Eckert - W3SG <eckertb@w3sg.org>

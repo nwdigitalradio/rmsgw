@@ -1,0 +1,412 @@
+'\" t
+.\" ** The above line should force tbl(1) to be a preprocessor
+.\" ** when the man page is installed and accessed through 'man',
+.\" ** otherwise, the page must be formatted with a command similar to:
+.\" ** 'tbl rms-channels.5 | nroff -man | less'
+.\"
+.\"			r m s - c h a n n e l s . 5
+.\" $Revision: 167 $
+.\" $Author: eckertb $
+.\" $Id: rms-channels.5 167 2014-09-30 10:27:26Z eckertb $
+.\"
+.\" RMS Gateway
+.\"
+.\" Copyright (c) 2004-2008 Hans-J. Barthen - DL5DI
+.\" Copyright (c) 2008 Brian R. Eckert - W3SG
+.\"
+.\" Questions or problems regarding this program can be emailed
+.\" to linux-rmsgw@w3sg.org
+.\"
+.\" This program is free software; you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation; either version 2 of the License, or
+.\" (at your option) any later version.
+.\"
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License
+.\" along with this program; if not, write to the Free Software
+.\" Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+.\"
+.TH RMS-CHANNELS 5 "Linux RMS Gateway" "W3SG/DL5DI" "W3SG/DL5DI"
+.SH NAME
+channels.xml \- RMS Gateway channel file
+.SH DESCRIPTION
+The
+.I /etc/rmsgw/channels.xml
+is an XML file containing all required information for an RMS Gateway
+channel registration and status updating (for the Linux RMS Gateway's
+ACI function).
+.P
+The structure for the file is described by an internal
+.I Document Type Description
+(DTD), which governs what is required for
+.I channels.xml
+to be valid (in the XML sense of valid, not necessarily in the
+Winlink 2000 sense).
+.SH STRUCTURE
+The
+.I channels.xml
+file begins with a standard XML declaration as follows:
+.P
+.nf
+    <?xml version="1.0" encoding="UTF-8"?>
+.fi
+.P
+This is a very common and standard declaration and should not be
+changed.
+.P
+Following the XML declaration is a
+.I "Document Type Definition"
+(DTD), which describes the structure of a valid channels file.
+Its presence here is called an internal DTD, because it is directly
+included in the XML document itself. The DTD for
+.I channels.xml
+begins with
+.nf
+    <!DOCTYPE rmschannels [
+.fi
+and ends with
+.nf
+    ]>
+.fi
+The DTD should not be changed. The presence of the DTD allows the
+.I channels.xml
+file to be validated using a validating parser:
+.IR xmllint ,
+which is part of
+.IR libxml2-utils ,
+can do this (see below).
+.P
+Following the internal DTD is the actual XML document which describes
+all channels for the gateway.
+.P
+The
+.I channels.xml
+file will frequently be referred to as a document, 
+or an XML document throughout this
+man page.
+.P
+To learn more about XML and XML documents, you can visit
+http://en.wikipedia.org/wiki/XML for a nice primer.
+.P
+A full understanding of XML is not necessary to be able to maintain
+channel information for the gateway.
+.SH "SAMPLE DOCUMENT"
+Following is an example of the channel definition used for
+W3SG-10:
+.nf
+<rmschannels>
+  <channel name="radio" type="ax25" active="yes">
+    <basecall>W3SG</basecall>
+    <callsign>W3SG-10</callsign>
+    <password>PASSWORD</password>
+    <gridsquare>FN20DT</gridsquare>
+    <frequency>145550000</frequency>
+    <mode>0</mode>
+    <autoonly>0</autoonly>
+    <baud>1200</baud>
+    <power>90</power>
+    <height>30</height>
+    <gain>0</gain>
+    <direction>0</direction>
+    <hours>24/7</hours>
+    <groupreference>1</groupreference>
+    <servicecode>PUBLIC</servicecode>
+    <statuschecker>
+      /usr/local/bin/rmschanstat $type $name $callsign
+    </statuschecker>
+  </channel>
+</rmschannels>
+.fi
+.P
+.P
+The visual layout with regard to spacing is not required for the XML
+parse, the indenting and line breaks are to make the document understandable
+for humans who need to maintain it.
+.P
+All gateway channels (what you find between
+.I <channel>
+and
+.IR </channel> )
+must be contained within the
+.B rmschannels
+(<rmschannels>) element, which is the root
+of the document, and so there can only be one 
+.B rmschannels
+element in the entire document--the
+.I </rmschannels>
+closes the
+.B rmschannels
+element.
+.P
+While there can only be one
+.B rmschannels
+element, within it, there can be many
+.B channel
+elements (and its child elements): one for each channel the
+gateway supports.
+.SH "SYMBOL TABLE"
+The channel handling used by
+.I rmsgw_aci
+makes use of an internal symbol table which stores the values
+of each element of the channel definition so that those
+values can be referenced in certain special situations
+as variables in other definitions. Specifically, variable
+substitution is available within the
+.B statuschecker
+element, which is described below. The variables are referenced
+by placing a dollar sign "$" in front of the name of an element,
+and can be used to substitute element values in the command
+pathname and parameters specified in the
+.B statuschecker
+element data string. See the
+.B statuschecker
+description below to see how this is used.
+.SH "CHANNEL DEFINITION"
+The following subsections describe each of the elements which
+define a channel in the gateway. The
+.B channel
+element is a "container" for other elements which fully define
+the channel as it needs to be known in the Winlink 2000 system.
+Thus, there can be multiple channel definitions in the XML document
+in a fashion outlined as follows:
+.P
+.nf
+    <rmschannels>
+      <channel name="channel1" type="ax25" active="yes">
+	...
+      </channel>
+      <channel name="channel2" type="ax25" active="no">
+	...
+      </channel>
+      <channel name="channel3" type="ax25" active="yes">
+	...
+      </channel>
+.fi
+.P
+The elements within each
+.B channel
+element must uniquely describe the channel relative to any other
+definitions. The gateway does a minimal job of handling
+duplicate or conflicting definitions.
+.P
+Each of the elements of a channel are described below (you should refer
+to the distributed XML file to see how the elements appear in the actual
+document layout).
+.SS channel
+The
+.B channel
+element has three attributes which give additional data about
+the channel.
+.IP
+.I name
+assigns identifies the name of the channel, as used for the
+port name found in
+.IR ax25ports.
+.IP
+.I type
+identifies the type of port
+.RI ( ax25
+is currently specifically known).
+.IP
+.I active
+is set to "yes" or "no" to indicate if the channel is to be considered
+active for the gateway and checked for availability by the auto check in
+by
+.IR rmsgw_aci .
+.SS basecall
+The
+.B basecall
+is the base callsign associated with the channel, and be
+your gateway's callsign as registered in the Winlink 2000 system,
+without and SSID.
+.SS callsign
+.B Callsign
+defines the full callsign, with SSID, for the channel. This must be
+unique for all active channel definitions in the file.
+.SS password
+The
+.B password
+is your sysop password as registered in the Winlink 2000 system.
+This password is required to be present and correct for the
+Secure Gateway Logon to work and the gateway station to successfully
+connect to any of the CMS's.
+.SS gridsquare
+The Maidenhead grid square for the location of the channel is defined
+in the
+.B gridsquare
+element, and will usually be the same as what you put in
+.IR gateway.conf .
+.SS frequency
+The
+.B frequency
+element stores the frequency, in
+.I Hertz
+for the channel.
+.SS mode
+The
+.B mode
+element defines the a Pactor level and is set to a numeric value
+according to the following table:
+.TS
+cb | cb
+r | l.
+Level	Description
+_
+0	Packet <= 1200 baud
+1	Packet > 1200 baud <= 2400 baud
+2	Packet > 2400 baud <= 4800 baud
+3	Packet > 4800 baud <= 9600 baud
+4	Packet > 9600 baud <= 19200 baud
+5	Packet > 19200 baud <= 38400 baud
+6	Packet > 38400 baud
+7-10	future packet reserved
+11	Pactor 1 only
+12	Pactor 1 and 2 only
+13	Pactor 1, 2, and 3
+14	Pactor 2 only
+15	Pactor 2 and 3 only
+16	Pactor 3 only
+17	Pactor 1, 2, 3, and 4
+18	Pactor 2, 3, and 4 only
+19	Pactor 3 and 4 only
+20	Pactor 4 only
+21	WINMOR 500
+22	WINMOR 1600
+30	SCS Robust Packet Radio
+99	Unknown
+.TE
+.SS autoonly
+.B Autoonly
+should normally be "0". If it is set to "1", that indicates that the
+channel will not accept keyboard connections.
+.SS baud
+The
+.B baud
+element specifies the baud rate of the channel. Typically 1200 or 9600 for
+packet, 200 for Pactor I, 600 for Pactor II, and 3200 for Pactor III.
+.SS power
+The
+.B power
+element specifies channel's transmitter power in watts.
+.SS height
+The height, in feet, of the antenna above ground level at the antenna site
+used for this channel.
+.SS gain
+The gain in dB of the antenna, if it is a directional antenna.
+.SS direction
+Defines the direction the antenna points. North is 360. For an omni-directional
+antenna, use 0.
+.SS hours
+The hours of operation of the channel; "24/7" is commonly used for full-time
+operation.
+.SS groupreference
+The
+.B groupreference
+element specifies a particular affiliation or overall purpose of the gateway.
+Most gateways will be public and thus will use a value of 0. Valid values
+are listed in the table below.
+.TS
+cb | cb
+r | l.
+Level	Description
+_
+0	Test site
+1	Public (this is the typical setting)
+2	ARES
+3	MARS
+4	UK Cadet
+.TE
+.SS servicecode
+The
+.B servicecode
+is a sysop defined,
+alphnumeric string up to 16 characters long
+that is used to tag a gateway channel definition.
+Winlink stores the service code only and
+does not use this information itself in any way;
+that is defined by the gateway sysop
+(presumably for a group that wants to keep the channel information semi-private).
+.SS statuschecker
+The
+.B statuschecker
+element is handled more specially by the gateway. The element itself
+defines a command to run which can determine the status of the
+channel being defined.
+.P
+The status checker command defined here is run by
+.I rmsgw_aci
+to determine if the channel is available. If the command
+exits with an exit status of 0, the channel is available;
+if the exit status of the command is non-0, then the channel
+is not available (note: this is not the same as specifically
+setting the channel as active="no" in the XML document; is
+is a dynamic, at the moment check of the channel's up/down
+status on the gateway).
+.P
+In order to be able to know a channel
+uniquely for this check, various arguments may be required which
+are part of the channel definition itself. To make the command
+specification more generic and copyable, the routines which handle
+.I channels.xml
+in the gateway keep a symbol table of user accessible variables
+with all element values for the channel in question.
+Also, the attributes associated with the
+.B channel
+element are stored as well. The variables in the symbol table
+can be referenced in the
+.B statuschecker
+element data string by putting a dollar sign "$" in front of
+the element or attribute name you wish to use. A simple
+substitution of the value will be made at that place in the
+data string.
+.P
+For example, the typical status checker string is:
+.nf
+    /usr/local/bin/rmschanstat $type $name $callsign
+.fi
+.P
+where "$type" is a reference to the value of the
+.I type
+attribute used in the previous scanned
+.B channel
+element, and so it is for "$name". The "$callsign"
+reference is to the value of the previously
+scanned
+.B callsign
+element.
+So from the earlier example, the actually command string
+that the gateway will use becomes:
+.nf
+    /usr/local/bin/rmschanstat ax25 radio W3SG-10
+.fi
+and is the actually command string that will be executed
+to check the status of this particular channel.
+.SH FILES
+.TP
+.I /etc/rmsgw/channels.xml
+The RMS Gateway channel definitions.
+.TP
+.I /etc/ax25/ax25d.conf
+The AX.25
+.I ax25d
+configuration.
+.TP
+.I /etc/ax25/axports
+The AX.25 TNC port configuration.
+.SH EXAMPLE
+.nf
+.fi
+.SH SEE ALSO
+.BR rmsgw (1),
+.BR rmsgw_aci (1),
+.BR ax25d.conf (5) ,
+.BR rms-config (5) .
+.SH AUTHORS
+Hans-J. Barthen - DL5DI <dl5di@gmx.de>
+.br
+Brian R. Eckert - W3SG <eckertb@w3sg.org>

@@ -1,0 +1,66 @@
+.\"
+.\"			u p d a t e s y s o p . p y . 8
+.\" $Revision: 160 $
+.\" $Author: eckertb $
+.\" $Id: updatesysop.py.8 160 2014-03-11 06:58:20Z eckertb $
+.\"
+.\" RMS Gateway
+.\"
+.\" Copyright (c) 2004-2014 Hans-J. Barthen - DL5DI
+.\" Copyright (c) 2008-2014 Brian R. Eckert - W3SG
+.\"
+.\" Questions or problems regarding this program can be emailed
+.\" to linux-rmsgw@w3sg.org
+.\"
+.\" This program is free software; you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation; either version 2 of the License, or
+.\" (at your option) any later version.
+.\"
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License
+.\" along with this program; if not, write to the Free Software
+.\" Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+.\"
+.TH UPDATESYSOP.PY 8 "Linux RMS Gateway" "W3SG/DL5DI" "W3SG/DL5DI"
+.SH NAME
+updatesysop.py \- Python script to update the RMS gateway sysop record
+.SH SYNOPSIS
+.B updatesysop.py
+.SH DESCRIPTION
+The
+.B updatesop.py
+Python script updates or creates the sysop record in
+the winlink system from the contents of
+.IR /etc/rmsgw/sysop.xml .
+.P
+The script must be run after
+.B any
+changes are made to
+.IR /etc/rmsgw/sysop.xml
+for them to be reflected in the winlink system.
+.SH "EXIT STATUS"
+.TP
+.B 0
+Successful completion.
+.TP
+.B 1
+There were errors.
+.SH FILES
+.TP
+.I /etc/rmsgw/winlinkservice.xml
+The winlink webservice call configuratiion file.
+.TP
+.I /etc/rmsgw/sysop.xml
+The sysop record maintenance file.
+.SH "SEE ALSO"
+.BR getsysop.py (8),
+.BR mksysop.py (8)
+.SH AUTHORS
+Hans-J. Barthen - DL5DI <dl5di@gmx.de>
+.br
+Brian R. Eckert - W3SG <eckertb@w3sg.org>

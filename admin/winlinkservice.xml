@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<config vcsRevision="$Revision: 167 $" vcsAuthor="$Author: eckertb $" vcsId="$Id: winlinkservice.xml 167 2014-09-30 10:27:26Z eckertb $">
+  <WebServiceAccessCode>T$43*TR324</WebServiceAccessCode>
+  <svchost>server.winlink.org</svchost>
+  <svcport>8085</svcport>
+  <namespace>http://schemas.datacontract.org/2004/07/winlink.cms.dto</namespace>
+  <svcops>
+    <sysopget paramRoot="SysopGet">/status/sysop/get</sysopget>
+    <sysopadd paramRoot="SysopAdd">/status/sysop/add</sysopadd>
+    <channelget paramRoot="ChannelGet">/channel/get</channelget>
+    <channeladd paramRoot="ChannelAdd">/channel/add</channeladd>
+    <versionadd paramRoot="VersionAdd">/version/add</versionadd>
+  </svcops>
+</config>

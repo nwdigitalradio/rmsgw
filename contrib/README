@@ -1,0 +1,6 @@
+This directory contains sysop contributed scripts and files
+that may be useful to other sysops in the setup and use of
+their gateways.
+
+Contents:
+ifstatus - alternative for rmschanstat

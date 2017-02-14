@@ -1,0 +1,21 @@
+# DO NOT DELETE
+
+rmsgwmon.o: /usr/include/stdlib.h /usr/include/features.h
+rmsgwmon.o: /usr/include/stdc-predef.h /usr/include/xlocale.h
+rmsgwmon.o: /usr/include/alloca.h /usr/include/stdio.h /usr/include/libio.h
+rmsgwmon.o: /usr/include/_G_config.h /usr/include/wchar.h
+rmsgwmon.o: /usr/include/string.h /usr/include/unistd.h /usr/include/getopt.h
+rmsgwmon.o: /usr/include/time.h /usr/include/syslog.h /usr/include/errno.h
+rmsgwmon.o: /usr/include/limits.h /usr/include/ncurses.h
+rmsgwmon.o: /usr/include/ncurses_dll.h /usr/include/stdint.h
+rmsgwmon.o: /usr/include/unctrl.h /usr/include/curses.h
+rmsgwmon.o: /home/gunn/dev/debpkg/rmsgw/rmsgw-2.4.0-182/include/rms.h
+rmsgwmon.o: /home/gunn/dev/debpkg/rmsgw/rmsgw-2.4.0-182/include/rmslib.h
+rmsgwmon.o: /home/gunn/dev/debpkg/rmsgw/rmsgw-2.4.0-182/include/set.h
+rmsgwmon.o: /home/gunn/dev/debpkg/rmsgw/rmsgw-2.4.0-182/include/rmsshm.h
+rmsgwmon.o: /home/gunn/dev/debpkg/rmsgw/rmsgw-2.4.0-182/include/mapname.h
+glob.o: /home/gunn/dev/debpkg/rmsgw/rmsgw-2.4.0-182/include/rms.h
+glob.o: /usr/include/stdio.h /usr/include/features.h
+glob.o: /usr/include/stdc-predef.h /usr/include/libio.h
+glob.o: /usr/include/_G_config.h /usr/include/wchar.h
+glob.o: /home/gunn/dev/debpkg/rmsgw/rmsgw-2.4.0-182/include/rmsshm.h

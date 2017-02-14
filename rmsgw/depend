@@ -1,0 +1,85 @@
+# DO NOT DELETE
+
+rmsgw.o: /usr/include/stdlib.h /usr/include/features.h
+rmsgw.o: /usr/include/stdc-predef.h /usr/include/xlocale.h
+rmsgw.o: /usr/include/alloca.h /usr/include/stdio.h /usr/include/libio.h
+rmsgw.o: /usr/include/_G_config.h /usr/include/wchar.h /usr/include/string.h
+rmsgw.o: /usr/include/unistd.h /usr/include/getopt.h /usr/include/time.h
+rmsgw.o: /usr/include/syslog.h /usr/include/errno.h
+rmsgw.o: /home/gunn/dev/debpkg/rmsgw/rmsgw-2.4.0-182/include/rms.h
+rmsgw.o: /home/gunn/dev/debpkg/rmsgw/rmsgw-2.4.0-182/include/rmslib.h
+rmsgw.o: /home/gunn/dev/debpkg/rmsgw/rmsgw-2.4.0-182/include/set.h
+rmsgw.o: /home/gunn/dev/debpkg/rmsgw/rmsgw-2.4.0-182/include/rmsshm.h
+rmsgw.o: /home/gunn/dev/debpkg/rmsgw/rmsgw-2.4.0-182/include/mapname.h
+rmsgw.o: rmsgw.h
+gwinit.o: /usr/include/syslog.h /usr/include/stdlib.h /usr/include/features.h
+gwinit.o: /usr/include/stdc-predef.h /usr/include/xlocale.h
+gwinit.o: /usr/include/alloca.h
+gwinit.o: /home/gunn/dev/debpkg/rmsgw/rmsgw-2.4.0-182/include/rms.h
+gwinit.o: /usr/include/stdio.h /usr/include/libio.h /usr/include/_G_config.h
+gwinit.o: /usr/include/wchar.h
+gwinit.o: /home/gunn/dev/debpkg/rmsgw/rmsgw-2.4.0-182/include/rmslib.h
+gwinit.o: /home/gunn/dev/debpkg/rmsgw/rmsgw-2.4.0-182/include/set.h
+gwinit.o: /home/gunn/dev/debpkg/rmsgw/rmsgw-2.4.0-182/include/rmsshm.h
+gwinit.o: /home/gunn/dev/debpkg/rmsgw/rmsgw-2.4.0-182/include/mapname.h
+gwinit.o: rmsgw.h
+greet.o: /usr/include/string.h /usr/include/features.h
+greet.o: /usr/include/stdc-predef.h /usr/include/xlocale.h
+greet.o: /usr/include/unistd.h /usr/include/getopt.h /usr/include/syslog.h
+greet.o: /home/gunn/dev/debpkg/rmsgw/rmsgw-2.4.0-182/include/rms.h
+greet.o: /usr/include/stdio.h /usr/include/libio.h /usr/include/_G_config.h
+greet.o: /usr/include/wchar.h
+greet.o: /home/gunn/dev/debpkg/rmsgw/rmsgw-2.4.0-182/include/rmslib.h
+greet.o: /home/gunn/dev/debpkg/rmsgw/rmsgw-2.4.0-182/include/set.h
+greet.o: /home/gunn/dev/debpkg/rmsgw/rmsgw-2.4.0-182/include/rmsshm.h rmsgw.h
+banner.o: /usr/include/stdio.h /usr/include/features.h
+banner.o: /usr/include/stdc-predef.h /usr/include/libio.h
+banner.o: /usr/include/_G_config.h /usr/include/wchar.h /usr/include/string.h
+banner.o: /usr/include/xlocale.h /usr/include/syslog.h /usr/include/errno.h
+banner.o: /home/gunn/dev/debpkg/rmsgw/rmsgw-2.4.0-182/include/rms.h
+banner.o: /home/gunn/dev/debpkg/rmsgw/rmsgw-2.4.0-182/include/rmslib.h
+banner.o: /home/gunn/dev/debpkg/rmsgw/rmsgw-2.4.0-182/include/set.h
+banner.o: /home/gunn/dev/debpkg/rmsgw/rmsgw-2.4.0-182/include/rmsshm.h
+banner.o: rmsgw.h
+session.o: /usr/include/stdlib.h /usr/include/features.h
+session.o: /usr/include/stdc-predef.h /usr/include/xlocale.h
+session.o: /usr/include/alloca.h /usr/include/string.h /usr/include/stdio.h
+session.o: /usr/include/libio.h /usr/include/_G_config.h /usr/include/wchar.h
+session.o: /usr/include/errno.h /usr/include/unistd.h /usr/include/getopt.h
+session.o: /usr/include/fcntl.h /usr/include/time.h /usr/include/syslog.h
+session.o: /home/gunn/dev/debpkg/rmsgw/rmsgw-2.4.0-182/include/rms.h
+session.o: /home/gunn/dev/debpkg/rmsgw/rmsgw-2.4.0-182/include/rmslib.h
+session.o: /home/gunn/dev/debpkg/rmsgw/rmsgw-2.4.0-182/include/set.h
+session.o: /home/gunn/dev/debpkg/rmsgw/rmsgw-2.4.0-182/include/rmsshm.h
+session.o: rmsgw.h
+gateway.o: /usr/include/stdlib.h /usr/include/features.h
+gateway.o: /usr/include/stdc-predef.h /usr/include/xlocale.h
+gateway.o: /usr/include/alloca.h /usr/include/string.h /usr/include/stdio.h
+gateway.o: /usr/include/libio.h /usr/include/_G_config.h /usr/include/wchar.h
+gateway.o: /usr/include/errno.h /usr/include/unistd.h /usr/include/getopt.h
+gateway.o: /usr/include/fcntl.h /usr/include/time.h /usr/include/syslog.h
+gateway.o: /home/gunn/dev/debpkg/rmsgw/rmsgw-2.4.0-182/include/rms.h
+gateway.o: /home/gunn/dev/debpkg/rmsgw/rmsgw-2.4.0-182/include/rmslib.h
+gateway.o: /home/gunn/dev/debpkg/rmsgw/rmsgw-2.4.0-182/include/set.h
+gateway.o: /home/gunn/dev/debpkg/rmsgw/rmsgw-2.4.0-182/include/rmsshm.h
+gateway.o: rmsgw.h
+log_login.o: /usr/include/stdlib.h /usr/include/features.h
+log_login.o: /usr/include/stdc-predef.h /usr/include/xlocale.h
+log_login.o: /usr/include/alloca.h /usr/include/string.h /usr/include/stdio.h
+log_login.o: /usr/include/libio.h /usr/include/_G_config.h
+log_login.o: /usr/include/wchar.h /usr/include/errno.h /usr/include/unistd.h
+log_login.o: /usr/include/getopt.h /usr/include/syslog.h
+log_login.o: /home/gunn/dev/debpkg/rmsgw/rmsgw-2.4.0-182/include/rms.h
+log_logout.o: /usr/include/stdlib.h /usr/include/features.h
+log_logout.o: /usr/include/stdc-predef.h /usr/include/xlocale.h
+log_logout.o: /usr/include/alloca.h /usr/include/string.h
+log_logout.o: /usr/include/stdio.h /usr/include/libio.h
+log_logout.o: /usr/include/_G_config.h /usr/include/wchar.h
+log_logout.o: /usr/include/errno.h /usr/include/unistd.h
+log_logout.o: /usr/include/getopt.h /usr/include/time.h /usr/include/syslog.h
+log_logout.o: /home/gunn/dev/debpkg/rmsgw/rmsgw-2.4.0-182/include/rms.h
+glob.o: /home/gunn/dev/debpkg/rmsgw/rmsgw-2.4.0-182/include/rms.h
+glob.o: /usr/include/stdio.h /usr/include/features.h
+glob.o: /usr/include/stdc-predef.h /usr/include/libio.h
+glob.o: /usr/include/_G_config.h /usr/include/wchar.h
+glob.o: /home/gunn/dev/debpkg/rmsgw/rmsgw-2.4.0-182/include/rmsshm.h

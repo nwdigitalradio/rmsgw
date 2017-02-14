@@ -1,0 +1,680 @@
+/*
+ * RMS Gateway
+ * $Id: History 182 2014-11-03 12:26:24Z eckertb $
+ *
+ * Copyright (c) 2004-2014 Hans-J. Barthen - DL5DI
+ * Copyright (c) 2008-2014 Brian R. Eckert - W3SG
+ *
+ * Questions or problems regarding this program can be emailed
+ * to linux-rmsgw@w3sg.org
+ *
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ * Revision history:
+ *
+ * 20140103:
+ * - fixed namespace in base channels.xml used for new installs
+ *
+ * 20141030:
+ * - additional updates to installing
+ * - adjustments on channels password check
+ *   to also provide a message to the connecting client
+ * - release 2.4.0
+ *
+ * 20141028:
+ * - added check for configured password in channels.xml
+ *   (if not checked, gateway will seg fault during the
+ *    login)
+ * - updates to installing
+ *
+ * 20141025:
+ * - added ability to set environment variables for rmsgw and
+ *   rmsgw_aci (if configured, and the configured file
+ *   exists)
+ * - added (experimental) hooks for rmsgw and rmsgw_aci
+ * - release candidate for 2.4.0
+ *
+ * 20141021:
+ * - added ability to configure aci update intervals
+ *
+ * 20141019:
+ * - update installation script to remove any existing DTD
+ *   from channels.xml and replace with the new schema
+ *   reference
+ * - update installation script to cleanup obsolete/unused
+ *   configuration values in gateway.conf
+ * - cleanup dead code
+ * - misc. code cleanup
+ * - update admin-install.sh to set correct permission
+ *   on version file
+ * - fix corrupted updatechannel.py
+ * - release candidate for 2.4.0
+ *
+ * 20141018:
+ * - fixed pointer problem in upcase()
+ * - fixed channels.xsd attribute error
+ * - fixed fileage() calculation
+ * - additional debug logging added
+ * - pruned old configuration values (gateway.conf, loadConfig())
+ * - python command path now a gateway config option
+ * - rmsgw.mk now defines _GNU_SOURCE (to help address
+ *   differences with some linux versions for getting
+ *   needed macro definitions in place)
+ *
+ * 20141001:
+ * - fix botched install.sh to call admin-install.sh correctly
+ * - release candidate 2.4.0
+ *
+ * 20140930:
+ * - release candidate for 2.4.0
+ *
+ * 20140929:
+ * - more ACI and channel/verion update code cleanup
+ *
+ * 20140915:
+ * - removed all AUTHMODE configuration and telnet login
+ *   o only secure gateway login is supported any longer
+ *     in the winlink system
+ * - revisions to rmsgw_aci to use new channel and version
+ *   updating (python) programs -- changes to reporting
+ *   frequency to match winlink specifications
+ * - misc. code cleanup
+ *
+ * 20140905:
+ * - added new python program for updating version information
+ *   via webservice call
+ *
+ * 20140817:
+ * - added new python program for updating channel information
+ *   via webservice call
+ *
+ * 20140605:
+ * - updated sysop record admin to address apparent changes
+ *   in webserice call response xml
+ *
+ * 20140510:
+ * - adjusted error reporting for webservice calls
+ *   o errors and error messages can be present at two different
+ *     levels, so want to be sure we pickup both completely
+ *     and correctly
+ *
+ * 20140508:
+ * - hostname change for server to server.winlink.org for
+ *   sysop record webservice calls
+ * - namespace change for datacontract for sysop record
+ *   admin webservice calls
+ * - gateway.conf updated to expost the changed host
+ *   (and port) for UDP messages to report channel
+ *   status and software version
+ *
+ * 20140311:
+ * - created man pages for the sysop maintenance commands
+ * - minor change to exit status behavior of updatesysop.py
+ *
+ * 20131215:
+ * - created script to install the sysop maintenance functions
+ *   and files (admin/admin-install.sh)
+ * - added call to admin/admin-install.sh from install.sh
+ *
+ * 20131207:
+ * - updates to sysop record maintenance functions
+ *   o default behavior changes to avoid potential
+ *     for user errors/confusion
+ *   o bug fixes and adjustments for consistency
+ *   o minor changes for future flexibility
+ *
+ * 20131128:
+ * - added admin functions for sysop record maintenance
+ * - updated debugging of args in rmsgw
+ * - correct typos in error messages
+ *
+ * 20130705:
+ * - Fixed typos in INSTALLING file
+ * - removed line attempting to install rms.auth in install.sh
+ * - install.sh removes defunct rms.auth file if present
+ *
+ * 20130704:
+ * - Release 2.3.0
+ * - Updated missing information in INSTALLING and manpages
+ * - tweaked log messages so that DEBUG logging is not necessary
+ *   to know which logon mode is being used
+ *
+ * 20130703:
+ * - Release Candidate 2 for 2.3.0
+ * - Trim trailing whitespace from any config items in
+ *   gateway.conf
+ * - log the AUTHMODE setting during gateway startup
+ *   (this is a short-lived need, but may help with
+ *    debugging during the upgrade period)
+ *
+ * 20130702:
+ * - Release Candidate 1 for 2.3.0
+ * - initial implementation of Secure Gateway Logon, which will
+ *   replace the onld CMS TELNET login process shortly after
+ *   this release.
+ *
+ * 20121230:
+ * - minor fix to channels.xml to include servicecode in list of
+ *   elements
+ *
+ * 20121228:
+ * - Release 2.2.0
+ *
+ * 20121227:
+ * - added new udp checkin format which now has a service code
+ *   value (defined in channels.xml by the sysop; it has a default
+ *   of 'PUBLIC'
+ *
+ * 20111201:
+ * - fixed comments in wl2k_aci.c [BUGID:56]
+ * - removed rms.auth file [BUGID:57]
+ * 
+ * 20111201:
+ * - update man pages to reflect changes in gateway.conf
+ * - bump version to 2.1.0 for release
+ *
+ * 20111130:
+ * - added needed include of wait.h in wl2k_aci.c to make some
+ *   Linux distributions happy with defines
+ *
+ * 20111128:
+ * - change format of version number to comply with Winlink standards
+ * - remove architecture dependent binary for libwl2k.s
+ * - remove libwl2k (no longer needed)
+ * - ACI now uses UDP packet for channel updates
+ * - intermediate version bump to 2.0.4 for testing
+ * - updated INSTALLING
+ *
+ * 20110811:
+ * - dropped Washington from CMS host table
+ * - Brentwood added to CMS host table
+ *
+ * 20100831:
+ * - better buffer handling in gateway loop
+ *   involving proper handling of partial
+ *   writes to ax.25
+ * - better logging of gateway loop activity
+ *   during the CMS "conversation"
+ * - cleanup of warnings arising from GCC and
+ *   linux environment "evolution"
+ * - bump version to 2.0.3
+ *
+ * 20090815:
+ * - Release as verion 2.0.2
+ *   (gateway monitor is still experimental and
+ *    incomplete at this time)
+ *
+ * 20090810:
+ * - bump version to 2.0.1.3
+ *
+ * 20090809:
+ * - merged changes from bugfix branch to detect RF client disconnect
+ *   situation and CMS disconnect situation which causes rmsgw to go
+ *   into an infinite loop and burning the CPU. When the disconnect is
+ *   detected, the gateway will exit with an IO error condition.
+ *   [BUGID:55]
+ *
+ * 20090528:
+ * - added notes to INSTALLING about legacy pty support in newer
+ *   kernels/distributions
+ *
+ * 20090429:
+ * - extended logging for shared memory debug messages, controlled through
+ *   an external file
+ * - rmsgwmon can now dump in a (mostly) human readable form, the contents
+ *   of the shared memory segment used for monitoring data
+ * - bump version to 2.0.1.2 (internal development)
+ *
+ * 20090425:
+ * - initial (partial) implementation of status monitor, utilizing a
+ *   shared memory segment for gateway processes to report status/activity
+ *   [BUGID:53]
+ * - bump version to 2.0.1.1 (internal development)
+ *
+ * 20090317:
+ * - removed duplicate syslog re-initialization sequence in rmsgw_aci
+ *
+ * 20090311:
+ * - added simple check for unconfigured or misconfigured gateway
+ *   (detect GWCALL == N0CALL) [BUGID:54]
+ *
+ * 20090309:
+ * - minor history cleanup (missing BUGID on doc updates)
+ *
+ * 20090308:
+ * - minor documentation updates (including some notes for upgrading)
+ *   [BUGID:52]
+ * - ACI connect successes now log at LOG_INFO rather than LOG_DEBUG
+ * - R2.0.1
+ *
+ * 20090220:
+ * - removed unnecessary '-f' flag from groupadd in install.sh [BUGID:47]
+ *
+ * 20090218:
+ * - fixed doubling of 'Linux' in the version/greeting messages [BUGID:50]
+ * - install.sh checks for and removes previous status files to
+ *   facilitate faster updating of versions on an upgrade [BUGID:51]
+ *
+ * 20090214:
+ * - pruned unused 'lib' directory from source tree [BUGID:49]
+ * - fixed typo and copyright info in the COPYRIGHT file
+ *
+ * 20090213:
+ * - make system is architecture "aware" for selecting correct
+ *   libwl2k.a
+ * - minor adjustments to install.sh
+ * - R2.0.0
+ *
+ * 20090212:
+ * - additional log messages added for libwl2k activities
+ * - final packaging prep for R2.0.0
+ *
+ * 20090208:
+ * - added wien to CMS host table [BUGID:46]
+ * - additional debugging messages added to ACI part of libwl2k
+ * 
+ * 20090207:
+ * - R2.0.0-RC3; expected final release candidate before the official
+ *   2.0.0
+ *
+ * 20090206:
+ * - updated man pages to bring up-to-date with current functionality
+ *
+ * 20090205:
+ * - version and auth status files are now "callsign sensitive" to
+ *   correctly support multiple configs/channels on the same machine
+ *   [BUGID:43] [BUGID:44]
+ * - version updates to Winlink system report "RMS Gateway" per
+ *   agreement with Winlink team [BUGID:45]
+ *
+ * 20090204:
+ * - final cleanup and generation of R2.0.0-RC2
+ *
+ * 20090201:
+ * - removed external script for version updater and changed to internal
+ *   generation of datagram message and sent via new library call
+ *
+ * 20090131:
+ * - generated release candidate 1 (RC1) for internal testing
+ * - added CMS host rotation to ACI (formerly only done by the gateway
+ *   itself) [BUGID:41]
+ *
+ * 20090128:
+ * - protocol updates to libwl2k to match additional requirements from
+ *   Winlink team [BUGID:39]
+ * - added gateway version updater to ACI [BUGID:40]
+ *
+ * 20081224:
+ * - updated INSTALLING regarding KEYCODE and PASSWORD requests
+ *
+ * 20081029:
+ * - updated install.sh to make sure that the rmsgw user account is locked
+ *   but not expired, which typically prevents cron from running
+ *
+ * 20080831:
+ * - fixed segmentation violation during session setup: added check for NULL
+ *   values before dereferencing pointers for configured information from
+ *   gateway.conf [BUGID:38]
+ *
+ * 20080826:
+ * - added explicit PATH to rmschanstat to avoid "missing"
+ *   commands [BUGID:37]
+ *
+ * 20080825:
+ * - updated rmschanstat to handle 6pack configurations properly
+ *   [BUGID:32]
+ *
+ * 20080821:
+ * - documentation and installation instructions updated for
+ *   for new Beta release
+ * - R2.0.0 Beta 2
+ *
+ * 20080819:
+ * - completed RMS protocol requirements
+ * - R2.0.0 Beta 1.9 - testing baseline before releasing Beta 2
+ *
+ * 20080815:
+ * - symbol table handling now deals with unexpected NULL values
+ * - fixed compiler warning concerning maperrmsg()
+ * - made status file setting more generalized
+ * - added "type" attribute to <channel> in channels.xml (currently "ax25"
+ *   is understood and used in the channel status checker, rmschanstat)
+ *
+ * 20080809:
+ * - added RMSKEYCODE to gateway.conf
+ * - added RMSPASSWORD to gateway.conf
+ *
+ * 20080808:
+ * - added type attribute to channel definition in channels.xml
+ *
+ * 20080807:
+ * - new rmschanstat script that fully understands the port/callsign/interface
+ *   association
+ *
+ * 20080806:
+ * - added wl2k library to support ACI
+ * - expanded librms
+ * - some directory restructuring
+ * - channels are now defined by channels.xml, which also has an
+ *   internal DTD
+ * - added rmschanstat basic channel (port) status checker script
+ * - new ACI added
+ * - R2.0.0 Beta 1.3 (internal version only)
+ *
+ * 20080725:
+ * - no longer necessary to edit rmsgw.mk to adjust TOPDIR before
+ *   building the gateway
+ *
+ * 20080722:
+ * - corrected botched packaging of Beta 1.1 [BUGID:31]
+ *
+ * 20080710:
+ * - corrected minor typos in INSTALLING
+ *
+ * 20080708:
+ * - added filtering in the gateway of special packet from CMS per
+ *   information from Winlink team [BUGID:30]
+ * - R2.0.0 Beta1.1 (for testing - without the new ACI)
+ *
+ * 20080704:
+ * - moved lib to librms to prepare for future library code separate
+ *   from the common rms functions
+ *
+ * 20080618
+ * - blank lines in hosts and channels files are now ignored
+ *   and don't kick out warnings to syslog [BUGID:29]
+ *
+ * 20080611
+ * - added line information for bad port and password info in
+ *   CMS host entry error logging
+ * - added upper case conversion to channel callsign when
+ *   loading channel information and the callsign comparison
+ *   is now case blind [BUGID:28]
+ *
+ * 20080601
+ * - corrected manual section for rms-channels manpage
+ * - added check to install.sh to prevent accidental locking
+ *   of the root account
+ * - added additional checking and error detections for failed CMS
+ *   host connections to provide indication for complete failure
+ *   and exit or rotate to next CMS host for retry
+ *
+ * 20080531
+ * - added includes of <sys/select.h> and <sys/time.h> where struct timeval
+ *   is required [BUGID:26]
+ * - changed the way install.sh uses GNU install to avoid the use of the
+ *   -t option of install, which is not available in some slightly older
+ *   environments [BUGID:27]
+ * - removed un-needed binaries directory
+ *
+ * 20080529
+ * - Added INSTALLATION file for how to install and configure the gateway
+ * - Added general installation script to install the gateway software
+ *   in correct places with required permissions
+ * - Gateway now expects to run with its own user and group (rmsgw.rmsgw
+ *   by default) [BUGID:24]
+ * - Added manpages for gateway programs and related files
+ * - Correction minor typographical errors
+ * - R2.0.0 Beta1
+ *
+ * 20080514
+ * - restructuring of rmsgw_aci
+ * - library reogranization
+ * - acihelp file added (/etc/rmsgw/acihelp) to go along with
+ *   gwhelp (/etc/rmsgw/gwhelp)
+ * - simple '-h' (help) option available for both rmsgw and
+ *   rmsgw_aci
+ * - R2.0.0 Alpha5
+ *
+ * 20080513
+ * - new Makefile structure and setup
+ * - added gateway help option and help file
+ * - fixed rmsgw seg fault when no channel info available [BUGID:20]
+ * - CHANNELFILE setting in config file now honored [BUGID:21]
+ * - automatic CMS host rotation [BUGID:5]
+ *
+ * 20080504
+ * - changed syslog ID to 'rmsgw' [BUGID:22]
+ *
+ * 20080504
+ * - new CMS channel login sequence added [BUGID:19]
+ * - new channels file added for config [BUGID:19]
+ * - rmsgw now supports -P parameter to get AX.25 port name for connection
+ *   to support channel identification [BUGID:19]
+ * - layered entire protocol more for improvements to failure recovery
+ *   decisions
+ * - additional cleanup of syslog/debug messages
+ * - R2.0.0 Alpha4
+ *
+ * 20080429
+ * - rename packages/modules to reflect name of RMS Gateway [BUGID:15]
+ * - add version identification to syslog when programs run [BUGID:16]
+ * - syslog facility and priority names in config and command line
+ *   are now case blind [BUGID:17]
+ * - "verbose" messages removed or converted to syslog [BUGID:18]
+ *
+ * 20080425
+ * - cmsConnect() properly rotates CMS host on failed connect [BUGID:8]
+ * - ctext (now known as banner) now displays again after greeting
+ *   is issued [BUGID:9]
+ * - copyright/attribution text in all source modules  and COPYRIGHT
+ *   file added [BUGID:10]
+ * - nodecall (now gwcall) can be supplied on command line with -g
+ *   option [BUGID:11]
+ * - syslog facility and priority now configurable in config file [BUGID:12]
+ * - greeting string now conformant to Winlink protocol requirements
+ *   [BUGID:13]
+ * - new style configuration file added (along with mapname library
+ *   module to handle the file)
+ * - gateway specific configuration and host files renamed and moved
+ *   to /etc/rmspg
+ * - banner text (formerly ctext) stored in specific file for the banner text
+ * - additional code restructuring
+ * - etc directory added with sample configuration files
+ * - syslog messages and priorities cleaned up and refined
+ * - R2.0.0 Alpha3
+ *
+ * 20080418
+ * - renamed gateway and aci directories to match package naming
+ * - renamed source files still indicating 'telpac' and not 'rms'
+ * - change PMBO references in messages to CMS [BUGID:7]
+ * - adjusted version info to indicate this as Alpha 2
+ * - cheated makedepend complaints by sending output to /dev/null
+ *   during 'make depend' actions
+ * - Refinements to cmsConnect() to address rotation problems [BUGID:8]
+ *
+ * 20080416
+ * - changed logging to use syslog [BUGID:1]
+ * - revamped CMS connection code [BUGID:4]
+ * - revamped CMS host file handling [BUGID:5 INCOMPLETE]
+ * - created RMS gateway library of common functions
+ * - created utility functions to enhance readability of
+ *   main code
+ * - eliminated "magic numbers"
+ * - rename code directories to match program names
+ * - drop tpcfg.h and user_io.h as these have been incorporated elsewhere
+ * 
+ * 20080408
+ * - fixed a bug in rotating mechanism of telpac_node,
+ *   it worked fine in telpac_aci but not with changes from nov 2005
+ *   implemented in telpac_node.
+ *   Bug was recognized when Santiago server failed.
+ * - added new rotating DNS server server.winlink.org to hostlist
+ *
+ * 20080202
+ * - deleted shellscript telpac_aci.sh, procedure has been changed
+ * - deleted aprs-beacon-script, procedure has been changed
+ * - updated documentation to meet new procedures
+ * - rev 1.0.4 released.
+ *
+ * 20080118
+ * - changed hostfile to new CMS hosts and it's passwords and ports
+ * - added precompiled binaries
+ * - rev 1.0.3 released.
+ *
+ * 20061231
+ * - changed logfile output to 1 single line per entry which looks better
+ *   on the webpage
+ * - fixed a mistake in revision number, last change was very minor,
+ *   so it was planned to be 1.0.1 but showed 1.1
+ * - rev 1.0.2 released.
+ *
+ * 20061111
+ * - added new European host to sample hst-file.
+ * - commented out host KN6KB. This server is currently testing other things
+ *   and often not available or does not work properly with TelPac-Node/LinuX.
+ * - no known bugs, no software changes !
+ * - rev 1.0.1 released.
+ *
+ * 20060615
+ * - added startup script telpac_aci.sh to start only if no user connected
+ *   since last check. Script is called from cron and compares timestamp 
+ *   of reference file with timestamp of logfile.
+ * - some cosmetic work on the "poor" documentation
+ * - no change on the code since there was no information about a bug !
+ * - rev 1.0 released !
+ *
+ * 20060308
+ * - some cleanup in the documentation
+ * - after this long time of betatest without any bug reports it should 
+ *   be time for rev 1.0 !
+ *
+ * 20060306
+ * - just a small fix, the hostname was missing in the logfile
+ * - rev 0.9b14 released
+ *
+ * 20051127
+ * - paclen is a critical parameter, the default should better be reduced
+ *   from 256 to 128 bytes.
+ *   Probably in future versions it should be read from the settings of the
+ *   used interface in axports. It is not very easy, even the authors of 
+ *   the ax25tools don't do it.
+ * - Andy Cooper, K3JSE, integrated 2 fixes:
+ *   - connection routine did not always step through PMBO list on failure
+ *   - telpac_node sometimes hanged if the PMBO closes the connection
+ *   Thanks Andy !
+ * - rev 0.9b12 released
+ *
+ * 20050221
+ * - added some new features and changes which Rick implemented
+ *   to the Windows TelPac-Node
+ *   No software changes, no need to upgrade anything, nevertheless a
+ *   new version number to show the status of the package
+ * - rev 0.9b11 released
+ *
+ ****************************************************************************
+ ** TELPAC Releases and relevant changes which have been 'ported' to the
+ ** LinuX-Node:
+ ** 
+ ** Feb 19, 2005    Rev 1.1.6
+ ** 
+ ** Modified APRS settings form and function to use Range instead of PHGD
+ ** values. Default range = 20 miles. Added code in watchdog timer to insure
+ ** session is set to nothing and stream is Killed when watchdog value is 0.
+ ** 
+ ** Feb 18, 2005    Rev 1.1.5
+ ** 
+ ** Modified APRS Report packet to now look like: KN6KB-10:;KN6KB-WL
+ ** *181448z2813.75NW08042.50WaPHG6140 145.670-10 1200b Winlink.org Telpac
+ ** Showing -ssid after frequency. Added function GridSq2NMEALatLon to convert
+ ** grid square to Lat Lon for posting. Added combo box to APRS settings form
+ ** to allow selection of mulitple objects if the base call sign is used for
+ ** multiple reports. Modified APRS settings for to allow for entry of either
+ ** Grid Square or NMEA Lat/Lon
+ ** Added form APRSClient to replase DLL from Lee Inman. Provides for more
+ ** extensive error recovery and reporting
+ *
+ ****************************************************************************
+ * 
+ * 20050218
+ * - added some infomation and a sample Perl script to show how to send 
+ *   aprs position of the TelPac node like the latest version of the 
+ *   Windows node does. 
+ *   No software changes, no need to upgrade anything, nevertheless a
+ *   new version number to show the status of the package
+ * - rev 0.9b10 released
+ *
+ * 20041228
+ * - new tool telpac_aci added which can be used for "AutoCheckIn" to keep
+ *   registration alive without regular user traffic
+ * - rev 0.9b9 released for betatests
+ *
+ * 20041227
+ * - fixed a bug in check for end of session (CR/LF on telnet/CR on ax25)
+ * - fixed a bug in init loop
+ * - added description of error codes to documentation
+ * - rev 0.9b8 released for betatests
+ *
+ * 20041223
+ * - fixed a crazy bug in parameter check, sorry, it was late night yesterday!
+ * - added some more hints for possible problems to documentation
+ * - rev 0.9b7 released for betatests
+ *
+ * 20041222
+ * - fixed bug in hostfile search
+ * - corrections in documentation
+ * - rev 0.9b6 released for betatests
+ * Thanks to Andy, K3JSE for this input !
+ *
+ * 20041122
+ * - check of password entry in configfile corrected 
+ * - rev 0.9b5 released for betatests (tnx K3JSE)
+ *
+ * 20041121
+ * - include of config.h deleted to prevent error message during compilation
+ * - rev 0.9b4 released for betatests (tnx K3JSE)
+ *
+ * 20041028
+ * - include backup-server setup / read server setup from configfile
+ * - rev 0.9b3 released for betatests
+ *
+ * 20041027
+ * - connection close based on timeout (30s) instead of empty buffers
+ * - write errors to logfile
+ * - rev 0.9b released for betatests
+ *
+ * 20041015
+ * - rev 0.8b released for betatests
+ *
+ * 20041010
+ * - write logfile for connections with statistics
+ * - rev 0.8a at db0lj-2
+ *
+ * 20041010
+ * - CText and nodecall read from configfile, Filename configured in tpcfg.h
+ * - rev 0.7a at db0lj-2
+ *
+ * 20041006
+ * - error handling if buffer could not be sent complete in send-function
+ *	(retry rest of buffer instead of disconnect)
+ * - check if splitting datas in parts of max paclen is necessary for send
+ * - stresstest with 30k/50k attachments
+ * - rev 0.6a at db0lj-2
+ *
+ * 20041005
+ * - after a lot of tests first rev 0.5a running at TelPac node db0lj-2
+ *
+ *
+ * To-do-list:
+ *
+ * - read paclen from axports and remove optional switch -o
+ * - improve documentation (manpage)
+ * - improve installation (configure, automake etc.)
+ * - work on the disconnect initiated by the server, currently it causes a 
+ *   timeout of the client connection. 
+ * - implement new featues of RMS nodes
+ *
+ */

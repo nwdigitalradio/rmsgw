@@ -1,0 +1,176 @@
+.\"
+.\"			r m s g w _ a c i . 1
+.\" $Revision: 67 $
+.\" $Author: eckertb $
+.\" $Id: rmsgw_aci.1 67 2008-08-21 18:04:19Z eckertb $
+.\"
+.\" RMS Gateway
+.\"
+.\" Copyright (c) 2004-2008 Hans-J. Barthen - DL5DI
+.\" Copyright (c) 2008 Brian R. Eckert - W3SG
+.\"
+.\" Questions or problems regarding this program can be emailed
+.\" to linux-rmsgw@w3sg.org
+.\"
+.\" This program is free software; you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation; either version 2 of the License, or
+.\" (at your option) any later version.
+.\"
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License
+.\" along with this program; if not, write to the Free Software
+.\" Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+.\"
+.TH RMSGW_ACI 1 "Linux RMS Gateway" "W3SG/DL5DI" "W3SG/DL5DI"
+.SH NAME
+rmsgw_aci \- Linux RMS Gateway Automatic Check-In Program
+.SH SYNOPSIS
+.B rmsgw_aci -h
+.br
+.B rmsgw
+.RB [ \-c
+.IR configfile ]
+.RB [ \-l
+.IR logmask ]
+.SH DESCRIPTION
+The 
+.B rmsgw_aci
+program performs an automatic check-in to the Winlink2000 system for
+the Linux RMS Gateway to update the status of all defined channels (see
+.IR rms-channels (5)).
+.P
+All logging for the program (and gateway as a whole) is done
+through the standard
+.BR syslog (3)
+facility, and must be configured along with the gateway itself for
+proper logging operation.
+Selection of the syslog facility is done through the gateway's
+configuration file (see
+.IR rms-config (5)),
+and the priority logmask is selectable either through the config file or
+the
+.B \-l
+command line option.
+.P
+The 
+.B rmsgw_aci
+program is run periodically through cron,
+and is best run every 30 minutes,
+but on some arbitrary minute of the hour, rather than
+exactly on the hour and half-hour. If everyone configured their automatic
+check-in to run exactly on the same hour and half-hour,
+the CMS's would take a large "hit" all at once, which could
+have potential performance issues for the Winlink2000 system.
+.P
+Your choice of the start for the 30 minute interval to run the automatic
+check-in is entirely up to you.
+.P
+The CMS host list used for the check-in is specified in the
+.I /etc/rmsgw/hosts
+file (see
+.BR cms-hosts (5)),
+which contains CMS port and password data along with the CMS host name.
+The check-in, along with normal gateway activity,
+will round-robin its connections among the configured hosts.
+The status files for each host are maintained in
+.IR /etc/rmsgw/stat ,
+where a file entry for each CMS host name will appear if the host has
+had a connection or attempted connection. The access time of the file
+indicates when the host was last tried,
+and the automatic check-in will attempt to connect to the CMS host that was
+least recently tried.
+.P
+The cron entry should be created for the user that is created during the
+gateway installation and setup
+.RI ( rmsgw
+by default).
+.SH EXAMPLE CRONTAB ENTRY
+.nf
+12,42 * * * * /usr/local/bin/rmsgw_aci >/dev/null 2>&1
+.fi
+.SH OPTIONS
+.TP
+.BI \-c\  configfile
+Instead of using the standard configfile,
+.IR /etc/rmsgw/gateway.conf ,
+the file indicated by
+.I configfile
+is used to set the run-time configuration.
+.TP
+.BI \-l\  logmask
+Set the
+.BR syslog (3)
+logmask for the automatic check-in. Setting the logmask determines the lowest
+.BR syslog (3)
+.I priority
+that will be written to the logfile. The recognized strings,
+in order of their priority from highest to lowest are:
+.BR alert ,
+.BR crit ,
+.BR emerg ,
+.BR err ,
+.BR warning ,
+.BR notice ,
+.BR info ,
+and
+.BR debug .
+As you lower the priority, more and more messages will be logged via syslog.
+The
+.B debug
+priority is useful when trying to determine the source of problems either
+during development and testing, or during the initial setup and testing;
+it should not be used for normal operations. The default is, and most sites
+will likely want to use
+.BR info .
+.IP
+The basic check-in messages are logged with a priority of
+.BR notice .
+Setting the
+.B \-l
+option on the command line over-rides the internal default and the
+.B LOGMASK
+setting in
+.IR /etc/rmsgw/gateway.conf ,
+or a config file specified using
+.BR \-c .
+See
+.BR rms-config (5).
+.SH FILES
+.TP
+.I /etc/rmsgw/gateway.conf
+The default gateway configuration file.
+See
+.BR rms-config (5).
+.TP
+.I /etc/rmsgw/hosts
+The CMS host table.
+See
+.BR cms-hosts (5).
+.TP
+.I /etc/rmsgw/channels.xml
+The gateway channels configuration xml document.
+See
+.BR rms-channels (5).
+.TP
+.I /etc/rmsgw/acihelp
+General help file displayed when executing
+.BR \"rmsgw -h\" .
+.SH SEE ALSO
+.BR rmsgw (1),
+.BR syslog (3),
+.BR syslog.conf (5),
+.BR syslogd.conf (5),
+.BR ax25d.confg (5),
+.BR rms-config (5),
+.BR cms-hosts (5),
+.BR rms-channels (5)
+.SH AUTHORS
+Hans-J. Barthen - DL5DI <dl5di@gmx.de>
+.br
+Brian R. Eckert - W3SG <eckertb@w3sg.org>
+

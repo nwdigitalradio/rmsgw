@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rmschannels xmlns="http://www.namespace.org"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="file:///etc/rmsgw/channels.xsd">
+  <channel name="radio" type="ax25" active="yes">
+    <basecall>N0CALL</basecall>
+    <callsign>N0CALL-10</callsign>
+    <password>password</password>
+    <gridsquare>AA00AA</gridsquare>
+    <frequency>144000000</frequency>
+    <mode>0</mode>
+    <autoonly>0</autoonly>
+    <baud>1200</baud>
+    <power>50</power>
+    <height>10</height>
+    <gain>0</gain>
+    <direction>0</direction>
+    <hours>24/7</hours>
+    <groupreference>1</groupreference>
+    <servicecode>PUBLIC</servicecode>
+    <statuschecker>
+      /usr/local/bin/rmschanstat $type $name $callsign
+    </statuschecker>
+  </channel>
+</rmschannels>

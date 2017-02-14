@@ -1,0 +1,478 @@
+Linux RMS Gateway Installation.
+
+Copyright (c) 2004-2014 Hans-J. Barthen - DL5DI
+Copyright (c) 2008-2014 Brian R. Eckert - W3SG
+
+$Revision: 180 $
+$Author: eckertb $
+$Id: INSTALLING 180 2014-10-30 11:22:22Z eckertb $
+
+This file is free documentation.
+
+--------------------------------------------------------------------------
+
+System requirements:
+====================
+- Linux
+- AX25 kernel support (0.0.11 or greater is recommended)
+- ax25-tools (0.0.8 or greater is recommended)
+- libxml2 (the XML parser library coming from the Gnome project -- this does
+  not require a Gnome installation to use, no GUI is involved in utilizing
+  the parser library)
+- python 2.7 with the python requests and ElementTree modules (needed to create
+  and maintain sysop records in the winlink system, and do channel and version
+  updates--the ACI functions will not work at all without this)
+
+You must have a proper, working ax25 installation with ax25d on your
+Linux machine before you build and install the gateway. These instructions
+do not detail all aspects of the AX.25 setup. Setup of AX.25 can be found
+in the HOWTO's for that package. However, there should be enough information
+in this guide to help you get what's needed for the AX.25 setup.
+
+There is also a HOWTO guide from K4GBB that covers in detail the prelimary setup
+work through the gateway build an install that you may find very helpful to get
+up and running (thanks Charley!):
+   http://k4gbb.us/docs/Myhowto.html
+
+Optionally, you may want to install ax25-apps and ax25spyd, but these
+are not requirements of the gateway.
+
+Also, you may want to install libxml2-utils as an option, as this will allow
+you to validate (at an XML structure level) the channels.xml file wherever
+changes are made.
+
+Installation Overview:
+======================
+- setup syslog
+- configure Linux RMS Gateway make system
+- make
+- make install
+- configure gateway
+- configure ax25d
+- setup sysop record
+
+Upgrading
+=========
+If you have a working Linux RMS Gateway from beta version of 2.0.0 forward,
+upgrading requires only to do a "make", and if that is successful,
+"make install". Pay attention to the prompts for file replacements during
+the install, but the default answers should be safe.
+
+As of version 2.2.0, a new attribute for a channel has been added called
+'servicecode', which is part of the information sent by the check in
+(rmsgw_aci). The service code is a 16 character alpha-numeric string
+defined by the sysop. The default value is 'PUBLIC' if it is not defined.
+Please see rms-channels(5) for a little additional information on this
+new attribute.
+
+As of version 2.3.0, the Secure Gateway Logon has been implemented.
+That version required some configuration changes from 2.2.0 to get
+everything working. With Winlink disabling telnet logins for the gateways
+this information is really obsolete, but left here for reference.
+
+     If upgrading from 2.2.0, you will be required to update your channels.xml
+     file based on the distributed sample, as the DTD has changed to add
+     a password element for the channel definition. Thus it is necessary to
+     not only add the DTD change, but also add the new element along with
+     your gateway password. Enabling this new capability requires an update
+     in the gateway.conf file as well by adding the line:
+
+        AUTHMODE=SGL
+
+     This change will switch the authentication to the new method. If you need
+     to keep the old method briefly while waiting for your gateway authorization
+     to be processed, you can set it as:
+
+	AUTHMODE=TEL
+
+     The old TELENET login is going to be disabled shortly after the 2.3.0
+     release, so if you are upgrading to 2.3.0 from 2.2.0 or earlier, get your
+     station authorized immediately to avoid any interruption in your gateway
+     operation. 
+
+     If you are upgrading from the Linux Telpac Node, you will need to perform
+     all the steps and setup requirements in the remainder of this document,
+     since the Linux RMS Gateway is quite different from the Telpac system.
+
+Upgrading to 2.4.0 is a little more involved in some respects. With the addition
+of the sysop maintenance utilties, writting in Python, as noted above, Python
+2.7 and the requests and ElementTree modules are now required. Furthermore, the
+ACI (Automatic Check-In) requires this as well, since all all information updates
+for gateway versions and channel status must be done via Winlink webservice calls
+(and support for the UDP status updates has been turned off). The 2.4.0 install
+script also takes steps to cleanup obsolete configuration settings (in gateway.conf)
+and updates channels.xml automatically to remove the old DTD and a an XML schema
+for the channels.
+
+
+CAVEATS
+=======
+
+PTYS
+----
+Newer Linux distributions may have legacy pty support turned off or disabled
+by default. As of mid-year 2009, AX.25 installations will likely need the
+legacy pty's to work properly. In some cases, adding a kernel parameter at
+boot-time is all that is needed (the following tells the kernel to configure
+32 legacy pty's at boot):
+
+	pty.legacy_count=32
+
+You should choose a number that is suitable for your needs.
+
+Installation and Configuration:
+===============================
+
+Syslog
+------
+As root, edit /etc/syslog.conf ('man syslog.conf' for more info) to add 
+the necessary "selectors" for the gateway logging. The following is a
+typical setup, but you can adjust to meet your own needs:
+
+	local0.info                     /var/log/rms
+	local0.debug                    /var/log/rms.debug
+	#local0.debug                   /dev/null
+
+The above example assumes that local0 is the facility to be used, but
+again, you can adjust according to your own needs. Also, the gateway
+configuration file must match with the facility you have chosen, or
+you will likely see no logging.
+
+In this setup, /var/log/rms receives all messages of priority 'info'
+and higher. /var/log/rms.debug receives all messages of priority 'debug'
+and higher. This means that there is duplication of many messages
+between the two files, but if you want a separate log for debugging
+output, this will provide a single file for analysis. You can replace
+the file for debug output with /dev/null, as the commented out line
+shows, which will effectively suppress any debugging messages generated by
+the gateway.
+
+Since the priority can be controlled via other means (through configuration
+and command line options), an acceptable syslog entry can simply be:
+
+	local0.debug                  /var/log/rms
+
+Then the level of logging is completely controllable using gateway config-
+uration methods. See the information on gateway.conf and rmsgw options below
+(also, check the supplied man pages rms-config(5) and rmsgw(1) to understand
+how logging is controlled when the gateway runs.
+
+After editing syslog.conf, it will be necessary to restart syslogd with a
+command similar to:
+	/etc/init.d/sysklogd restart
+
+Gateway User and Group
+----------------------
+The installation steps that follow assume that there is a user and group named
+'rmsgw'. If the user and group have not previously been created, that must be
+done by executing the following commands as root (more advance users with a more
+sophisticated user and group management process should create the new user
+and group according to their process--the gateway has no special requirements
+here):
+     /usr/sbin/useradd -c 'Linux RMS Gateway' -d /etc/rmsgw -s /bin/false rmsgw
+
+The above command will add a new user and group named rmsgw; the rmsgw user
+will have a home directory of /etc/rmsgw and use /bin/false as the login shell
+(have the login shell as /bin/false prevents the user from being able to actually
+login, avoiding any potiential for the rmsgw user being used by someone to gain
+access to your system via a login as rmsgw). Change the shell if desired, but
+make sure to set password or explicitly display logins for that user (see
+passwd(1) for information on managing that).
+
+Compiling
+---------
+Previous versions of the Linux RMS Gateway (Beta 1 series) required the editing
+of rmsgw.mk before compiling the gateway. This is NO LONGER NECESSARY.
+
+You have the option to change the owner and group to be used for installation by
+setting 'INSTUSR' and 'INSTGRP' in rmsgw.mk, but the defaults should be fine
+for most installations.
+
+NOTICE:
+We DO NOT recommend setting INSTUSR and INSTGRP to root,
+as there is nothing special the gateway does that requires root access.
+Installing and running the gateway as root opens a risk of privilege
+escalation if there is some sort of error in the code (or simply if
+things go really wrong, having enough access to do damage to something it
+otherwise would not have access to).
+
+Once any configuration adjustments are made (usually unnecessary), you can
+build the gateway by simply running 'make'.
+
+Note, it is normal to see messages from make like: "... depend: No such file
+or directory" when you first compile the system, or on a new compile after
+doing a 'make clobber'.
+
+Basic Installation
+------------------
+If you have successfully compiled the gateway using 'make' as described above,
+you can do the basic file installation by running 'make install' as root
+from the top level directory of the gateway source tree (what is known as
+TOPDIR in the make configuration).
+
+The installation script will run and install all necessary files and
+directories for the gateway, however the necessary AX.25 configuration is not
+done automatically, nor is the necessary gateway configuration done.  The
+installation will install initial configuration files, but if it detects that
+those files already exist, you will be prompted before over writing those
+files; if you do choose to replace those files, they will be backed up before
+being replaced.
+
+Gateway Configuration - gateway.conf
+------------------------------------
+After the compiled system has been installed with 'make install', you will
+need to edit the base configuration file, /etc/rmsgw/gateway.conf to the
+specifics of your station and gateway needs.
+
+You MUST set GWCALL to your registered callsign and SSID; e.g.:
+	GWCALL=W3SG-10
+
+The value of GWCALL needs to be the callsign AND SSID (as registered in the
+Winlink network).
+
+You MUST set GRIDSQUARE to your Maidenhead Gridsquare; e.g.:
+	GRIDSQUARE=FN20dt
+
+LOGFACILITY must match the facility you chose for you syslog.conf settings;
+the default is LOCAL0. The facility name can be upper or lower case.
+
+LOGMASK should be set to the desired priority for the level of messages to
+be logged via syslog. The default of 'INFO' is probably fine for most
+installations. The possible values, in order for highest to lowest priority
+are: emerg, alert, crit, err, warning, notice, info, and debug.
+
+In the current version of the gateway, setting a priority of 'emerg'
+effectively turns off logging, although if no logging whatsoever was desired,
+using /dev/null as the log file in syslog.conf would be better.
+
+CHANNELFILE must be set to the location of your channels.xml file, which
+contains all the information about the gateway's channel registrations
+and status updating. In addition, you must be sure to configure the correct
+password for your gateway (for secure login) in each channel definition
+
+BANNERFILE is set to the location of the the gateway's greeting banner
+text. The contents of that file are sent when a client connects to your
+gateway. This file must be customized as well (see below).
+
+PYTHON is the path the python executable. This may need to be adjusted
+for systems that use a manually compiled and installed python (e.g., in
+order to satisfy the python 2.7 requirement).
+
+There are two optional configration values (which will not appear auto-
+matically in gateway.conf):
+    RMSGWENV
+    RMSGWACIENV.
+
+These values point to a file that defines additional environment variables
+for the gateway execution environment. RMSGWENV sets the name of the
+environment file to be used by 'rmsgw' when it runs (on incoming connections), and
+RMSGWACIENV sets the name of the environment file to be used by 'rmsgw_aci'
+when it runs. These variables may point to the exact same file. The reason for 
+two different variable to give more flexibility to the configuration is needed.
+The normal case is that when extra environment variable are needed, there will be
+one file shared by both programs (read on for why you might need this file).
+
+For example:
+
+     RMSGWENV=/etc/rmsgw/gw.env
+     RMSGWACIENV=/etc/rmsgw/gw.env 
+
+With the 2.4.0 release of the gateway, the primary use of this new environment
+setting capability is to set environment variables needed for python. In situations
+where python is installed manually, it will be necessary to setup the environment
+for python so that when 'rmsgw_aci' runs, the python scripts that make the webservice
+calls will have the correct modules (please see above concerning the setting of
+the PYTHON variable in gateway.conf). In most instances, where python was manually
+installed, the environment file will set one both of PYTHONPATH and PYTHONHOME.
+
+Following from the example above, gw.env might contain:
+    PYTHONHOME=/usr/local/lib/python2.7
+    PYTHONPATH=/usr/local/lib/python2.7
+
+See the python documentation on its environment variables for more info on what
+you might want to set.
+
+NOTICE: the software is *very* picky about the format of these environment settings;
+there must be NO SPACES arount the '=' for any setting. The code will quietly ignore
+most anything it cannot understand in these files. Also, if there is an environment
+file configured, but the file does not actually exist, it will be silently skipped.
+
+
+Gateway Configuration - channels
+--------------------------------
+Channel definition for the gateway is done using an XML file,
+/etc/rmsgw/channels.xml and must be configured with the appropriate
+channel information for your registered gateway. See the rms-channels(5)
+manpage for specifics about the file.
+
+A template channels.xml file is found in the etc directory of the Linux
+RMS Gateway distribution.
+
+The file supports definition of more than one channel, and its proper setup
+is very key to having a properly functioning gateway.
+
+If you installed libxml2-utils, you can verify your edits of channels.xml
+using the command:
+      xmllint --valid /etc/rmsgw/channels.xml
+
+Xmllint will parse the file and identify any problems it has with the structure
+of the file. If you see errors, please correct them and re-run xmllint. If you
+are unfamiliar with XML, the error messages may be difficult to understand.
+If you are having trouble with your channels.xml, please seek assistance via
+the LinuxRMS Yahoo! group.
+
+As a general introduction to the channels.xml file, here is what you will
+need to know.
+
+The first line of the file is simply an XML declaration:
+    <?xml version="1.0" encoding="UTF-8"?>
+and is a standard thing in XML files. You should not change this line.
+
+The next section of the file identifies the XML schema describling
+channels.xml (the schema itself is an XML file, and found in channels.xsd).
+
+Following that is the beginning of the actual channel definition structure,
+which has a single element (called a root element), <rmschannels>, which
+is the "container" element for all channel definitions. <rmschannels>
+contains one of more <channel> container elements. If you study the
+distributed channels.xml file, its structure and data should be clear.
+
+Please see the rms-channels(5) man page for details of the element structure,
+attributes, and acceptable values for attributes and element data.
+
+Gateway Configuration - banner
+------------------------------
+You must edit the /etc/rmsgw/banner file to customize it for your location.
+
+As an example, the W3SG-10 gateway banner file contains:
+
+	Welcome to the W3SG Winlink 2000 RMS Gateway. Lehighton, PA
+	[blank line] 
+
+AX.25 Configuration
+-------------------
+The Linux RMS Gateway is started by ax25d like all other programs in
+ax25-tools.
+
+The setup for a simple gateway is itself very simple and straight
+forward. The W3SG-10 configuration demonstrates the normal, single
+channel setup for the gateway. If you use this as a base, be sure
+to change all references to W3SG to the appropriate callsign for
+your gateway. The following is what is found in /etc/ax25/ax25d.conf:
+
+	[W3SG-10 VIA radio]
+	NOCALL          * * * * * *  L
+	N0CALL          * * * * * *  L
+	#
+	default         * * * * * *  -  rmsgw  /usr/local/bin/rmsgw rmsgw -l debug -P %d %U
+
+The '[W3SG-10 VIA radio]' identifies the local callsign and SSID and the port
+which activates the matching actions following (the port and call/SSID are
+defined in /etc/ax25/axports).
+
+The NOCALL and N0CALL entries are there to deny misconfigured TNCs.
+
+The 'default' entry will fire for all other connections to W3SG-10 on the
+'radio' port. The simple explanation is the the program
+/usr/local/bin/rmsgw (the gateway program) will be run as user 'rmsgw' with a
+logmask of debug, and the port and user call will be passed as arguments to
+the gateway.
+
+
+Above the 'default' entry, you can add calls that you wish to deny access
+to the gateway, but creating lines just like N0CALL, but with the call you
+wish to deny. E.g., to deny W3SG, you would add a line before the default
+like:
+        W3SG          * * * * * *  L
+
+It is also possible to restrict use of the gateway to specific calls by
+creating entries just like the default, but with the callsign instead of
+default. E.g., to allow W3SG to use the gateway, you would use a line
+like:
+        W3SG         * * * * * *  -  rmsgw  /usr/local/bin/rmsgw rmsgw -l debug -P %d %U
+
+and then end the list of entries with a default like:
+        default       * * * * * *  L
+
+Please see ax25d(1) and ax25d.conf(5) for more information.
+
+
+Gateway Configuration - "Auto Check-in"
+-------------------------------------
+The gateway provides an "automatic check-in" feature. The rmsgw_aci
+program can be  run twice  an hour from the 'rmsgw' user's crontab
+(see the rmsgw_aci(1) manpage for additional info).
+
+The auto check-in sends a channel status update and a gateway version
+update to the winlink system. These updates are necessary to keep the
+gateway channel and software status fresh. The auto check-in will
+update this information as required by the winlink system. If rmsgw_aci
+is not run, your gateway will not appear on the maps, and may otherwise
+become "delisted" for lack of reporting in.
+
+The crontab can be edited by executing the following command as root:
+	crontab -e -u rmsgw
+
+You will need to add an entry like:
+	19,49 * * * * /usr/local/bin/rmsgw_aci >/dev/null 2>&1
+
+This tells cron to run the auto check-in on the 19th and 49th minute of
+each hour. You should choose a random pair of minutes, 30 minutes apart
+(and between 0-59) for your installation so that not every Linux RMS Gateway
+does its automatic check-in at the same times every hour.
+
+If you find that cron entries do not run for the rmsgw, check the
+main system log or auth.log for complaints about the account being
+expired. If that occurs, as root, run the following command to make
+the password never expire for the account (while leaving it locked
+and not able to be used for logins):
+	chage -E-1 rmsgw
+
+Sysop Record
+------------
+The sysop record programs are found in /etc/rmsgw after the install is
+run.
+
+The general steps to getting your sysop record handled after everything
+is installed are:
+1. Run mksysop.py
+   * A 'new-sysop.xml' file will be created in the current directory
+     (it will get the current sysop data from the winlink system and write
+     the correct xml for locally maintaining it)
+   * if you don't have a sysop record, see mksysop(8) for further
+     instructions on getting it setup initially
+2. Check 'new-sysop.xml' to ensure the information is correct and
+   complete (make any edits that might be necessary)
+3. cp new-sysop.xml /etc/rmsgw/sysop.xml
+4. Run updatesysop.py
+   * The sysop record in the winlink system will be updated with the
+     values stored in /etc/rmsgw/sysop.xml
+4. Run getsysop.py
+   (the returned data should match whatever you have stored in your
+   /etc/rmsgw/sysop.xml file)
+
+Any time you wish to update your sysop record, update
+/etc/rmsgw/sysop.xml and then run sysopupdate.py
+
+Getting Help
+============
+Please do not contact the Winlink2000 development team if you are having
+problems with the software. The Linux RMS Gateway is not developed or
+supported by them, rather it is largely the work of Hans-J. Barthen, DL5DI,
+and Brian R. Eckert, W3SG. We are producing this software because of our
+own desire to use Linux with Winlink2000, and are making it available to
+others who share that desire. For us, this is fun, and we also want to
+share. To get assistance, please join the Yahoo! group 'LinuxRMS' at
+http://groups.yahoo.com and post your questions or comments there.
+
+We appreciate your support of this effort and welcome your constructive
+feedback, experience, and defect (bug) reports. Flames and the like will
+be re-directed to /dev/null :-) .
+
+When seeking assistance for a problem in the gateway operation, including a
+log trace at the debug level would be most appreciated if it is available.
+This will help us to identify the area in the program that relates to
+the problem.
+
+73 de Hans, DL5DI
+73 de Brian, W3SG
