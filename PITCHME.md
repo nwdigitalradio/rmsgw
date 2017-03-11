@@ -1,8 +1,8 @@
 #HSLIDE
 
 ## Linux RMS Gateway
-##### Basil Gunn  N7NIX,  last edit March 2, 2017
-##### https://gitpitch.com/nwdigitalradio/rmsgw/master
+###### Basil Gunn  N7NIX,  last edit March 2, 2017
+###### https://gitpitch.com/nwdigitalradio/rmsgw/
 
 #HSLIDE
 
@@ -101,15 +101,24 @@
 
 ### Documentaion
 #### man pages
-* cms-hosts.5
-* getsysop.py.8
-* mksysop.py.8
-* rms-channels.5
-* rms-config.5
-* rmsgw.1
-* rmsgw_aci.1
-* updatesysop.py.8
+* cms-hosts
+* getsysop.py
+* mksysop.py
+* rms-channels
+* rms-config
+* rmsgw
+* rmsgw_aci
+* updatesysop.py
+
+#HSLIDE
 
 ### Forum
 
 * https://groups.yahoo.com/neo/groups/LinuxRMS/info
+
+#HSLIDE
+
+#### That's it
+* This presentation is a GitPitch & can be found here:
+
+###### https://gitpitch.com/nwdigitalradio/rmsgw/
