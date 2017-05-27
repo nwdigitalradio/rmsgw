@@ -1,12 +1,10 @@
-#HSLIDE
-
 ## Linux RMS Gateway
-###### Basil Gunn  N7NIX,  last edit March 2, 2017
+###### Basil Gunn  N7NIX,  June 2017
 ###### https://gitpitch.com/nwdigitalradio/rmsgw/
 
 #HSLIDE
 
-## History
+### History
 * First entry in history file October 5, 2004
 
 #### Authors
@@ -16,77 +14,70 @@
 #HSLIDE
 
 ### What is Linux RMS Gateway?
-* RF to internet gateway to the Winlink 2000 ham radio e-mail system.
+* RF to Internet gateway to the Winlink 2000 ham radio e-mail system.
 
 #HSLIDE
 
 ### How does it work?
 
+* Using ax25d, Gateway listens for specific callsign & ssid (N7NIX-10)
+* Gateway starts a connection between RF Client & CMS
+  * Performs login "chat" & authenticates to CMS
+  * Pass traffic until one end of connections goes away
+
 #HSLIDE
 
-### Installation - overview
+### Installation
 
-#### Requirements
-##### Build Requirements
-* Install AX.25 library & support utilities
-* xutils-dev libxml2 libxml2-dev
-
-#### Installation/runtime requirements
-* AX.25 kernel support
-* libax25 runtime
-* python 2.7 or greater
-* python-requests
-
-#VSLIDE
-
-### Install AX.25 library & support utilities
-
-#VSLIDE
-
-### Install & configure Linux RMS Gateway
-* Currently (3/2017) RMS Gateway needs to be built from source
-  * Goal to make it a Debian package
-* There are some scripts that automate the process which looks like this:
-  * Download source as a zipped tarball.
-  * Untar source
-  * Build source
-  * Install result
-  * Edit config files
-
-#VSLIDE
-
-### Installing AX.25 library, tools & apps
-* Use a script, it's easier
-### Basic AX.25 support packages:
-* libax25 - runtime library
-* ax25-tools - utilities
-* ax25-apps - applications
-
-#VSLIDE
-
-## RMS Gateway Installation scripts
-
-### Install notes & scripts
-* Charles Schuman K4GBB has excellent [notes & install scripts for the Raspberry Pi [here](http://k4gbb.no-ip.org/docs/Raspberry.html)
-  * (http://k4gbb.no-ip.org/docs/Raspberry.html)
-
-* I used/stole Charles' script & modified it to include all the necessary steps from his notes [here](https://github.com/nwdigitalradio/n7nix/tree/master/rmsgw)
-  * (https://github.com/nwdigitalradio/n7nix/tree/master/rmsgw)
+* Use a compass lite image
+  * https://nwdr-compass-images.s3.amazonaws.com/image_2017-04-23-compass-lite.zip
+* Use Install scripts then configure scripts
+  * start here https://github.com/nwdigitalradio/n7nix
+* Charles Schuman K4GBB has excellent notes & install scripts for the Raspberry Pi [here](http://k4gbb.no-ip.org/docs/raspberry.html)
+  * http://k4gbb.no-ip.org/docs/raspberry.html
 
 #VSLIDE
 
 ### Configuration files in /etc/rmsgw/ directory
 * channels.xml
 * gateway.conf
-* updatechannel.py
 * banner
 
+#VSLIDE
+
+### crontab
+
+* man rmsgw_aci
+
+```
+# m h  dom mon dow   command
+17,46 * * * * /usr/local/bin/rmsgw_aci > /dev/null 2>&1
+```
+
+#VSLIDE
+
 ### Python files in /etc/rmsgw/ directory
+
+##### Winlink Webservice calls
+
 * getsysop.py
 * mksysop.py
-* updatechannel.py
 * updatesysop.py
-* updateversion.py
+
+* Updates Winlink databases
+  * updatechannel.py
+  * updateversion.py
+
+#HSLIDE
+
+### Verify your Install/config
+
+* Check that rmsgw_aci is working
+  * Automatic check-in to Winlink
+* Verify in http://winlink.org/RMSChannels
+  * click on packet & zoom in to your location
+* Log files /var/log/rms also /var/log/rms.debug
+  * log level & rotation setup in n7nix/rmsgw/config.sh
 
 #HSLIDE
 
@@ -122,3 +113,4 @@
 * This presentation is a GitPitch & can be found here:
 
 ###### https://gitpitch.com/nwdigitalradio/rmsgw/
+
