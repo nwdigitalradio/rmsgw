@@ -16,14 +16,28 @@
 ### What is Linux RMS Gateway?
 * RF to Internet gateway to the Winlink 2000 ham radio e-mail system.
 
-#HSLIDE
+#VSLIDE
 
-### How does it work?
+### Definitions
+
+* CMS - Common Message Server
+  * Provides email, telnet, bulletin & position reporting service
+  * Perth, Wien, Halifax, Brentwood, San Diego
+* RMS - Radio Message Server
+  * Gateway from a Winlink station via radio to a CMS over the Internet
+
+#VSLIDE
+
+### How does it work? - con't
 
 * Using ax25d, Gateway listens for specific callsign & ssid (N7NIX-10)
 * Gateway starts a connection between RF Client & CMS
   * Performs login "chat" & authenticates to CMS
   * Pass traffic until one end of connections goes away
+
+#VSLIDE
+
+Diagram here
 
 #HSLIDE
 
@@ -38,35 +52,87 @@
 
 #VSLIDE
 
-### Configuration files in /etc/rmsgw/ directory
+#### Requirements
+
+* Radio 2M/220/440
+* Raspberry Pi left on 24/7
+* Internet connection
+
+#VSLIDE
+
+#### Configuration Requirements
+
+* Call sign
+* Grid square
+* Winlink password
+* City, State
+* Frequency ie. 145690000
+
+#VSLIDE
+
+#### Grid Square locator Map
+* http://www.levinecentral.com/ham/grid_square.php
+  * 414 N Prom, Seaside, Or. 97138
+  * CN85ax
+
+#VSLIDE
+
+#### Configuration files in /etc/rmsgw/ directory
 * channels.xml
 * gateway.conf
 * banner
+
+###### As root run app_config.sh rmsgw
+```
+cd n7nix/config
+./app_config rmsgw
+```
 
 #VSLIDE
 
 ### crontab
 
 * man rmsgw_aci
-
+* As root check crontab
+```
+crontab -u rmsgw -l
+```
+* Should look like this:
+  * Runs automatic check-in twice an hour
 ```
 # m h  dom mon dow   command
 17,46 * * * * /usr/local/bin/rmsgw_aci > /dev/null 2>&1
 ```
 
+#HSLIDE
+
+### CMS Web Services
+
+* CMS Web services
+  * http://server.winlink.org:8085/
+* Web services operations
+  * http://server.winlink.org:8085/operations/
+
 #VSLIDE
 
-### Python files in /etc/rmsgw/ directory
+#### Winlink Webservice calls - XML
 
-##### Winlink Webservice calls
-
-* getsysop.py
-* mksysop.py
-* updatesysop.py
+* Maintain sysop XML record on Winlink
+  * getsysop.py
+  * mksysop.py
+  * updatesysop.py
 
 * Updates Winlink databases
   * updatechannel.py
   * updateversion.py
+
+#VSLIDE
+
+#### Winlink Webservice calls - RMS
+
+* Get nearby RMS station information using cURL
+  * gatewaylist.sh
+  * rmslist.sh
 
 #HSLIDE
 
