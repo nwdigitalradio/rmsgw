@@ -46,7 +46,7 @@ git clone https://github.com/nwdigitalradio/rmsgw
 ## RMS Gateway Installation scripts
 
 ### Install notes & scripts
-* Charles Schuman K4GBB has excellent [notes & install scripts for the Raspberry Pi [here](http://k4gbb.no-ip.org/docs/raspberry.html)
+* Charles Schuman K4GBB has excellent notes & install scripts for the Raspberry Pi [here](http://k4gbb.no-ip.org/docs/raspberry.html)
   * (http://k4gbb.no-ip.org/docs/raspberry.html)
 
 * The install script in n7nix/rmsgw uses Charles' script modified to include all the necessary steps from his notes [here](https://github.com/nwdigitalradio/n7nix/tree/master/rmsgw)
