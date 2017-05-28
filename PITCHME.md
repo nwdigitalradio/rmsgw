@@ -55,7 +55,8 @@ Diagram here
 #### Requirements
 
 * Radio 2M/220/440
-* Raspberry Pi left on 24/7
+* Raspberry Pi on 24/7
+  * Can be headless
 * Internet connection
 
 #VSLIDE
@@ -71,6 +72,7 @@ Diagram here
 #VSLIDE
 
 #### Grid Square locator Map
+
 * http://www.levinecentral.com/ham/grid_square.php
   * 414 N Prom, Seaside, Or. 97138
   * CN85ax
@@ -78,30 +80,16 @@ Diagram here
 #VSLIDE
 
 #### Configuration files in /etc/rmsgw/ directory
+
 * channels.xml
 * gateway.conf
 * banner
 
-###### As root run app_config.sh rmsgw
+
+* As root run app_config.sh rmsgw
 ```
 cd n7nix/config
 ./app_config rmsgw
-```
-
-#VSLIDE
-
-### crontab
-
-* man rmsgw_aci
-* As root check crontab
-```
-crontab -u rmsgw -l
-```
-* Should look like this:
-  * Runs automatic check-in twice an hour
-```
-# m h  dom mon dow   command
-17,46 * * * * /usr/local/bin/rmsgw_aci > /dev/null 2>&1
 ```
 
 #HSLIDE
@@ -150,6 +138,7 @@ channel udr0 with callsign N7NIX-10 on interface ax0 up
 
 ### Verify Install/config - con't
 ##### rmsgw_aci
+
 * Automatic check-in to Winlink using crontab
 * Usage:
   * rmsgw_aci -h
@@ -159,6 +148,20 @@ channel udr0 with callsign N7NIX-10 on interface ax0 up
 ```
 rmsgw_aci -l debug
 channel udr0 with callsign N7NIX-10 on interface ax0 up
+```
+#VSLIDE
+
+### crontab
+
+* As root check crontab
+```
+crontab -u rmsgw -l
+```
+* Should look like this:
+  * Runs automatic check-in twice an hour
+```
+# m h  dom mon dow   command
+17,46 * * * * /usr/local/bin/rmsgw_aci > /dev/null 2>&1
 ```
 
 #VSLIDE
@@ -201,6 +204,7 @@ tail -f /var/log/rms.debug
 #VSLIDE
 
 #### man pages
+
 * cms-hosts
 * getsysop.py
 * mksysop.py
@@ -218,7 +222,8 @@ tail -f /var/log/rms.debug
 
 #VSLIDE
 
-### Internet sites
+#### Internet sites
+
 ###### Charlie Schuman K4GBB
 
 http://k4gbb.no-ip.org/docs/raspberry.html
@@ -227,6 +232,17 @@ http://k4gbb.no-ip.org/docs/raspberry.html
 
 https://github.com/nwdigitalradio/rmsgw
 https://github.com/nwdigitalradio/n7nix/tree/master/rmsgw
+
+#VSLIDE
+
+#### Google Fu
+
+* Gene Spafford description of Usenet:
+
+_Usenet is like a herd of performing elephants with diarrhea --
+massive, difficult to redirect, awe-inspiring, entertaining, and a
+source of mind-boggling amounts of excrement when you least expect
+it._
 
 #HSLIDE
 
