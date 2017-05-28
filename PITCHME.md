@@ -52,7 +52,7 @@ Diagram here
 
 #VSLIDE
 
-#### Requirements
+#### Hardware Requirements
 
 * Radio 2M/220/440
 * Raspberry Pi on 24/7
@@ -80,11 +80,9 @@ Diagram here
 #VSLIDE
 
 #### Configuration files in /etc/rmsgw/ directory
-
 * channels.xml
 * gateway.conf
 * banner
-
 
 * As root run app_config.sh rmsgw
 ```
@@ -124,11 +122,12 @@ cd n7nix/config
 
 #HSLIDE
 
-### Verify Install/config
+#### Verify Install/config
 ##### rmschanstat
-
-* Usage: /usr/local/bin/rmschanstat <type> <name> <call>
-  * <call> is case sensitive
+```
+Usage: /usr/local/bin/rmschanstat <type> <name> <call>
+```
+* **Note:** call is case sensitive
 ```
 rmschanstat ax25 udr0 N7NIX-10
 channel udr0 with callsign N7NIX-10 on interface ax0 up
@@ -136,7 +135,7 @@ channel udr0 with callsign N7NIX-10 on interface ax0 up
 
 #VSLIDE
 
-### Verify Install/config - con't
+#### Verify Install/config - con't
 ##### rmsgw_aci
 
 * Automatic check-in to Winlink using crontab
@@ -151,7 +150,7 @@ channel udr0 with callsign N7NIX-10 on interface ax0 up
 ```
 #VSLIDE
 
-### crontab
+#### crontab
 
 * As root check crontab
 ```
@@ -166,7 +165,7 @@ crontab -u rmsgw -l
 
 #VSLIDE
 
-### Verify Install/config - con't
+#### Verify Install/config - con't
 ##### Check Winklink website
 
 * Verify your callsign in http://winlink.org/RMSChannels
@@ -175,7 +174,7 @@ crontab -u rmsgw -l
 
 #VSLIDE
 
-### Verify Install/config - con't
+#### Verify Install/config - con't
 ##### Log files
 * Log files /var/log/rms also /var/log/rms.debug
   * log level & rotation setup in script
