@@ -70,14 +70,50 @@
 
 #HSLIDE
 
-### Verify your Install/config
+### Verify Install/config
+##### rmschanstat
 
-* Check that rmsgw_aci is working
-  * Automatic check-in to Winlink
-* Verify in http://winlink.org/RMSChannels
+* Usage: /usr/local/bin/rmschanstat <type> <name> <call>
+  * <call> is case sensitive
+```
+rmschanstat ax25 udr0 N7NIX-10
+channel udr0 with callsign N7NIX-10 on interface ax0 up
+```
+
+#VSLIDE
+
+### Verify Install/config - con't
+##### rmsgw_aci
+* Automatic check-in to Winlink using crontab
+* Usage:
+  * rmsgw_aci -h
+  * rmsgw_aci [-c configfile] [-l logmask]
+* man rmsgw_aci
+
+```
+rmsgw_aci -l debug
+channel udr0 with callsign N7NIX-10 on interface ax0 up
+```
+
+#VSLIDE
+
+### Verify Install/config - con't
+##### Check Winklink website
+
+* Verify your callsign in http://winlink.org/RMSChannels
   * click on packet & zoom in to your location
+
+
+#VSLIDE
+
+### Verify Install/config - con't
+##### Log files
 * Log files /var/log/rms also /var/log/rms.debug
-  * log level & rotation setup in n7nix/rmsgw/config.sh
+  * log level & rotation setup in script
+    * n7nix/rmsgw/config.sh
+```
+tail -f /var/log/rms.debug
+```
 
 #HSLIDE
 
@@ -85,12 +121,19 @@
 
 * Winlink expects an RMS Gateway to run 24/7
 * Check logs daily using cron, script and e-mail
-* Verify in http://winlink.org/RMSChannels
-  * click on packet & zoom in to your location
+  * https://github.com/nwdigitalradio/n7nix/tree/master/debug
+  * _wl2klog_install.sh_
 
 #HSLIDE
 
-### Documentaion
+### Where to get help
+* man pages
+* Forums
+* Charlie Schuman K4GBB
+* Google Fu
+
+#VSLIDE
+
 #### man pages
 * cms-hosts
 * getsysop.py
@@ -101,11 +144,23 @@
 * rmsgw_aci
 * updatesysop.py
 
-#HSLIDE
+#VSLIDE
 
-### Forum
+#### Forum
 
 * https://groups.yahoo.com/neo/groups/LinuxRMS/info
+
+#VSLIDE
+
+### Internet sites
+###### Charlie Schuman K4GBB
+
+http://k4gbb.no-ip.org/docs/raspberry.html
+
+###### NW Digital Radio
+
+https://github.com/nwdigitalradio/rmsgw
+https://github.com/nwdigitalradio/n7nix/tree/master/rmsgw
 
 #HSLIDE
 
