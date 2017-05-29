@@ -14,7 +14,8 @@
 #HSLIDE
 
 ### What is Linux RMS Gateway?
-* RF to Internet gateway to the Winlink 2000 ham radio e-mail system.
+
+* RF to Internet gateway to the Winlink 2000 ham radio email system.
 
 #VSLIDE
 
@@ -43,7 +44,7 @@ Diagram here
 
 ### Installation
 
-* Use a compass lite image
+* Use a compass lite image - headless, no window manager
   * https://nwdr-compass-images.s3.amazonaws.com/image_2017-04-23-compass-lite.zip
 * Use Install scripts then configure scripts
   * start here https://github.com/nwdigitalradio/n7nix
@@ -80,9 +81,14 @@ Diagram here
 #VSLIDE
 
 #### Configuration files in /etc/rmsgw/ directory
+
 * channels.xml
 * gateway.conf
 * banner
+
+#VSLIDE
+
+#### Configure with script
 
 * As root run app_config.sh rmsgw
 ```
@@ -127,7 +133,7 @@ cd n7nix/config
 ```
 Usage: /usr/local/bin/rmschanstat <type> <name> <call>
 ```
-* **Note:** call is case sensitive
+* **Note:** _call_ is case sensitive
 ```
 rmschanstat ax25 udr0 N7NIX-10
 channel udr0 with callsign N7NIX-10 on interface ax0 up
@@ -188,7 +194,7 @@ tail -f /var/log/rms.debug
 ### Running an RMS Gateway
 
 * Winlink expects an RMS Gateway to run 24/7
-* Check logs daily using cron, script and e-mail
+* Check logs daily using cron, script and email
   * https://github.com/nwdigitalradio/n7nix/tree/master/debug
   * _wl2klog_install.sh_
 
