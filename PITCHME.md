@@ -102,7 +102,7 @@
 * As root run app_config.sh rmsgw
 ```
 cd n7nix/config
-./app_config rmsgw
+./app_config.sh rmsgw
 ```
 
 #HSLIDE
