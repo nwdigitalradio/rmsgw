@@ -19,6 +19,14 @@
 
 #VSLIDE
 
+#### Use Case
+
+* RPi on all the time with dedicated radio, runs headless
+  * paclink-unix used to email daily reports
+  * Use ssh for config & maintenance
+
+#VSLIDE
+
 ### Definitions
 
 * CMS - Common Message Server
@@ -38,7 +46,8 @@
 
 #VSLIDE
 
-Diagram here
+![rmsgw](assets/rmsgw_pitch.png)
+
 
 #HSLIDE
 
