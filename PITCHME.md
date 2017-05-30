@@ -29,7 +29,7 @@
 
 #VSLIDE
 
-### How does it work? - con't
+### How does it work?
 
 * Using ax25d, Gateway listens for specific callsign & ssid (N7NIX-10)
 * Gateway starts a connection between RF Client & CMS
@@ -103,7 +103,7 @@ cd n7nix/config
 * CMS Web services
   * http://server.winlink.org:8085/
 * Web services operations
-  * http://server.winlink.org:8085/operations/
+  * http://server.winlink.org:8085/operations/metadata
 
 #VSLIDE
 
