@@ -230,7 +230,7 @@ tail -f /var/log/rms.debug
 ```
 sudo su
 cd n7nix/debug
-wl2klog_install.sh
+./wl2klog_install.sh
 ```
 
 #HSLIDE
