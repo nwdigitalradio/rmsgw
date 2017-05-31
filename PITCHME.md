@@ -179,6 +179,7 @@ channel udr0 with callsign N7NIX-10 on interface ax0 up
 * man rmsgw_aci
 
 ```
+sudo su
 rmsgw_aci -l debug
 channel udr0 with callsign N7NIX-10 on interface ax0 up
 ```
@@ -186,7 +187,7 @@ channel udr0 with callsign N7NIX-10 on interface ax0 up
 
 #### crontab
 
-* As root check crontab
+* As root, check crontab
 ```
 crontab -u rmsgw -l
 ```
@@ -224,7 +225,13 @@ tail -f /var/log/rms.debug
 * Winlink expects an RMS Gateway to run 24/7
 * Check logs daily using cron, script and email
   * https://github.com/nwdigitalradio/n7nix/tree/master/debug
-  * _wl2klog_install.sh_
+* Install it with this script
+
+```
+sudo su
+cd n7nix/debug
+wl2klog_install.sh
+```
 
 #HSLIDE
 
