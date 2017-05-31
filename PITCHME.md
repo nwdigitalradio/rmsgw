@@ -98,11 +98,19 @@
 #VSLIDE
 
 #### Configure with script
+* Core (direwolf, ax25, systemd) must be config'd first
 
-* As root run app_config.sh rmsgw
+* As root run core config from _n7nix/config_ dir
 ```
 cd n7nix/config
+./app_config.sh core
+```
+
+* As root run rmsgw config from _n7nix/config_ dir
+  * then reboot
+```
 ./app_config.sh rmsgw
+shutdown -r now
 ```
 
 #HSLIDE
@@ -138,6 +146,17 @@ cd n7nix/config
 #HSLIDE
 
 #### Verify Install/config
+##### Check core config
+
+```
+cd
+cd bin
+./ax25-status
+```
+
+#VSLIDE
+
+#### Verify Install/config - con't
 ##### rmschanstat
 ```
 Usage: /usr/local/bin/rmschanstat <type> <name> <call>
