@@ -1,13 +1,13 @@
 # rmsgw
 Linux RMS Gateway
 
+[![GitPitch](https://gitpitch.com/assets/badge.svg)](https://gitpitch.com/nwdigitalradio/rmsgw/master)
+
 * To get a copy of the repository:
 
 ```
 git clone https://github.com/nwdigitalradio/rmsgw
 ```
-
-* [GitPitch presentation](https://gitpitch.com/nwdigitalradio/rmsgw/master?grs=github&t=moon)
 
 * **NOTE:** Installation & configuration scripts & notes live in [n7nix/rmsgw](https://github.com/nwdigitalradio/n7nix/tree/master/rmsgw)
 
