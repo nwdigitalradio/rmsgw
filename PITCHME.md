@@ -98,7 +98,7 @@
 #VSLIDE
 
 #### Configure with script
-* Core (direwolf, ax25, systemd) must be config'd first
+* Core (direwolf, ax25) must be config'd first
 
 * As root run core config from _n7nix/config_ dir
 ```
