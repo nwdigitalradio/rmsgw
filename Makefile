@@ -43,6 +43,8 @@ all: init
 
 init:
 	@echo "Building Linux RMS Gateway for" $(ARCH) "platform..."
+	[ -d lib ] || mkdir lib
+
 
 clean:
 	$(rmake)
