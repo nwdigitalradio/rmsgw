@@ -27,6 +27,9 @@
 *.i*86
 *.x86_64
 *.hex
+rmsgw/rmsgw
+rmsgw_aci/rmsgw_aci
+rmsgwmon/rmsgwmon
 
 # Debug files
 *.dSYM/
