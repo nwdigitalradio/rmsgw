@@ -43,6 +43,8 @@ all: init
 
 init:
 	@echo "Building Linux RMS Gateway for" $(ARCH) "platform..."
+	[ -d lib ] || mkdir lib
+
 
 clean:
 	$(rmake)
@@ -60,3 +62,4 @@ install: all
 
 rmsgw: lib
 rmsgw_aci: lib
+# DO NOT DELETE
