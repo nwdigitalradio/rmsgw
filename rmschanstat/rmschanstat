@@ -21,7 +21,7 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -89,7 +89,8 @@ if [ "${TYPE}" = "ax25" ]; then
     # look for the IP address of the port
     #
     set -o noglob
-    IP=($(ps ax | grep attach | egrep "${NAME}[ 	]+" | egrep -o '[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}' ))
+#    IP=($(ps ax | grep attach | egrep "${NAME}[ 	]+" | egrep -o '[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}' ))
+    IP=($(ps ax | grep attach | sed -n -e "s/^.*${NAME} //p" ))
 
 # debug:
 # IP=($(cat /tmp/test123 | grep attach | egrep "${NAME}[ 	]+" | egrep -o '[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}' ))
@@ -101,13 +102,13 @@ if [ "${TYPE}" = "ax25" ]; then
 	echo "port ${NAME} unavailable"
 	exit 1
     fi
-    
+
     #
     # get the interface using this IP address
     # (pos 7 when using ax25, pos 8 for 6pack)
     #
 
-    
+
     INTERFACE=($(ifconfig | egrep -B 2 ${IP}))
     if [ -z "${INTERFACE}" ]; then
         echo "interface with ${IP} unavailable"
@@ -117,6 +118,7 @@ if [ "${TYPE}" = "ax25" ]; then
     #
     # is the call listening on that specific interface?
     #
+    INTERFACE=$(echo $INTERFACE | tr -d ':')
 
     set -o noglob
     STATUS=($(netstat --protocol=${TYPE} -l | grep "${INTERFACE[0]}" | grep "${CALL}" | grep -i "LISTENING"))
