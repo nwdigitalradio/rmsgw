@@ -9,6 +9,17 @@
 * This text file in /etc/rmsgw need to be modified:
   * hosts
 
+To test the new scripts are working, check the https://winlink.org website:
+* Packet RMS Map verify a ballon exists at approx your location
+  * Click on balloon & verify information
+* Packet RMS List
+  * Verify your call sign is in the list
+  * Verify information on same line as call sign
+  * Hover cursor over call sign & verify information
+* Gateway Versions
+  * Verify your call sign is in the list
+  * Verify line with your call sign contains RMS Gateway with version 2.4.1
+
 ###### Files:
 * /etc/rmsgw/winlinkservice.xml
 
