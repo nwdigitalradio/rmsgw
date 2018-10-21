@@ -35,6 +35,7 @@
 import sys
 import re
 import requests
+import json
 from xml.etree import ElementTree
 from optparse import OptionParser
 import syslog
@@ -103,9 +104,28 @@ if options.DEBUG: syslog.syslog(syslog.LOG_DEBUG, 'ws_config = {}'.format(ws_con
 if options.DEBUG: syslog.syslog(syslog.LOG_DEBUG, 'svc_calls = {}'.format(svc_calls))
 if options.DEBUG: syslog.syslog(syslog.LOG_DEBUG, 'param_roots = {}'.format(param_roots))
 
-headers = {'Content-Type': 'application/xml'}
+#
+# get gateway callsign from config
+# the basecall
+#
+if 'GWCALL' in gw_config:
+    options.callsign = gw_config['GWCALL'].upper()
 
-svc_url = 'http://' + ws_config['svchost'] + ':' + ws_config['svcport'] + svc_calls['channeladd']
+basecall=options.callsign.split("-", 1)[0]
+if options.DEBUG: print 'basecallsign = {}'.format(basecall)
+
+#
+# prepare and make webservice call
+#
+headers = {'Content-Type' : 'application/xml'}
+#headers = {
+#   'Accept': 'application/xml',
+#   'Content-Type': 'application/xml'
+#}
+
+# svc_url = 'http://' + ws_config['svchost'] + ':' + ws_config['svcport'] + svc_calls['channeladd']
+# Needs to look like this:
+svc_url = 'https://' + ws_config['svchost'] + svc_calls['channeladd'] + '?' + 'Callsign=' + format(options.callsign) + '&Key=' + format(ws_config['WebServiceAccessCode'] + '&format=json')
 if options.DEBUG: syslog.syslog(syslog.LOG_DEBUG, 'svc_url = {}'.format(svc_url))
 
 #
@@ -117,23 +137,25 @@ rmschannels = document.getroot()
 if options.DEBUG: syslog.syslog(syslog.LOG_DEBUG, "rmschannels xml = {}".format(ElementTree.tostring(rmschannels)))
 
 #
-# create xml tree for call parameters
+# Prepare xml parameters for call
 #
 channel_add = ElementTree.Element(param_roots['channeladd'])
 channel_add.set('xmlns:i', 'http://www.w3.org/2001/XMLSchema-instance')
 channel_add.set('xmlns', ws_config['namespace'])
-ElementTree.SubElement(channel_add, "Callsign")
+
 ElementTree.SubElement(channel_add, "BaseCallsign")
-ElementTree.SubElement(channel_add, "GridSquare")
-ElementTree.SubElement(channel_add, "Frequency")
-ElementTree.SubElement(channel_add, "Mode")
 ElementTree.SubElement(channel_add, "Baud")
+ElementTree.SubElement(channel_add, "Callsign")
+ElementTree.SubElement(channel_add, "Frequency")
+ElementTree.SubElement(channel_add, "GridSquare")
+ElementTree.SubElement(channel_add, "Mode")
 ElementTree.SubElement(channel_add, "Power")
 ElementTree.SubElement(channel_add, "Height")
 ElementTree.SubElement(channel_add, "Gain")
 ElementTree.SubElement(channel_add, "Direction")
 ElementTree.SubElement(channel_add, "Hours")
 ElementTree.SubElement(channel_add, "ServiceCode")
+ElementTree.SubElement(channel_add, "Key")
 
 if options.DEBUG: syslog.syslog(syslog.LOG_DEBUG, 'bare channel_add XML = {}'.format(ElementTree.tostring(channel_add)))
 
@@ -142,70 +164,73 @@ if options.DEBUG: syslog.syslog(syslog.LOG_DEBUG, 'bare channel_add XML = {}'.fo
 # populate call xml tree with values from
 # gateway channel config and make service call
 #
+ns = ws_config['namespace']
+if options.DEBUG: print 'ns from ws_config = {}'.format(ns)
 ns = '{http://www.namespace.org}'
-if options.DEBUG: syslog.syslog(syslog.LOG_DEBUG, 'ns = {}'.format(ns))
+if options.DEBUG: print 'ns = {}'.format(ns)
+
+#if options.DEBUG: syslog.syslog(syslog.LOG_DEBUG, 'ns = {}'.format(ns))
+
 for channel in rmschannels.findall("%schannel" % (ns)):
     if options.DEBUG: syslog.syslog(syslog.LOG_DEBUG, 'channel xml = {}'.format(ElementTree.tostring(channel)))
     callsign = channel.find("%scallsign" % (ns)).text
- 
+
     syslog.syslog(syslog.LOG_INFO, 'Posting channel record updates for {}...'.format(callsign))
 
     #
     # prepare xml parameters for call
     #
-    channel_add.find('Callsign').text = channel.find('%scallsign' % (ns)).text
     channel_add.find('BaseCallsign').text = channel.find('%sbasecall' % (ns)).text
-    channel_add.find('GridSquare').text = channel.find('%sgridsquare' % (ns)).text
-    channel_add.find('Frequency').text = channel.find('%sfrequency' % (ns)).text
-    channel_add.find('Mode').text = channel.find('%smode' % (ns)).text
     channel_add.find('Baud').text = channel.find('%sbaud' % (ns)).text
-    channel_add.find('Power').text = channel.find('%spower' % (ns)).text
-    channel_add.find('Height').text = channel.find('%sheight' % (ns)).text
-    channel_add.find('Gain').text = channel.find('%sgain' % (ns)).text
+    channel_add.find('Callsign').text = channel.find('%scallsign' % (ns)).text
     channel_add.find('Direction').text = channel.find('%sdirection' % (ns)).text
+    channel_add.find('Frequency').text = channel.find('%sfrequency' % (ns)).text
+    channel_add.find('Gain').text = channel.find('%sgain' % (ns)).text
+    channel_add.find('GridSquare').text = channel.find('%sgridsquare' % (ns)).text
+    channel_add.find('Height').text = channel.find('%sheight' % (ns)).text
+    channel_add.find('Mode').text = channel.find('%smode' % (ns)).text
+    channel_add.find('Power').text = channel.find('%spower' % (ns)).text
     channel_add.find('Hours').text = channel.find('%shours' % (ns)).text
-    channel_add.find('ServiceCode').text = channel.find('%sservicecode' % (ns)).text
+    channel_add.find('ServiceCode').text =channel.find('%sservicecode' % (ns)).text
+    channel_add.find('Key').text = ws_config['WebServiceAccessCode']
 
     if options.DEBUG: syslog.syslog(syslog.LOG_DEBUG, 'channel_add XML = {}'.format(ElementTree.tostring(channel_add)))
 
+    # Post the request
     response = requests.post(svc_url, data=ElementTree.tostring(channel_add), headers=headers)
     if options.DEBUG: syslog.syslog(syslog.LOG_DEBUG, 'Response = {}'.format(response.content))
 
+    json_data = response.json()
+    if options.DEBUG: print(json.dumps(json_data, indent=2))
+    json_dict = json.loads(response.text)
+
+
+    # print the return code of this request, should be 200 which is "OK"
+    if options.DEBUG: print "Request status code: " + str(response.status_code)
+    if options.DEBUG: print 'Debug: Response =', response.content
+    if options.DEBUG: print "Debug: Content type: " + response.headers['content-type']
+    # print 'ResponseStatus : ', response.json().get('ResponseStatus')
     #
-    # build xml element tree from xml response
+    # Verify request status code
     #
-    document = ElementTree.ElementTree(ElementTree.fromstring(response.content))
-    root = document.getroot()
+    if response.ok:
+        if options.DEBUG: print "Debug: Good Request status code"
+    else:
+        print "Debug: Bad Response status code: " + str(response.status_code)
+        print '*** Get for', options.callsign, 'failed, ErrorCode =',  str(response.status_code)
+        print '*** Error code:    ' + json_dict['ResponseStatus']['ErrorCode']
+        print '*** Error message: ' + json_dict['ResponseStatus']['Message']
+        sys.exit(1)
 
     #
     # check for errors coming back first
     #
-    for error_info in root.iter(ws_config['namespace'] + 'WebServiceResponse'):
-        error_code = int(error_info.find(ws_config['namespace'] + 'ErrorCode').text)
-        if options.DEBUG: print 'Returned ErrorCode =', error_code
-        if error_code > 0:
-            syslog.syslog(syslog.LOG_ERR, 'Channel update for {} failed. ErrorCode = {} - {}'. format(callsign, error_code, error_info.find,  error_info.find(ws_config['namespace'] + 'ErrorMessage').text))
-            # since theoretically we can have more than one channel in the xml,
-            # allow the loop to just continue rather than exiting here
-            #sys.exit(1)
-    
-    #
-    # get status response (if there is one) and confirm success
-    #
-    for channel_add_info in root.iter('{' + ws_config['namespace'] + '}' + 'ChannelAddResponse'):
-        #
-        # check that we got a good status response
-        #
-        error_code = int(channel_add_info.find('{' + ws_config['namespace'] + '}' + 'ErrorCode').text)
-        error_text = channel_add_info.find('{' + ws_config['namespace'] + '}' + 'ErrorMessage').text
-        if options.DEBUG: syslog.syslog(syslog.LOG_DEBUG, 'StatusResponse ErrorCode = {}'.format(error_code))
+    if json_dict['ResponseStatus']:
+        print 'ResponseStatus not NULL: ', json_dict['ResponseStatus']
+        sys.exit(1)
+    else:
+        if options.DEBUG: print 'ResponseStatus is NULL: ', json_dict['ResponseStatus']
 
-        if error_code != 0:
-            # this is unexpected!
-            print '*** Channel Update for', callsign, 'failed, ErrorCode = ', error_code, '-', error_text
-            errors += 1
-        else:
-            syslog.syslog(syslog.LOG_INFO, 'Channel update for {} successful.'.format(callsign))
 
 syslog.closelog()
 

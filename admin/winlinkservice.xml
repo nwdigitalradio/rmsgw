@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <config vcsRevision="$Revision: 167 $" vcsAuthor="$Author: eckertb $" vcsId="$Id: winlinkservice.xml 167 2014-09-30 10:27:26Z eckertb $">
-  <WebServiceAccessCode>T$43*TR324</WebServiceAccessCode>
-  <svchost>server.winlink.org</svchost>
+  <WebServiceAccessCode>CD2E1C9C7CD4417FAEF4C7F2A70156A3</WebServiceAccessCode>
+  <svchost>api.winlink.org</svchost>
   <svcport>8085</svcport>
-  <namespace>http://schemas.datacontract.org/2004/07/winlink.cms.dto</namespace>
+  <namespace>http://schemas.datacontract.org/2004/07/winlink.cms.webservices</namespace>
   <svcops>
     <sysopget paramRoot="SysopGet">/status/sysop/get</sysopget>
     <sysopadd paramRoot="SysopAdd">/status/sysop/add</sysopadd>
