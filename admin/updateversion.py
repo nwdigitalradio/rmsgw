@@ -178,7 +178,6 @@ if options.DEBUG: print "Debug: Content type: " + response.headers['content-type
 if response.ok:
     if options.DEBUG: print "Debug: Good Response status code"
 else:
-    print "Debug: Bad Response status code: " + str(response.status_code)
     print '*** Version update for ', callsign, 'failed, ErrorCode =',  str(response.status_code)
     errors += 1
 
