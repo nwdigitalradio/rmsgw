@@ -28,7 +28,7 @@ cd /etc/rmsgw
 ```
 
 * **Packet RMS Map:**
-  * verify a ballon exists at approx your location
+  * verify a balloon exists at approx your location
   * Click on balloon & verify information
 * **Packet RMS List:**
   * Verify your call sign is in the list
