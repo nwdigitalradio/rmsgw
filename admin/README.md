@@ -17,14 +17,15 @@
 cd admin
 ./update.sh
 ```
-
+* Set LOGMASK=DEBUG in file: /etc/rmsgw/gateway.conf
 To test the new scripts are working, run the following 3 scripts then check the https://winlink.org website:
 ```
 # Become root
 cd /etc/rmsgw
-./updateversion.py ; echo $?
-./updatechannel.py ; echo $?
-./updatesysop.py
+sudo -u rmsgw ./getchan.py
+sudo -u rmsgw ./updateversion.py ; echo $?
+sudo -u rmsgw ./updatechannel.py ; echo $?
+sudo -u rmsgw ./updatesysop.py
 ```
 
 * **Packet RMS Map:**
