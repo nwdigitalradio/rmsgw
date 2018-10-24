@@ -1,6 +1,7 @@
 ## Winlink Web Services scripts
 
 * These notes are for scripts supporting V5 Winlink Web Services
+* The python scripts in this directory require python version 2.7.9 or newer to run.
 
 * The following files in /etc/rmsgw need to be modified to support V5 Winlink Web Services
   * winlinkservice.xml
@@ -45,7 +46,7 @@ sudo -u rmsgw ./updatesysop.py
   * Need to edit /etc/rmsgw/sysop.xml
   * This is done automatically with *update.sh* script
 * getsysop.py
-  * Currently not functioning
+  * Currently not functioning, used to verify sysop record.
 * mksysop.py
   * Currently not functioning
 
@@ -57,7 +58,8 @@ sudo -u rmsgw ./updatesysop.py
 * updatechannel.py
   * Called from rmsgw_aci
   * Check log file for output
-* getchan.py
+* getchannel.py
+  * Used to verify channel record
 
 ###### Files:
 * /etc/rmsgw/channel.xml

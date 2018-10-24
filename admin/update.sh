@@ -5,7 +5,7 @@
 
 rmsgw_dir="/etc/rmsgw"
 
-NEW_SERVICE_FILES="winlinkservice.xml .version_info ../etc/hosts updatechannel.py updateversion.py updatesysop.py"
+NEW_SERVICE_FILES="winlinkservice.xml .version_info ../etc/hosts getchannel.py updatechannel.py updateversion.py updatesysop.py"
 
 echo "Update to V5 Winlink Web Service API"
 
