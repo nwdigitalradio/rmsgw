@@ -130,7 +130,7 @@ setup_user() {
 install_config() {
     echo "Installing configuration and support files..."
 
-    for file in .version_info winlinkservice.xml sysop-template.xml; do
+    for file in winlinkservice.xml sysop-template.xml; do
 	install --backup=numbered -v -m 660 -o $1 -g $2 $file $3
     done
 
@@ -147,7 +147,7 @@ install_config() {
 #
 install_tools() {
     echo "Installing the admin tools..."
-    for prog in mksysop.py getsysop.py updatesysop.py updatechannel.py updateversion.py ; do
+    for prog in mksysop.py getsysop.py getchannel.py updatechannel.py updatesysop.py updateversion.py ; do
 	install --backup=numbered -v -m 755 \
 	    -o $1 -g $2 $prog $3
     done
