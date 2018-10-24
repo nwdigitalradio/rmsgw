@@ -36,8 +36,10 @@ import sys
 import re
 import requests
 import json
+import platform
 from xml.etree import ElementTree
 from optparse import OptionParser
+from distutils.version import StrictVersion
 import syslog
 
 #################################
@@ -48,6 +50,7 @@ DEBUG = 0
 service_config_xml = '/etc/rmsgw/winlinkservice.xml'
 gateway_config = '/etc/rmsgw/gateway.conf'
 channel_config_xml = '/etc/rmsgw/channels.xml'
+py_version_require='2.7.9'
 
 #################################
 # END CONFIGURATION SECTION
@@ -58,8 +61,24 @@ cmdlineparser.add_option("-d", "--debug",
                          help="turn on debug output")
 (options, args) = cmdlineparser.parse_args()
 
+#
+# check python version
+#
+python_version=platform.python_version()
+
+if StrictVersion(python_version) >= StrictVersion(py_version_require):
+    if options.DEBUG: print 'Python Version Check: ' + str(python_version) + ' OK'
+else:
+    print 'Need more current Python version, require version: ' + str(py_version_require) + ' or newer'
+    print 'Exiting ...'
+    sys.exit(1)
+
+
 errors = 0
 
+#
+# dictionaries for config info
+#
 ws_config = {}
 svc_calls = {}
 gw_config = {}
