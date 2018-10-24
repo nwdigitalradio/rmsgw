@@ -23,7 +23,7 @@ To test the new scripts are working, run the following 3 scripts then check the 
 ```
 # Become root
 cd /etc/rmsgw
-sudo -u rmsgw ./getchan.py
+sudo -u rmsgw ./getchannel.py
 sudo -u rmsgw ./updateversion.py ; echo $?
 sudo -u rmsgw ./updatechannel.py ; echo $?
 sudo -u rmsgw ./updatesysop.py
