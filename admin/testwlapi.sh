@@ -1,7 +1,15 @@
 #!/bin/bash
 
+lowest_pyver="2.7.9"
+
+rmsgw_dir="/etc/rmsgw"
 debuglog_dir="/root/tmp"
 debuglog_file="debuglog.txt"
+
+# Function ver_lte, compare version numbers
+function ver_lte() {
+    [  "$1" = "`echo -e "$1\n$2" | sort -V | head -n1`" ]
+}
 
 # make sure we're running as root
 if [[ $EUID != 0 ]] ; then
@@ -17,12 +25,26 @@ fi
 {
 lsb_release -a
 echo
-python --version
+
+current_pyver="$(python --version 2>&1)"
+echo "Debug: pyver: $current_pyver"
+if [ -z "$current_pyver" ] ; then
+    echo "No python version string found."
+else
+    echo "Check Python ver #, current: $current_pyver, lowest: $lowest_pyver"
+    ver_lte $current_pyver $lowest_pyver
+    if [ "$?" -eq 0 ] ; then
+        echo "Version check($?) less than required, current ver: $current_pyver"
+    else
+        echo "Version check($?) OK, current ver: $current_pyver"
+    fi
+fi
 
 cd /etc/rmsgw
 echo
 echo "===== getchan ====="
-sudo -u rmsgw ./getchan.py
+sudo -u rmsgw ./getchannel.py
+
 echo
 echo "===== updateversion ====="
 sudo -u rmsgw ./updateversion.py -d; echo $?
