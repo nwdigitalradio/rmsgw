@@ -36,8 +36,10 @@ import sys
 import re
 import requests
 import json
+import platform
 from xml.etree import ElementTree
 from optparse import OptionParser
+from distutils.version import StrictVersion
 import syslog
 
 #################################
@@ -48,6 +50,7 @@ DEBUG = 0
 service_config_xml = '/etc/rmsgw/winlinkservice.xml'
 gateway_config = '/etc/rmsgw/gateway.conf'
 version_info = '/etc/rmsgw/.version_info'
+py_version_require='2.7.9'
 
 #################################
 # END CONFIGURATION SECTION
@@ -83,6 +86,18 @@ fac = eval('syslog.LOG_' + gw_config['LOGFACILITY'].upper())
 mask = eval('syslog.LOG_' + gw_config['LOGMASK'].upper())
 syslog.openlog(logoption=syslog.LOG_PID, facility=fac)
 syslog.setlogmask(syslog.LOG_UPTO(mask))
+
+#
+# check python version
+#
+python_version=platform.python_version()
+
+if StrictVersion(python_version) >= StrictVersion(py_version_require):
+    if options.DEBUG: print 'Python Version Check: ' + str(python_version) + ' OK'
+else:
+    syslog.syslog(syslog.LOG_ERR, 'Need more current Python version, require version: ' + str(py_version_require) + ' or newer')
+    print 'Exiting ...'
+    sys.exit(1)
 
 #
 # load service config from XML
