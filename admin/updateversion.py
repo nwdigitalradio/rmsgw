@@ -46,7 +46,6 @@ import syslog
 # BEGIN CONFIGURATION SECTION
 #################################
 
-DEBUG = 0
 service_config_xml = '/etc/rmsgw/winlinkservice.xml'
 gateway_config = '/etc/rmsgw/gateway.conf'
 version_info = '/etc/rmsgw/.version_info'
@@ -97,6 +96,7 @@ if StrictVersion(python_version) >= StrictVersion(py_version_require):
 else:
     syslog.syslog(syslog.LOG_ERR, 'Need more current Python version, require version: ' + str(py_version_require) + ' or newer')
     print 'Exiting ...'
+    syslog.closelog()
     sys.exit(1)
 
 #
