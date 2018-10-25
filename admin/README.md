@@ -16,10 +16,10 @@
 ```
 # become root
 cd admin
-./update.sh
+./admin-update.sh
 ```
-* Set LOGMASK=DEBUG in file: /etc/rmsgw/gateway.conf
-To test the new scripts are working, run the following 4 scripts then check the https://winlink.org website:
+
+* To test the new scripts, run the following 4 scripts then check the https://winlink.org website:
 ```
 # Become root
 cd /etc/rmsgw
@@ -29,26 +29,26 @@ sudo -u rmsgw ./updatesysop.py
 sudo -u rmsgw ./getchannel.py
 ```
 
-* **Packet RMS Map:**
+* **Winlink Packet RMS Map:**
   * verify a balloon exists at approx your location
   * Click on balloon & verify information
-* **Packet RMS List:**
+* **Winlink Packet RMS List:**
   * Verify your call sign is in the list
   * Verify information on same line as call sign
   * Hover cursor over call sign & verify information
-* **Gateway Versions:**
+* **Winlink Gateway Versions:**
   * Verify your call sign is in the list
   * Verify line with your call sign contains RMS Gateway with version 2.4.1
 
 ### Sysop
 
 * updatesysop.py
-  * Need to edit /etc/rmsgw/sysop.xml
-  * This is done automatically with *update.sh* script
+  * An added <Password> xml element is required in /etc/rmsgw/sysop.xml
+  * This is done automatically with *admin-update.sh* script
 * getsysop.py
-  * Currently not functioning, used to verify sysop record.
+  * Currently *not functioning*, used to verify sysop record.
 * mksysop.py
-  * Currently not functioning
+  * Currently *not functioning*
 
 ###### Files:
 * /etc/rmsgw/sysop.xml
@@ -67,11 +67,16 @@ sudo -u rmsgw ./getchannel.py
 ### Version
 
 * updateversion.py
-  * Called from rmsgw_aci
+  * Called from *rmsgw_aci*
   * Check log file for output
 
 ###### Files:
 * **Do Not Modify** this file: /etc/rmsgw/.version_info
+
+### Debug
+* Set LOGMASK=DEBUG in file: /etc/rmsgw/gateway.conf
+* To turn on debug all the python scripts suppor the '-d' option on the command line
+* If you need to send a file with debug information run the *testwlapi.sh* script as root
 
 ### Notes
 * channels.xml file contains extra elements not used by Winlink Web Services
