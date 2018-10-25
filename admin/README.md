@@ -76,8 +76,8 @@ sudo -u rmsgw ./getchannel.py
 ### Debug
 * Set LOGMASK=DEBUG in file: /etc/rmsgw/gateway.conf
 * To turn on debug all the python scripts support the '-d' option on the command line
-* If you need to send a file with debug information run the *testwlapi.sh* script as root
-  * send file /root/tmp/debuglog.txt
+* If you need a debug info file to help with any problems you might have run the *testwlapi.sh* script as root
+  * Debug info file: /root/tmp/debuglog.txt
 
 ### Notes
 * channels.xml file contains extra elements not used by Winlink Web Services
