@@ -25,6 +25,17 @@
  *
  * Revision history:
  *
+ * 20181024:
+ * - Updated python scripts to use V5 Winlink Web Services
+ * - Added a getchannel.py script to verify channel record
+ * - Added a bash script for testing the python API for Winlink Services
+ * - release 2.5.0
+ *
+ * 20180401
+ * - Add ncurses to required build packages
+ * - Fix rmschanstat because ifconfig output changed
+ * - update channels.xml file.
+ *
  * 20140103:
  * - fixed namespace in base channels.xml used for new installs
  *
@@ -181,7 +192,7 @@
  * 20111201:
  * - fixed comments in wl2k_aci.c [BUGID:56]
  * - removed rms.auth file [BUGID:57]
- * 
+ *
  * 20111201:
  * - update man pages to reflect changes in gateway.conf
  * - bump version to 2.1.0 for release
@@ -285,7 +296,7 @@
  * 20090208:
  * - added wien to CMS host table [BUGID:46]
  * - additional debugging messages added to ACI part of libwl2k
- * 
+ *
  * 20090207:
  * - R2.0.0-RC3; expected final release candidate before the official
  *   2.0.0
@@ -506,7 +517,7 @@
  * - eliminated "magic numbers"
  * - rename code directories to match program names
  * - drop tpcfg.h and user_io.h as these have been incorporated elsewhere
- * 
+ *
  * 20080408
  * - fixed a bug in rotating mechanism of telpac_node,
  *   it worked fine in telpac_aci but not with changes from nov 2005
@@ -541,7 +552,7 @@
  *
  * 20060615
  * - added startup script telpac_aci.sh to start only if no user connected
- *   since last check. Script is called from cron and compares timestamp 
+ *   since last check. Script is called from cron and compares timestamp
  *   of reference file with timestamp of logfile.
  * - some cosmetic work on the "poor" documentation
  * - no change on the code since there was no information about a bug !
@@ -549,7 +560,7 @@
  *
  * 20060308
  * - some cleanup in the documentation
- * - after this long time of betatest without any bug reports it should 
+ * - after this long time of betatest without any bug reports it should
  *   be time for rev 1.0 !
  *
  * 20060306
@@ -560,7 +571,7 @@
  * - paclen is a critical parameter, the default should better be reduced
  *   from 256 to 128 bytes.
  *   Probably in future versions it should be read from the settings of the
- *   used interface in axports. It is not very easy, even the authors of 
+ *   used interface in axports. It is not very easy, even the authors of
  *   the ax25tools don't do it.
  * - Andy Cooper, K3JSE, integrated 2 fixes:
  *   - connection routine did not always step through PMBO list on failure
@@ -578,15 +589,15 @@
  ****************************************************************************
  ** TELPAC Releases and relevant changes which have been 'ported' to the
  ** LinuX-Node:
- ** 
+ **
  ** Feb 19, 2005    Rev 1.1.6
- ** 
+ **
  ** Modified APRS settings form and function to use Range instead of PHGD
  ** values. Default range = 20 miles. Added code in watchdog timer to insure
  ** session is set to nothing and stream is Killed when watchdog value is 0.
- ** 
+ **
  ** Feb 18, 2005    Rev 1.1.5
- ** 
+ **
  ** Modified APRS Report packet to now look like: KN6KB-10:;KN6KB-WL
  ** *181448z2813.75NW08042.50WaPHG6140 145.670-10 1200b Winlink.org Telpac
  ** Showing -ssid after frequency. Added function GridSq2NMEALatLon to convert
@@ -598,11 +609,11 @@
  ** extensive error recovery and reporting
  *
  ****************************************************************************
- * 
+ *
  * 20050218
- * - added some infomation and a sample Perl script to show how to send 
- *   aprs position of the TelPac node like the latest version of the 
- *   Windows node does. 
+ * - added some infomation and a sample Perl script to show how to send
+ *   aprs position of the TelPac node like the latest version of the
+ *   Windows node does.
  *   No software changes, no need to upgrade anything, nevertheless a
  *   new version number to show the status of the package
  * - rev 0.9b10 released
@@ -630,7 +641,7 @@
  * Thanks to Andy, K3JSE for this input !
  *
  * 20041122
- * - check of password entry in configfile corrected 
+ * - check of password entry in configfile corrected
  * - rev 0.9b5 released for betatests (tnx K3JSE)
  *
  * 20041121
@@ -673,8 +684,8 @@
  * - read paclen from axports and remove optional switch -o
  * - improve documentation (manpage)
  * - improve installation (configure, automake etc.)
- * - work on the disconnect initiated by the server, currently it causes a 
- *   timeout of the client connection. 
+ * - work on the disconnect initiated by the server, currently it causes a
+ *   timeout of the client connection.
  * - implement new featues of RMS nodes
  *
  */
