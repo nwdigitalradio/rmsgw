@@ -3,7 +3,7 @@
 * These notes are for scripts supporting V5 Winlink Web Services
 * The python scripts in this directory require python version 2.7.9 or newer to run.
 
-* The following files in /etc/rmsgw need to be modified to support V5 Winlink Web Services
+* The following files in /etc/rmsgw needed to be modified to support V5 Winlink Web Services
   * winlinkservice.xml
   * sysop.xml
   * .version_info
@@ -19,14 +19,14 @@ cd admin
 ./update.sh
 ```
 * Set LOGMASK=DEBUG in file: /etc/rmsgw/gateway.conf
-To test the new scripts are working, run the following 3 scripts then check the https://winlink.org website:
+To test the new scripts are working, run the following 4 scripts then check the https://winlink.org website:
 ```
 # Become root
 cd /etc/rmsgw
-sudo -u rmsgw ./getchannel.py
 sudo -u rmsgw ./updateversion.py ; echo $?
 sudo -u rmsgw ./updatechannel.py ; echo $?
 sudo -u rmsgw ./updatesysop.py
+sudo -u rmsgw ./getchannel.py
 ```
 
 * **Packet RMS Map:**
