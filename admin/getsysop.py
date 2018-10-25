@@ -43,7 +43,6 @@ from optparse import OptionParser
 # BEGIN CONFIGURATION SECTION
 #################################
 
-DEBUG = 0
 gateway_config = '/etc/rmsgw/gateway.conf'
 service_config_xml = '/etc/rmsgw/winlinkservice.xml'
 version_info = '/etc/rmsgw/.version_info'
