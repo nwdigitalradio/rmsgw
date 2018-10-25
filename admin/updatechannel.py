@@ -46,7 +46,6 @@ import syslog
 # BEGIN CONFIGURATION SECTION
 #################################
 
-DEBUG = 0
 service_config_xml = '/etc/rmsgw/winlinkservice.xml'
 gateway_config = '/etc/rmsgw/gateway.conf'
 channel_config_xml = '/etc/rmsgw/channels.xml'
@@ -99,6 +98,7 @@ if StrictVersion(python_version) >= StrictVersion(py_version_require):
 else:
     syslog.syslog(syslog.LOG_ERR, 'Need more current Python version, require version: ' + str(py_version_require) + ' or newer')
     print 'Exiting ...'
+    syslog.closelog()
     sys.exit(1)
 
 #
@@ -209,7 +209,7 @@ for channel in rmschannels.findall("%schannel" % (ns)):
     channel_add.find('Mode').text = channel.find('%smode' % (ns)).text
     channel_add.find('Power').text = channel.find('%spower' % (ns)).text
     channel_add.find('Hours').text = channel.find('%shours' % (ns)).text
-    channel_add.find('ServiceCode').text =channel.find('%sservicecode' % (ns)).text
+    channel_add.find('ServiceCode').text = channel.find('%sservicecode' % (ns)).text
     channel_add.find('Key').text = ws_config['WebServiceAccessCode']
 
     if options.DEBUG: syslog.syslog(syslog.LOG_DEBUG, 'channel_add XML = {}'.format(ElementTree.tostring(channel_add)))
