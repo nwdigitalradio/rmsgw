@@ -39,13 +39,13 @@ import json
 import datetime
 import platform
 from xml.etree import ElementTree
+from optparse import OptionParser
 from distutils.version import StrictVersion
 
 #################################
 # BEGIN CONFIGURATION SECTION
 #################################
 
-DEBUG = 0
 service_config_xml = '/etc/rmsgw/winlinkservice.xml'
 sysop_config_xml = '/etc/rmsgw/sysop.xml'
 channel_config_xml = '/etc/rmsgw/channels.xml'
@@ -54,6 +54,11 @@ py_version_require='2.7.9'
 #################################
 # END CONFIGURATION SECTION
 #################################
+cmdlineparser = OptionParser()
+cmdlineparser.add_option("-d", "--debug",
+                         action="store_true", dest="DEBUG", default=False,
+                         help="turn on debug output")
+(options, args) = cmdlineparser.parse_args()
 
 #
 # check python version
@@ -61,7 +66,7 @@ py_version_require='2.7.9'
 python_version=platform.python_version()
 
 if StrictVersion(python_version) >= StrictVersion(py_version_require):
-    if DEBUG: print 'Python Version Check: ' + str(python_version) + ' OK'
+    if options.DEBUG: print 'Python Version Check: ' + str(python_version) + ' OK'
 else:
     print 'Need more current Python version, require version: ' + str(py_version_require) + ' or newer'
     print 'Exiting ...'
@@ -101,11 +106,11 @@ for svc_config in winlink_config.iter('config'):
             svc_calls[svc_call.tag] = svc_call.text
             param_roots[svc_call.tag] = svc_call.attrib['paramRoot']
 
-#if DEBUG: print "rmschannels xml = {}".format(ElementTree.tostring(rmschannels))
+#if options.DEBUG: print "rmschannels xml = {}".format(ElementTree.tostring(rmschannels))
 
 ns = '{http://www.namespace.org}'
 for channel in rmschannels.findall("%schannel" % (ns)):
-#    if DEBUG: print 'channel xml = {}'.format(ElementTree.tostring(channel))
+#    if options.DEBUG: print 'channel xml = {}'.format(ElementTree.tostring(channel))
 
     callsign = channel.find("%scallsign" % (ns)).text
     rms_chans['callsign'] = callsign
@@ -113,10 +118,10 @@ for channel in rmschannels.findall("%schannel" % (ns)):
     password = channel.find("%spassword" % (ns)).text
     rms_chans['password'] = password
 
-if DEBUG: print 'ws_config =', ws_config
-if DEBUG: print 'svc_calls =', svc_calls
-if DEBUG: print 'param_roots =', param_roots
-if DEBUG: print 'rms_channels =', rms_chans
+if options.DEBUG: print 'ws_config =', ws_config
+if options.DEBUG: print 'svc_calls =', svc_calls
+if options.DEBUG: print 'param_roots =', param_roots
+if options.DEBUG: print 'rms_channels =', rms_chans
 
 headers = {'Content-Type': 'application/xml'}
 
@@ -142,8 +147,8 @@ for sysop in sysops.findall('sysop'):
 
     sysop_add.append(sysop.find('Callsign'))
     sysop_add.append(sysop.find('City'))
-#    sysop_add.append(sysop.find('Comments'))
 
+#    sysop_add.append(sysop.find('Comments'))
     comment = ElementTree.SubElement(sysop_add, 'Comments')
     comment.text = 'V5 Services Test: ' + str(datetime.datetime.now())
 
@@ -162,31 +167,31 @@ for sysop in sysops.findall('sysop'):
     sysop_add.append(sysop.find('SysopName'))
     sysop_add.append(sysop.find('Website'))
 
-    if DEBUG: print 'sysop_add XML =', ElementTree.tostring(sysop_add)
+    if options.DEBUG: print 'sysop_add XML =', ElementTree.tostring(sysop_add)
 
     # Old winlink services url format
     #svc_url = 'http://' + ws_config['svchost'] + ':' + ws_config['svcport'] + svc_calls['sysopadd']
     svc_url = 'https://' + ws_config['svchost'] + svc_calls['sysopadd'] + '?' + 'format=json'
-    if DEBUG: print 'svc_url =', svc_url
+    if options.DEBUG: print 'svc_url =', svc_url
 
     # Post the request
     response = requests.post(svc_url, data=ElementTree.tostring(sysop_add), headers=headers)
-    if DEBUG: print 'Response =', response.content
+    if options.DEBUG: print 'Response =', response.content
 
     json_data = response.json()
-    if DEBUG: print(json.dumps(json_data, indent=2))
+    if options.DEBUG: print(json.dumps(json_data, indent=2))
     json_dict = json.loads(response.text)
 
     # print the return code of this request, should be 200 which is "OK"
-    if DEBUG: print "Request status code: " + str(response.status_code)
-    if DEBUG: print 'Debug: Response =', response.content
-    if DEBUG: print "Debug: Content type: " + response.headers['content-type']
+    if options.DEBUG: print "Request status code: " + str(response.status_code)
+    if options.DEBUG: print 'Debug: Response =', response.content
+    if options.DEBUG: print "Debug: Content type: " + response.headers['content-type']
 
     #
     # Verify request status code
     #
     if response.ok:
-        if DEBUG: print "Debug: Good Request status code"
+        if options.DEBUG: print "Debug: Good Request status code"
     else:
         print "Debug: Bad Response status code: " + str(response.status_code)
         print '*** Sysop update for', callsign, 'failed, ErrorCode =',  str(response.status_code)
@@ -201,7 +206,7 @@ for sysop in sysops.findall('sysop'):
         print 'ResponseStatus not NULL: ', json_dict['ResponseStatus']
         errors += 1
     else:
-        if DEBUG: print 'ResponseStatus is NULL: ', json_dict['ResponseStatus']
+        if options.DEBUG: print 'ResponseStatus is NULL: ', json_dict['ResponseStatus']
         print 'Sysop update for {} successful.'.format(callsign)
 
 if errors > 0:
