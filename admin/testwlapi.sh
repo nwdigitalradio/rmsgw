@@ -19,12 +19,15 @@ if [[ $EUID != 0 ]] ; then
    exit 1
 fi
 
+
 if [ ! -d "$debuglog_dir" ] ; then
     echo "Directory $debuglog_dir does not exist ... creating"
     mkdir -p "$debuglog_dir"
 fi
 
+# Output following this is redirected to the debug log file
 {
+echo "Start time: $(date)"
 lsb_release -a
 echo
 
