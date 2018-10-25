@@ -39,7 +39,10 @@ for filename in `echo ${NEW_SERVICE_FILES}` ; do
     cp "$filename" "$rmsgw_dir"
     if [ "$?" -ne 0 ] ; then
        echo "Error copying file: $filename"
+    else
+       chown rmsgw:rmsgw "$rmsgw_dir/$(basename $filename)"
     fi
 done
+echo "RMS Gateway files & scripts update completed."
 
 exit 0
