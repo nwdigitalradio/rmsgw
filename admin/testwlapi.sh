@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Lowest python version required to run the admin scripts
+# This version ships with Debian jessie
 lowest_pyver="2.7.9"
 
 rmsgw_dir="/etc/rmsgw"
