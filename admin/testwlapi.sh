@@ -74,7 +74,9 @@ echo "===== sysop.xml ====="
 cat /etc/rmsgw/sysop.xml
 } > $debuglog_dir/$debuglog_file 2>&1
 
-# get rid of all passwords in xml files
+# Remove any passwords
+sed -i "s/\('password': '\).*\(',\)/\1notyourpassword\2/" $debuglog_dir/$debuglog_file
+sed -i "s|\(<Password>\)[^<>]*\(</Password>\)|\1notyourpassword\2|" $debuglog_dir/$debuglog_file
 sed -i "s|\(<password>\)[^<>]*\(</password>\)|\1notyourpassword\2|" $debuglog_dir/$debuglog_file
 sed -i "s|\(<ns0:password>\)[^<>]*\(</ns0:password>\)|\1notyourpassword\2|g" $debuglog_dir/$debuglog_file
 
