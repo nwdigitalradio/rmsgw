@@ -41,10 +41,10 @@ else
 fi
 
 cd /etc/rmsgw
+
 echo
 echo "===== getchan ====="
-sudo -u rmsgw ./getchannel.py
-
+sudo -u rmsgw ./getchannel.py -d
 echo
 echo "===== updateversion ====="
 sudo -u rmsgw ./updateversion.py -d; echo $?
@@ -53,7 +53,7 @@ echo "===== updatechannel ====="
 sudo -u rmsgw ./updatechannel.py -d; echo $?
 echo
 echo "===== updatesysop ====="
-sudo -u rmsgw ./updatesysop.py
+sudo -u rmsgw ./updatesysop.py -d
 echo
 echo "===== rms.debug log ====="
 tail -n 50 /var/log/rms.debug
@@ -68,3 +68,9 @@ echo
 echo "===== sysop.xml ====="
 cat /etc/rmsgw/sysop.xml
 } > $debuglog_dir/$debuglog_file 2>&1
+
+# get rid of all passwords in xml files
+sed -i "s|\(<password>\)[^<>]*\(</password>\)|\1notyourpassword\2|" $debuglog_dir/$debuglog_file
+sed -i "s|\(<ns0:password>\)[^<>]*\(</ns0:password>\)|\1notyourpassword\2|g" $debuglog_dir/$debuglog_file
+
+exit 0
