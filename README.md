@@ -20,7 +20,7 @@ git clone https://github.com/nwdigitalradio/rmsgw
 #### Installation/runtime requirements
 * AX.25 kernel support
 * libax25 runtime
-* python 2.7 or greater
+* python 2.7.9 or greater
 * python-requests
 
 ### Install AX.25 library & support utilities
@@ -28,7 +28,19 @@ git clone https://github.com/nwdigitalradio/rmsgw
 ### Install & configure Linux RMS Gateway
 * Currently (3/2017) RMS Gateway needs to be built from source
   * Goal to make it a Debian package
-* There are some scripts that automate the process which looks like this:
+#### Clone this repository
+```
+git clone https://github.com/nwdigitalradio/rmsgw
+cd rmsgw
+make
+# Become root
+su
+make install
+# Now edit the config files.
+```
+
+#### Use scripts
+* There are some scripts that automate the process which does the following:
   * Download source as a zipped tarball.
   * Untar source
   * Build source
