@@ -38,7 +38,7 @@ sudo -u rmsgw ./getchannel.py
   * Hover cursor over call sign & verify information
 * **Winlink Gateway Versions:**
   * Verify your call sign is in the list
-  * Verify line with your call sign contains RMS Gateway with version 2.4.1
+  * Verify line with your call sign contains RMS Gateway with version 2.5.0
 
 ### Sysop
 
@@ -48,7 +48,7 @@ sudo -u rmsgw ./getchannel.py
 * getsysop.py
   * Currently *not functioning*, used to verify sysop record.
 * mksysop.py
-  * Currently *not functioning*
+  * Currently *not functioning*, used to make sysop record.
 
 ###### Files:
 * /etc/rmsgw/sysop.xml
@@ -76,8 +76,18 @@ sudo -u rmsgw ./getchannel.py
 ### Debug
 * Set LOGMASK=DEBUG in file: /etc/rmsgw/gateway.conf
 * To turn on debug all the python scripts support the '-d' option on the command line
-* If you need a debug info file to help with any problems you might have run the *testwlapi.sh* script as root
+* If you need a debug info file to help with any problems you should run the *testwlapi.sh* script as root
   * Debug info file: /root/tmp/debuglog.txt
+```
+# become root
+sudo su
+
+# go to directory with test script to run
+cd rmsgw/admin
+./testwlapi.sh
+
+# Look for a freshly created debug log file: /root/tmp/debuglog.txt
+```
 
 ### Notes
 * channels.xml file contains extra elements not used by Winlink Web Services
