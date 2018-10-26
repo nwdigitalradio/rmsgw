@@ -10,5 +10,6 @@
     <channelget paramRoot="ChannelGet">/channel/get</channelget>
     <channeladd paramRoot="ChannelAdd">/channel/add</channeladd>
     <versionadd paramRoot="VersionAdd">/version/add</versionadd>
+    <versionlist paramRoot="VersionList">/version/list</versionlist>
   </svcops>
 </config>
