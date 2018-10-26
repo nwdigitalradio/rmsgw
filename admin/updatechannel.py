@@ -39,7 +39,7 @@ import json
 import platform
 from xml.etree import ElementTree
 from optparse import OptionParser
-from distutils.version import StrictVersion
+from pkg_resources import parse_version
 import syslog
 
 #################################
@@ -93,7 +93,7 @@ syslog.setlogmask(syslog.LOG_UPTO(mask))
 #
 python_version=platform.python_version()
 
-if StrictVersion(python_version) >= StrictVersion(py_version_require):
+if parse_version(python_version) >= parse_version(py_version_require):
     if options.DEBUG: print 'Python Version Check: ' + str(python_version) + ' OK'
 else:
     syslog.syslog(syslog.LOG_ERR, 'Need more current Python version, require version: ' + str(py_version_require) + ' or newer')
