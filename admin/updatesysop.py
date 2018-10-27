@@ -148,9 +148,14 @@ for sysop in sysops.findall('sysop'):
     sysop_add.append(sysop.find('Callsign'))
     sysop_add.append(sysop.find('City'))
 
-#    sysop_add.append(sysop.find('Comments'))
-    comment = ElementTree.SubElement(sysop_add, 'Comments')
-    comment.text = 'V5 Services Test: ' + str(datetime.datetime.now())
+    sysop_comments = sysop.find('Comments').text
+    if sysop_comments and len(sysop_comments.strip()):
+        print "Found Comments: [" + str(len(sysop_comments)) + "] " + str(sysop_comments)
+        sysop_add.append(sysop.find('Comments'))
+    else:
+        print "No Comments found"
+        comment = ElementTree.SubElement(sysop_add, 'Comments')
+        comment.text = 'V5 Services Test: ' + str(datetime.datetime.now())
 
     sysop_add.append(sysop.find('Country'))
     sysop_add.append(sysop.find('Email'))
