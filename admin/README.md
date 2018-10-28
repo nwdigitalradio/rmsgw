@@ -26,6 +26,7 @@ cat new-sysop.xml
 cp  new-sysop.xml sysop.xml
 ```
 ##### If you already updated your admin files and do NOT have a sysop.xml file
+* Follow the parameter advice from the [CMS Web Services for SysopAdd](https://cms.winlink.org/xml/metadata?op=SysopAdd)
 ```
 cd /etc/rmsgw
 cp sysop-template.xml sysop.xml
