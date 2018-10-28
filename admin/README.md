@@ -1,7 +1,7 @@
 ## Winlink Web Services scripts
 
 * These notes are for scripts supporting V5 Winlink Web Services
-* The python scripts in this directory require python version 2.7.9 or newer to run.
+* The python scripts in [this directory](https://github.com/nwdigitalradio/rmsgw/tree/master/admin) require python version 2.7.9 or newer to run.
 
 * The following files in /etc/rmsgw needed to be updated to support V5 Winlink Web Services
   * winlinkservice.xml
@@ -43,7 +43,7 @@ cd admin
 ./admin-update.sh
 ```
 
-* To test the new scripts, either run the following 4 scripts or run testwlapi.sh then check the https://winlink.org website:
+* To test the new scripts, either run the following 4 scripts or run testwlapi.sh then check the https://winlink.org/RMSChannels website:
 
 ```
 # as root
@@ -70,20 +70,20 @@ grep -i error /root/tmp/debuglog.txt
 ```
 * Now verify your gateway on the Winlink web site
 
-### What to check on the [Winlink web site](https://winlink.org)
+### What to check on the [Winlink web site](https://winlink.org/RMSChannels)
 
 * **Winlink Packet RMS Map:**
   * verify a balloon exists at approx your location
   * Click on balloon & verify information
 * **Winlink Packet RMS List:**
-  * Verify your call sign is in the list
+  * Verify your call sign is in the RMS List
   * Verify information on same line as call sign
   * Hover cursor over call sign & verify information
 * **Winlink Gateway Versions:**
-  * Verify your call sign is in the list
+  * Verify your call sign is in the Gateway Versions list right hand column.
   * Verify line with your call sign contains RMS Gateway with version 2.5.0
 
-### Script Descriptions by Function
+### Python Script Descriptions by Function
 
 #### Sysop
 
