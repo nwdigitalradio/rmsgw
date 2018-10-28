@@ -53,18 +53,21 @@ sudo -u rmsgw ./updateversion.py ; echo $?
 sudo -u rmsgw ./updatechannel.py ; echo $?
 sudo -u rmsgw ./updatesysop.py
 sudo -u rmsgw ./getchannel.py
-```
+
 # As root run the test script
 # Note what time it is
 
 ./testwlapi.sh
+```
 
-# Search the log file for any errors
-# The log file grabs some of the rms.debug log file and you are only
-# concerned with errors found after you ran the test script
+* Search the generated log file for any errors
+* The log file grabs some of the rms.debug log file and you are only
+concerned with errors found after you ran the test script
 
-grep -i error /root/tmp/debuglog.txt
-
+ ```
+grep -i error
+/root/tmp/debuglog.txt
+```
 
 * **Winlink Packet RMS Map:**
   * verify a balloon exists at approx your location
