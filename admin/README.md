@@ -3,7 +3,7 @@
 * These notes are for scripts supporting V5 Winlink Web Services
 * The python scripts in this directory require python version 2.7.9 or newer to run.
 
-* The following files in /etc/rmsgw needed to be modified to support V5 Winlink Web Services
+* The following files in /etc/rmsgw needed to be updated to support V5 Winlink Web Services
   * winlinkservice.xml
   * sysop.xml
   * .version_info
@@ -12,14 +12,39 @@
   * updateversion.py
   * updatesysop.py
 
-* To update these files:
+### Before You update
+* Check if you have an /etc/rmsgw/sysop.xml file
+* If you don't have a sysop.xml file you need to create one.
+
+##### How to create a sysop.xml file before you update
+```
+sudo su
+cd /etc/rmsgw
+./mksysop.py
+cat new-sysop.xml
+# Using an editor modify new-sysop.xml to suit
+cp  new-sysop.xml sysop.xml
+```
+##### If you already updated your admin files and do NOT have a sysop.xml file
+```
+cd /etc/rmsgw
+cp sysop-template.xml sysop.xml
+# Using an editor modify sysop.xml to suit
+```
+
+##### If you already have a /etc/rmsgw/sysop.xml file then update the admin files.
+
+
+* To update the admin files:
 ```
 # become root
 cd admin
 ./admin-update.sh
 ```
 
-* To test the new scripts, run the following 4 scripts then check the https://winlink.org website:
+* To test the new scripts, either run the following 4 scripts or run testwlapi.sh then check the https://winlink.org website:
+
+#####
 ```
 # Become root
 cd /etc/rmsgw
@@ -28,6 +53,17 @@ sudo -u rmsgw ./updatechannel.py ; echo $?
 sudo -u rmsgw ./updatesysop.py
 sudo -u rmsgw ./getchannel.py
 ```
+# As root run the test script
+# Note what time it is
+
+./testwlapi.sh
+
+# Search the log file for any errors
+# The log file grabs some of the rms.debug log file and you are only
+# concerned with errors found after you ran the test script
+
+grep -i error /root/tmp/debuglog.txt
+
 
 * **Winlink Packet RMS Map:**
   * verify a balloon exists at approx your location
@@ -56,7 +92,7 @@ sudo -u rmsgw ./getchannel.py
 ### Channel
 
 * updatechannel.py
-  * Called from rmsgw_aci
+  * Called from *rmsgw_aci*
   * Check log file for output
 * getchannel.py
   * Used to verify channel record
