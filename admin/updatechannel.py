@@ -94,7 +94,7 @@ syslog.setlogmask(syslog.LOG_UPTO(mask))
 python_version=platform.python_version()
 
 if parse_version(python_version) >= parse_version(py_version_require):
-    if options.DEBUG: print 'Python Version Check: ' + str(python_version) + ' OK'
+    if options.DEBUG: syslog.syslog(syslog.LOG_DEBUG, 'Python Version Check: ' + str(python_version) + ' OK')
 else:
     syslog.syslog(syslog.LOG_ERR, 'Need more current Python version, require version: ' + str(py_version_require) + ' or newer')
     print 'Exiting ...'
@@ -130,7 +130,7 @@ if 'GWCALL' in gw_config:
     options.callsign = gw_config['GWCALL'].upper()
 
 basecall=options.callsign.split("-", 1)[0]
-if options.DEBUG: print 'basecallsign = {}'.format(basecall)
+if options.DEBUG: syslog.syslog(syslog.LOG_DEBUG, 'basecallsign = {}'.format(basecall))
 
 #
 # prepare and make webservice call
@@ -183,9 +183,9 @@ if options.DEBUG: syslog.syslog(syslog.LOG_DEBUG, 'bare channel_add XML = {}'.fo
 # gateway channel config and make service call
 #
 ns = ws_config['namespace']
-if options.DEBUG: print 'ns from ws_config = {}'.format(ns)
+if options.DEBUG: syslog.syslog(syslog.LOG_DEBUG, 'ns from ws_config = {}'.format(ns))
 ns = '{http://www.namespace.org}'
-if options.DEBUG: print 'ns = {}'.format(ns)
+if options.DEBUG: syslog.syslog(syslog.LOG_DEBUG, 'ns = {}'.format(ns))
 
 #if options.DEBUG: syslog.syslog(syslog.LOG_DEBUG, 'ns = {}'.format(ns))
 
@@ -215,7 +215,15 @@ for channel in rmschannels.findall("%schannel" % (ns)):
     if options.DEBUG: syslog.syslog(syslog.LOG_DEBUG, 'channel_add XML = {}'.format(ElementTree.tostring(channel_add)))
 
     # Post the request
-    response = requests.post(svc_url, data=ElementTree.tostring(channel_add), headers=headers)
+    try:
+        response = requests.post(svc_url, data=ElementTree.tostring(channel_add), headers=headers)
+    except requests.ConnectionError as e:
+        syslog.syslog(syslog.LOG_DEBUG,"Error: Internet connection failure:")
+        syslog.syslog(syslog.LOG_DEBUG, 'svc_url = {}'.format(svc_url))
+        syslog.syslog(syslog.LOG_DEBUG, str(e))
+        syslog.closelog()
+        sys.exit(1)
+
     if options.DEBUG: syslog.syslog(syslog.LOG_DEBUG, 'Response = {}'.format(response.content))
 
     json_data = response.json()
@@ -238,6 +246,7 @@ for channel in rmschannels.findall("%schannel" % (ns)):
         print '*** Get for', options.callsign, 'failed, ErrorCode =',  str(response.status_code)
         print '*** Error code:    ' + json_dict['ResponseStatus']['ErrorCode']
         print '*** Error message: ' + json_dict['ResponseStatus']['Message']
+        syslog.closelog()
         sys.exit(1)
 
     #
@@ -245,6 +254,7 @@ for channel in rmschannels.findall("%schannel" % (ns)):
     #
     if json_dict['ResponseStatus']:
         print 'ResponseStatus not NULL: ', json_dict['ResponseStatus']
+        syslog.closelog()
         sys.exit(1)
     else:
         if options.DEBUG: print 'ResponseStatus is NULL: ', json_dict['ResponseStatus']

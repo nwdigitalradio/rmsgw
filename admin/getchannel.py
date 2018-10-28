@@ -74,8 +74,8 @@ python_version=platform.python_version()
 if parse_version(python_version) >= parse_version(py_version_require):
     if options.DEBUG: print 'Python Version Check: ' + str(python_version) + ' OK'
 else:
-    print 'Need more current Python version, require version: ' + str(py_version_require) + ' or newer'
-    print 'Exiting ...'
+    print sys.argv[0] + ': Error, need more current Python version, require version: ' + str(py_version_require) + ' or newer'
+    print sys.argv[0] + ': Exiting ...'
     sys.exit(1)
 
 #
@@ -184,7 +184,13 @@ child.text = options.callsign
 if options.DEBUG: print 'channel_get XML =', ElementTree.tostring(channel_get)
 
 # Post the request
-response = requests.post(svc_url, data=ElementTree.tostring(channel_get), headers=headers)
+try:
+    response = requests.post(svc_url, data=ElementTree.tostring(channel_get), headers=headers)
+except requests.ConnectionError as e:
+    print sys.argv[0] + ": Error: Internet connection failure:"
+    print sys.argv[0] + ': svc_url = ', svc_url
+    print e
+    sys.exit(1)
 
 # print the return code of this request, should be 200 which is "OK"
 if options.DEBUG: print "Request status code: " + str(response.status_code)
@@ -201,11 +207,11 @@ num_chan = len(json_data['Channels'])
 # Verify request status code
 #
 if response.ok:
-    if options.DEBUG: print "Debug: Good Request status code"
+    if options.DEBUG: print "Getchannel for ", options.callsign,  " Good Request status code"
 else:
-    print '*** Get for', options.callsign, 'failed, ErrorCode =',  str(response.status_code)
-    print '*** Error code:    ' + json_dict['ResponseStatus']['ErrorCode']
-    print '*** Error message: ' + json_dict['ResponseStatus']['Message']
+    print sys.argv[0] + ' *** Getchannel for ', options.callsign, 'failed, ErrorCode =',  str(response.status_code)
+    print sys.argv[0] + ' *** Error code:    ' + json_dict['ResponseStatus']['ErrorCode']
+    print sys.argv[0] + ' *** Error message: ' + json_dict['ResponseStatus']['Message']
     sys.exit(1)
 
 #

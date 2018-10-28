@@ -92,7 +92,7 @@ syslog.setlogmask(syslog.LOG_UPTO(mask))
 python_version=platform.python_version()
 
 if parse_version(python_version) >= parse_version(py_version_require):
-    if options.DEBUG: print 'Python Version Check: ' + str(python_version) + ' OK'
+    if options.DEBUG: syslog.syslog(syslog.LOG_DEBUG, 'Python Version Check: ' + str(python_version) + ' OK')
 else:
     syslog.syslog(syslog.LOG_ERR, 'Need more current Python version, require version: ' + str(py_version_require) + ' or newer')
     print 'Exiting ...'
@@ -175,7 +175,15 @@ version_add.find('Version').text = version['LABEL']
 if options.DEBUG: syslog.syslog(syslog.LOG_DEBUG, 'version_add XML = {}'.format(ElementTree.tostring(version_add)))
 
 # Post the request
-response = requests.post(svc_url, data=ElementTree.tostring(version_add), headers=headers)
+try:
+    response = requests.post(svc_url, data=ElementTree.tostring(version_add), headers=headers)
+except requests.ConnectionError as e:
+    syslog.syslog(syslog.LOG_DEBUG, "Error: Internet connection failure:")
+    syslog.syslog(syslog.LOG_DEBUG, 'svc_url = {}'.format(svc_url))
+    syslog.syslog(syslog.LOG_DEBUG, str(e))
+    syslog.closelog()
+    sys.exit(1)
+
 if options.DEBUG: syslog.syslog(syslog.LOG_DEBUG, 'Response = {}'.format(response.content))
 
 json_data = response.json()
@@ -210,6 +218,7 @@ else:
     if options.DEBUG: print 'ResponseStatus is NULL: ', json_dict['ResponseStatus']
     syslog.syslog(syslog.LOG_INFO, 'Version update for {} to version {} successful.'.format(callsign, version['LABEL']))
 
+syslog.closelog()
 
 if errors > 0:
     sys.exit(1)

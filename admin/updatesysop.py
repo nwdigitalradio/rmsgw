@@ -68,8 +68,8 @@ python_version=platform.python_version()
 if parse_version(python_version) >= parse_version(py_version_require):
     if options.DEBUG: print 'Python Version Check: ' + str(python_version) + ' OK'
 else:
-    print 'Need more current Python version, require version: ' + str(py_version_require) + ' or newer'
-    print 'Exiting ...'
+    print sys.argv[0] + ': Error, need more current Python version, require version: ' + str(py_version_require) + ' or newer'
+    print sys.argv[0] + ': Exiting ...'
     sys.exit(1)
 
 errors = 0
@@ -180,7 +180,14 @@ for sysop in sysops.findall('sysop'):
     if options.DEBUG: print 'svc_url =', svc_url
 
     # Post the request
-    response = requests.post(svc_url, data=ElementTree.tostring(sysop_add), headers=headers)
+    try:
+        response = requests.post(svc_url, data=ElementTree.tostring(sysop_add), headers=headers)
+    except requests.ConnectionError as e:
+        print sys.argv[0] + ": Error: Internet connection failure:"
+        print sys.argv[0] + ': svc_url = ', svc_url
+        print e
+        sys.exit(1)
+
     if options.DEBUG: print 'Response =', response.content
 
     json_data = response.json()
@@ -196,12 +203,11 @@ for sysop in sysops.findall('sysop'):
     # Verify request status code
     #
     if response.ok:
-        if options.DEBUG: print "Debug: Good Request status code"
+        if options.DEBUG: print "Updatesysop for ", callsign, " Good Request status code"
     else:
-        print "Debug: Bad Response status code: " + str(response.status_code)
-        print '*** Sysop update for', callsign, 'failed, ErrorCode =',  str(response.status_code)
-        print '*** Error code:    ' + json_dict['ResponseStatus']['ErrorCode']
-        print '*** Error message: ' + json_dict['ResponseStatus']['Message']
+        print sys.argv[0] + ' *** Sysop update for', callsign, 'failed, ErrorCode =',  str(response.status_code)
+        print sys.argv[0] + ' *** Error code:    ' + json_dict['ResponseStatus']['ErrorCode']
+        print sys.argv[0] + ' *** Error message: ' + json_dict['ResponseStatus']['Message']
         errors += 1
 
     #
