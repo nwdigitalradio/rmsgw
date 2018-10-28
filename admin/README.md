@@ -14,7 +14,7 @@
 
 ### Before You update
 * Check if you have an /etc/rmsgw/sysop.xml file
-* If you don't have a sysop.xml file you need to create one.
+  * If you don't have a sysop.xml file you need to create one.
 
 ##### How to create a sysop.xml file BEFORE you update
 ```
@@ -27,47 +27,50 @@ cp  new-sysop.xml sysop.xml
 ```
 ##### If you have already updated your admin files and do NOT have a sysop.xml file
 * Follow the parameter advice from the [CMS Web Services for SysopAdd](https://cms.winlink.org/xml/metadata?op=SysopAdd)
+
 ```
+# as root
 cd /etc/rmsgw
 cp sysop-template.xml sysop.xml
 # Using an editor modify sysop.xml to suit
 ```
 
-##### If you already have a /etc/rmsgw/sysop.xml file then update the admin files.
+##### If you already have or just created a /etc/rmsgw/sysop.xml file then update the admin files.
 
-
-* To update the admin files:
 ```
-# become root
+# as root
 cd admin
 ./admin-update.sh
 ```
 
 * To test the new scripts, either run the following 4 scripts or run testwlapi.sh then check the https://winlink.org website:
 
-#####
 ```
-# Become root
+# as root
 cd /etc/rmsgw
 sudo -u rmsgw ./updateversion.py ; echo $?
 sudo -u rmsgw ./updatechannel.py ; echo $?
 sudo -u rmsgw ./updatesysop.py
 sudo -u rmsgw ./getchannel.py
+```
+* Alternatively just run the test script
 
-# As root run the test script
-# Note what time it is
-
+```
+# as root
+cd admin
 ./testwlapi.sh
 ```
 
 * Search the generated log file for any errors
-* The log file grabs some of the rms.debug log file and you are only
+  * The log file grabs some of the rms.debug log file and you are only
 concerned with errors found after you ran the test script
 
  ```
-grep -i error
-/root/tmp/debuglog.txt
+grep -i error /root/tmp/debuglog.txt
 ```
+* Now verify your gateway on the Winlink web site
+
+### What to check on the [Winlink web site](https://winlink.org)
 
 * **Winlink Packet RMS Map:**
   * verify a balloon exists at approx your location
@@ -80,7 +83,9 @@ grep -i error
   * Verify your call sign is in the list
   * Verify line with your call sign contains RMS Gateway with version 2.5.0
 
-### Sysop
+### Script Descriptions by Function
+
+#### Sysop
 
 * updatesysop.py
   * An added <Password> xml element is required in /etc/rmsgw/sysop.xml
@@ -93,7 +98,7 @@ grep -i error
 ###### Files:
 * /etc/rmsgw/sysop.xml
 
-### Channel
+#### Channel
 
 * updatechannel.py
   * Called from *rmsgw_aci*
@@ -104,7 +109,7 @@ grep -i error
 ###### Files:
 * /etc/rmsgw/channel.xml
 
-### Version
+#### Version
 
 * updateversion.py
   * Called from *rmsgw_aci*
@@ -119,10 +124,7 @@ grep -i error
 * If you need a debug info file to help with any problems you should run the *testwlapi.sh* script as root
   * Debug info file: /root/tmp/debuglog.txt
 ```
-# become root
-sudo su
-
-# go to directory with test script to run
+# Become root & go to directory with the test script
 cd rmsgw/admin
 ./testwlapi.sh
 
