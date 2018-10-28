@@ -16,7 +16,7 @@
 * Check if you have an /etc/rmsgw/sysop.xml file
 * If you don't have a sysop.xml file you need to create one.
 
-##### How to create a sysop.xml file before you update
+##### How to create a sysop.xml file BEFORE you update
 ```
 sudo su
 cd /etc/rmsgw
@@ -25,7 +25,7 @@ cat new-sysop.xml
 # Using an editor modify new-sysop.xml to suit
 cp  new-sysop.xml sysop.xml
 ```
-##### If you already updated your admin files and do NOT have a sysop.xml file
+##### If you have already updated your admin files and do NOT have a sysop.xml file
 * Follow the parameter advice from the [CMS Web Services for SysopAdd](https://cms.winlink.org/xml/metadata?op=SysopAdd)
 ```
 cd /etc/rmsgw
