@@ -58,7 +58,13 @@ echo "===== updatechannel ====="
 sudo -u rmsgw ./updatechannel.py -d; echo $?
 echo
 echo "===== updatesysop ====="
-sudo -u rmsgw ./updatesysop.py -d
+
+sysop_file="$rmsgw_dir/sysop.xml"
+if [ -e "$sysop_file" ] ; then
+   sudo -u rmsgw ./updatesysop.py -d
+else
+   echo "Error: file: $sysop_file does not exist"
+fi
 echo
 echo "===== rms.debug log ====="
 tail -n 50 /var/log/rms.debug
