@@ -28,7 +28,12 @@ fi
 # Output following this is redirected to the debug log file
 {
 echo "Start time: $(date)"
-lsb_release -a
+
+# Get some version info
+cat /etc/*release | grep "VERSION"
+cat /etc/*version
+cat /proc/version
+
 echo
 
 current_pyver="$(python --version 2>&1)"
