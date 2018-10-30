@@ -72,10 +72,10 @@ cmdlineparser.add_option("-c", "--callsign",
 python_version=platform.python_version()
 
 if parse_version(python_version) >= parse_version(py_version_require):
-    if options.DEBUG: print 'Python Version Check: ' + str(python_version) + ' OK'
+    if options.DEBUG: print( 'Python Version Check: ' + str(python_version) + ' OK')
 else:
-    print sys.argv[0] + ': Error, need more current Python version, require version: ' + str(py_version_require) + ' or newer'
-    print sys.argv[0] + ': Exiting ...'
+    print(sys.argv[0] + ': Error, need more current Python version, require version: ' + str(py_version_require) + ' or newer')
+    print(sys.argv[0] + ': Exiting ...')
     sys.exit(1)
 
 #
@@ -97,7 +97,7 @@ with open(gateway_config) as gwfile:
             gw_config[name.strip()] = val.strip()
 gwfile.close()
 
-if options.DEBUG: print 'Gateway config =', gw_config
+if options.DEBUG: print('Gateway config =', gw_config)
 
 #
 # load version info
@@ -109,7 +109,7 @@ with open(version_info) as versionfile:
             version[name.strip()] = val.strip()
 gwfile.close()
 
-if options.DEBUG: print 'version_program = {}'.format(version['PROGRAM'])
+if options.DEBUG: print('version_program = {}'.format(version['PROGRAM']))
 
 #
 # load service config from XML
@@ -131,9 +131,9 @@ for svc_config in winlink_config.iter('config'):
             svc_calls[svc_call.tag] = svc_call.text
             param_roots[svc_call.tag] = svc_call.attrib['paramRoot']
 
-if options.DEBUG: print 'ws_config =', ws_config
-if options.DEBUG: print 'svc_calls =', svc_calls
-if options.DEBUG: print 'param_roots =', param_roots
+if options.DEBUG: print('ws_config =', ws_config)
+if options.DEBUG: print('svc_calls =', svc_calls)
+if options.DEBUG: print('param_roots =', param_roots)
 
 #
 # need a callsign - unless we have a command line parameter
@@ -150,11 +150,11 @@ if options.callsign == None: # no callsign given on cmd line?
     else:
         # ask for callsign if none given on command line
         # and none in the gateway config
-        options.callsign = raw_input('Enter gateway callsign (without SSID): ')
+        options.callsign = input('Enter gateway callsign (without SSID): ')
 
 options.callsign = options.callsign.upper()
 
-if options.DEBUG: print 'callsign =', options.callsign
+if options.DEBUG: print('callsign =', options.callsign)
 
 #
 # prepare and make webservice call
@@ -166,7 +166,7 @@ headers = {'Content-Type': 'application/xml'}
 
 # V5 CMS web services url format
 svc_url = 'https://' + ws_config['svchost'] + svc_calls['channelget'] + '?' + 'Callsign=' + format(options.callsign) + '&Program=' + format(version['PROGRAM']) + '&Key=' + format(ws_config['WebServiceAccessCode'] + '&format=json')
-if options.DEBUG: print 'svc_url =', svc_url
+if options.DEBUG: print('svc_url =', svc_url)
 
 #
 # prepare xml parameters for call
@@ -181,21 +181,21 @@ child.text = ws_config['WebServiceAccessCode']
 child = ElementTree.SubElement(channel_get, 'Callsign')
 child.text = options.callsign
 
-if options.DEBUG: print 'channel_get XML =', ElementTree.tostring(channel_get)
+if options.DEBUG: print('channel_get XML =', ElementTree.tostring(channel_get))
 
 # Post the request
 try:
     response = requests.post(svc_url, data=ElementTree.tostring(channel_get), headers=headers)
 except requests.ConnectionError as e:
-    print sys.argv[0] + ": Error: Internet connection failure:"
-    print sys.argv[0] + ': svc_url = ', svc_url
-    print e
+    print(sys.argv[0] + ": Error: Internet connection failure:")
+    print(sys.argv[0] + ': svc_url = ', svc_url)
+    print(e)
     sys.exit(1)
 
 # print the return code of this request, should be 200 which is "OK"
-if options.DEBUG: print "Request status code: " + str(response.status_code)
-if options.DEBUG: print 'Debug: Response =', response.content
-if options.DEBUG: print "Debug: Content type: " + response.headers['content-type']
+if options.DEBUG: print("Request status code: " + str(response.status_code))
+if options.DEBUG: print('Debug: Response =', response.content)
+if options.DEBUG: print("Debug: Content type: " + response.headers['content-type'])
 # print 'ResponseStatus : ', response.json().get('ResponseStatus')
 
 json_data = response.json()
@@ -207,49 +207,49 @@ num_chan = len(json_data['Channels'])
 # Verify request status code
 #
 if response.ok:
-    if options.DEBUG: print "Getchannel for ", options.callsign,  " Good Request status code"
+    if options.DEBUG: print("Getchannel for ", options.callsign,  " Good Request status code")
 else:
-    print sys.argv[0] + ' *** Getchannel for ', options.callsign, 'failed, ErrorCode =',  str(response.status_code)
-    print sys.argv[0] + ' *** Error code:    ' + json_dict['ResponseStatus']['ErrorCode']
-    print sys.argv[0] + ' *** Error message: ' + json_dict['ResponseStatus']['Message']
+    print(sys.argv[0] + ' *** Getchannel for ', options.callsign, 'failed, ErrorCode =',  str(response.status_code))
+    print(sys.argv[0] + ' *** Error code:    ' + json_dict['ResponseStatus']['ErrorCode'])
+    print(sys.argv[0] + ' *** Error message: ' + json_dict['ResponseStatus']['Message'])
     sys.exit(1)
 
 #
 # check for errors coming back
 #
 if json_dict['ResponseStatus']:
-    print 'ResponseStatus not NULL: ', json_dict['ResponseStatus']
+    print('ResponseStatus not NULL: ', json_dict['ResponseStatus'])
     sys.exit(1)
 else:
-    if options.DEBUG: print 'ResponseStatus is NULL: ', json_dict['ResponseStatus']
+    if options.DEBUG: print('ResponseStatus is NULL: ', json_dict['ResponseStatus'])
 
 #
 # display the returned data
 #
 
-print '=== Record for ' + str(num_chan) + ' Channel(s) In Winlink System ==='
+print('=== Record for ' + str(num_chan) + ' Channel(s) In Winlink System ===')
 
 for i in range(num_chan):
-    print '== data for record ' + str(i+1) + ' =='
-    print
+    print('== data for record ' + str(i+1) + ' ==')
+    print()
 
     # Convert non standard UTC date string to a local time
     date_str = json_dict['Channels'][int(i)]['Timestamp']
     date_str = date_str.split("(")[1]
     date_str = date_str.split(")")[0]
     date_str = date_str[0:10]
-    print 'Date:            ' + time.strftime("%Z - %Y/%m/%d, %H:%M:%S", time.localtime(float(date_str)))
-    print 'Call sign:       ' + json_dict['Channels'][int(i)]['Callsign']
-    print 'Base Call sign:  ' + json_dict['Channels'][int(i)]['BaseCallsign']
-    print 'Grid Square:     ' + json_dict['Channels'][int(i)]['GridSquare']
-    print 'Frequency:       ' + str(json_dict['Channels'][int(i)]['Frequency'])
-    print 'Baud:            ' + str(json_dict['Channels'][int(i)]['Baud'])
-    print 'Power:           ' + str(json_dict['Channels'][int(i)]['Power'])
-    print 'Height:          ' + str(json_dict['Channels'][int(i)]['Height'])
-    print 'Gain:            ' + str(json_dict['Channels'][int(i)]['Gain'])
-    print 'Direction:       ' + str(json_dict['Channels'][int(i)]['Direction'])
-    print 'Operating Hours: ' + str(json_dict['Channels'][int(i)]['OperatingHours'])
-    print 'Service Code:    ' + json_dict['Channels'][int(i)]['ServiceCode']
+    print('Date:            ' + time.strftime("%Z - %Y/%m/%d, %H:%M:%S", time.localtime(float(date_str))))
+    print('Call sign:       ' + json_dict['Channels'][int(i)]['Callsign'])
+    print('Base Call sign:  ' + json_dict['Channels'][int(i)]['BaseCallsign'])
+    print('Grid Square:     ' + json_dict['Channels'][int(i)]['GridSquare'])
+    print('Frequency:       ' + str(json_dict['Channels'][int(i)]['Frequency']))
+    print('Baud:            ' + str(json_dict['Channels'][int(i)]['Baud']))
+    print('Power:           ' + str(json_dict['Channels'][int(i)]['Power']))
+    print('Height:          ' + str(json_dict['Channels'][int(i)]['Height']))
+    print('Gain:            ' + str(json_dict['Channels'][int(i)]['Gain']))
+    print('Direction:       ' + str(json_dict['Channels'][int(i)]['Direction']))
+    print('Operating Hours: ' + str(json_dict['Channels'][int(i)]['OperatingHours']))
+    print('Service Code:    ' + json_dict['Channels'][int(i)]['ServiceCode'])
 
 
        # it looks like this will be caught by the winlink system
