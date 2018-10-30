@@ -33,6 +33,8 @@ echo "Start time: $(date)"
 cat /etc/*release | grep "VERSION"
 cat /etc/*version
 cat /proc/version
+# Not all Linux distros run GNU coreutils
+sort --version
 
 echo
 
