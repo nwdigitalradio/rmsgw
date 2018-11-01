@@ -68,15 +68,20 @@ cmdlineparser.add_option("-c", "--callsign",
                          help="get a specific callsign")
 (options, args) = cmdlineparser.parse_args()
 
+#
+# Check running as root
+#
 if os.geteuid() != 0:
     print("Must be root, exiting ...")
-#    sys.exit(1)
+    sys.exit(1)
+
 #
 # check python version
 #
 python_version=platform.python_version()
 
-#if StrictVersion(python_version) >= StrictVersion(py_version_require):
+# This does not work with release candidates (Python 2.7.15rc1)
+# if StrictVersion(python_version) >= StrictVersion(py_version_require):
 
 if parse_version(python_version) >= parse_version(py_version_require):
     if options.DEBUG: print('Python Version Check: ' + str(python_version) + ' OK')
