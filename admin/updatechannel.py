@@ -97,7 +97,7 @@ if parse_version(python_version) >= parse_version(py_version_require):
     if options.DEBUG: syslog.syslog(syslog.LOG_DEBUG, 'Python Version Check: ' + str(python_version) + ' OK')
 else:
     syslog.syslog(syslog.LOG_ERR, 'Need more current Python version, require version: ' + str(py_version_require) + ' or newer')
-    print 'Exiting ...'
+    print('Exiting ...')
     syslog.closelog()
     sys.exit(1)
 
@@ -227,25 +227,26 @@ for channel in rmschannels.findall("%schannel" % (ns)):
     if options.DEBUG: syslog.syslog(syslog.LOG_DEBUG, 'Response = {}'.format(response.content))
 
     json_data = response.json()
-    if options.DEBUG: print(json.dumps(json_data, indent=2))
+    if options.DEBUG: print((json.dumps(json_data, indent=2)))
     json_dict = json.loads(response.text)
 
 
     # print the return code of this request, should be 200 which is "OK"
-    if options.DEBUG: print "Request status code: " + str(response.status_code)
-    if options.DEBUG: print 'Debug: Response =', response.content
-    if options.DEBUG: print "Debug: Content type: " + response.headers['content-type']
-    # print 'ResponseStatus : ', response.json().get('ResponseStatus')
+    if options.DEBUG: print("Request status code: " + str(response.status_code))
+    if options.DEBUG: print('Debug: Response =', response.content)
+    if options.DEBUG: print("Debug: Content type: " + response.headers['content-type'])
+    # print('ResponseStatus : ', response.json().get('ResponseStatus'))
+
     #
     # Verify request status code
     #
     if response.ok:
-        if options.DEBUG: print "Debug: Good Request status code"
+        if options.DEBUG: print("Debug: Good Request status code")
     else:
-        print "Debug: Bad Response status code: " + str(response.status_code)
-        print '*** Get for', options.callsign, 'failed, ErrorCode =',  str(response.status_code)
-        print '*** Error code:    ' + json_dict['ResponseStatus']['ErrorCode']
-        print '*** Error message: ' + json_dict['ResponseStatus']['Message']
+        print("Debug: Bad Response status code: " + str(response.status_code))
+        print('*** Get for', options.callsign, 'failed, ErrorCode =',  str(response.status_code))
+        print('*** Error code:    ' + json_dict['ResponseStatus']['ErrorCode'])
+        print('*** Error message: ' + json_dict['ResponseStatus']['Message'])
         syslog.closelog()
         sys.exit(1)
 
@@ -253,11 +254,11 @@ for channel in rmschannels.findall("%schannel" % (ns)):
     # check for errors coming back first
     #
     if json_dict['ResponseStatus']:
-        print 'ResponseStatus not NULL: ', json_dict['ResponseStatus']
+        print('ResponseStatus not NULL: ', json_dict['ResponseStatus'])
         syslog.closelog()
         sys.exit(1)
     else:
-        if options.DEBUG: print 'ResponseStatus is NULL: ', json_dict['ResponseStatus']
+        if options.DEBUG: print('ResponseStatus is NULL: ', json_dict['ResponseStatus'])
 
 
 syslog.closelog()
