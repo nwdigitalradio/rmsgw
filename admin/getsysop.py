@@ -36,8 +36,11 @@ import sys
 import re
 import requests
 import json
+import platform
+import datetime
 from xml.etree import ElementTree
 from optparse import OptionParser
+from pkg_resources import parse_version
 
 #################################
 # BEGIN CONFIGURATION SECTION
@@ -45,7 +48,10 @@ from optparse import OptionParser
 
 gateway_config = '/etc/rmsgw/gateway.conf'
 service_config_xml = '/etc/rmsgw/winlinkservice.xml'
+channel_config_xml = '/etc/rmsgw/channels.xml'
 version_info = '/etc/rmsgw/.version_info'
+
+py_version_require='2.7.9'
 
 #################################
 # END CONFIGURATION SECTION
@@ -62,8 +68,30 @@ cmdlineparser.add_option("-c", "--callsign",
 (options, args) = cmdlineparser.parse_args()
 
 #
+# check python version
+#
+python_version=platform.python_version()
+
+#if StrictVersion(python_version) >= StrictVersion(py_version_require):
+
+if parse_version(python_version) >= parse_version(py_version_require):
+    if options.DEBUG: print('Python Version Check: ' + str(python_version) + ' OK')
+else:
+    print('Need more current Python version, require version: ' + str(py_version_require) + ' or newer')
+    print('Exiting ...')
+    sys.exit(1)
+
+#
+# load channel config from XML - need password
+#
+
+document = ElementTree.parse(channel_config_xml)
+rmschannels = document.getroot()
+
+#
 # dictionaries for config info
 #
+rms_chans = {}
 gw_config = {}
 ws_config = {}
 svc_calls = {}
@@ -80,7 +108,7 @@ with open(gateway_config) as gwfile:
             gw_config[name.strip()] = val.strip()
 gwfile.close()
 
-if options.DEBUG: print 'Gateway config =', gw_config
+if options.DEBUG: print('Gateway config =', gw_config)
 
 #
 # load version info
@@ -92,7 +120,7 @@ with open(version_info) as versionfile:
             version[name.strip()] = val.strip()
 gwfile.close()
 
-if options.DEBUG: print 'version_program = {}'.format(version['PROGRAM'])
+if options.DEBUG: print('version_program = {}'.format(version['PROGRAM']))
 
 #
 # load service config from XML
@@ -114,9 +142,22 @@ for svc_config in winlink_config.iter('config'):
             svc_calls[svc_call.tag] = svc_call.text
             param_roots[svc_call.tag] = svc_call.attrib['paramRoot']
 
-if options.DEBUG: print 'ws_config =', ws_config
-if options.DEBUG: print 'svc_calls =', svc_calls
-if options.DEBUG: print 'param_roots =', param_roots
+#
+# load channel config from XML - need password
+#
+ns = '{http://www.namespace.org}'
+for channel in rmschannels.findall("%schannel" % (ns)):
+#    if options.DEBUG: print('channel xml = {}'.format(ElementTree.tostring(channel)))
+
+    callsign = channel.find("%scallsign" % (ns)).text
+    rms_chans['callsign'] = callsign
+
+    password = channel.find("%spassword" % (ns)).text
+    rms_chans['password'] = password
+
+if options.DEBUG: print('ws_config =', ws_config)
+if options.DEBUG: print('svc_calls =', svc_calls)
+if options.DEBUG: print('param_roots =', param_roots)
 
 #
 # need a callsign - unless we have a command line parameter
@@ -137,7 +178,7 @@ if options.callsign == None: # no callsign given on cmd line?
 
 options.callsign = options.callsign.upper()
 
-if options.DEBUG: print 'callsign =', options.callsign
+if options.DEBUG: print('callsign =', options.callsign)
 
 #
 # prepare and make webservice call
@@ -148,13 +189,13 @@ headers = {'Content-Type': 'application/xml'}
 #svc_url = 'http://' + ws_config['svchost'] + ':' + ws_config['svcport'] + svc_calls['sysopget']
 
 # V5 CMS web services url format
-svc_url = 'https://' + ws_config['svchost'] + svc_calls['sysopget'] + '?' + 'Callsign=' + format(options.callsign) + '&Program=' + format(version['PROGRAM']) + '&Key=' + format(ws_config['WebServiceAccessCode'] + '&format=json')
-if options.DEBUG: print 'svc_url =', svc_url
+svc_url = 'https://' + ws_config['svchost'] + svc_calls['sysop2get'] + '?' + 'Callsign=' + format(options.callsign) + '&Program=' + format(version['PROGRAM']) + '&Password=' + format(rms_chans['password']) + '&Key=' + format(ws_config['WebServiceAccessCode'] + '&format=json')
+if options.DEBUG: print('svc_url =', svc_url)
 
 #
 # prepare xml parameters for call
 #
-sysop_get = ElementTree.Element(param_roots['sysopget'])
+sysop_get = ElementTree.Element(param_roots['sysop2get'])
 sysop_get.set('xmlns:i', 'http://www.w3.org/2001/XMLSchema-instance')
 sysop_get.set('xmlns', ws_config['namespace'])
 
@@ -164,102 +205,88 @@ child.text = ws_config['WebServiceAccessCode']
 child = ElementTree.SubElement(sysop_get, 'Callsign')
 child.text = options.callsign
 
-if options.DEBUG: print 'sysop_get XML =', ElementTree.tostring(sysop_get)
+if options.DEBUG: print('sysop_get XML =', ElementTree.tostring(sysop_get))
 
-response = requests.post(svc_url, data=ElementTree.tostring(sysop_get), headers=headers)
+# Post the request
+try:
+    response = requests.post(svc_url, data=ElementTree.tostring(sysop_get), headers=headers)
+except requests.ConnectionError as e:
+    print("Error: Internet connection failure:")
+    print('svc_url = ', svc_url)
+    print(e)
+    sys.exit(1)
 
 json_data = response.json()
-if options.DEBUG: print(json.dumps(json_data, indent=2))
+if options.DEBUG: print((json.dumps(json_data, indent=2)))
 json_dict = json.loads(response.text)
 
 # print the return code of this request, should be 200 which is "OK"
-if options.DEBUG: print "Request status code:" + str(response.status_code)
+if options.DEBUG: print("Request status code:" + str(response.status_code))
 
+#
 # Verify request status code"
+#
 if response.ok:
-    if options.DEBUG: print "Debug: Good Request status code"
+    if options.DEBUG: print("Debug: Good Request status code")
 else:
-    print '*** Get for', options.callsign, 'failed, ErrorCode =', str(response.status_code)
-    print '*** Error code:    ' + json_dict['ResponseStatus']['ErrorCode']
-    print '*** Error message: ' + json_dict['ResponseStatus']['Message']
+    print('*** Get for', options.callsign, 'failed, ErrorCode =', str(response.status_code))
+    print('*** Error code:    ' + json_dict['ResponseStatus']['ErrorCode'])
+    print('*** Error message: ' + json_dict['ResponseStatus']['Message'])
 #    sys.exit(1)
 
-if options.DEBUG: print 'Debug: Response =', response.content
-if options.DEBUG: print "Debug: Content type: " + response.headers['content-type']
-
-# print 'ResponseStatus : ', response.json().get('ResponseStatus')
-
-print ('DEBUG: Early Exit');
-sys.exit(1)
+#
+# check for errors coming back
+#
+if json_dict['ResponseStatus']:
+    print('ResponseStatus not NULL: ', json_dict['ResponseStatus'])
+    sys.exit(1)
+else:
+    if options.DEBUG: print(('ResponseStatus is NULL: ', json_dict['ResponseStatus']))
 
 #
-# build xml element tree from xml response while
-# stripping the namespace from the xml response string
-# (the namespace info here is simply a royal pain and,
-#  at least presently, adds no value to the handling
-#  of the reponse data... so off to the burner it goes)
+# display the returned data
 #
-document = ElementTree.ElementTree(ElementTree.fromstring(re.sub(' xmlns="[^"]+"', '', response.content, count=1)))
-root = document.getroot()
 
-#
-# check for errors coming back first
-#
-for error_info in root.iter('WebServiceResponse'):
-    error_code = int(error_info.find('ErrorCode').text)
-    if options.DEBUG: print 'Returned ErrorCode =', error_code
-    if error_code > 0:
-        print 'Get for', options.callsign, 'failed. ErrorCode =', error_code, '-', error_info.find('ErrorMessage').text
-        sys.exit(1)
+if options.DEBUG: print("Debug: Response =", response.content)
+if options.DEBUG: print("Debug: Content type: " + response.headers['content-type'])
+# print('ResponseStatus : ', response.json().get('ResponseStatus'))
 
-print '=== Current Sysop Record In the Winlink System ==='
-for sysop_info in root.iter('SysopGetResponse'):
-    #
-    # check that we got something useful back
-    #
-#    error_code = int(sysop_info.find('ErrorCode').text)
-    error_code = 0
-#    error_text = sysop_info.find('ErrorMessage').text
-#    server_name = sysop_info.find('ServerName').text
-#    if options.DEBUG: print 'ErrorCode =', error_code
-#    if options.DEBUG: print 'ErrorMessage =', error_text
-#    if options.DEBUG: print 'ServerName =', server_name
+print('=== Current Sysop Record From Winlink System ===')
 
-    if error_code != 0:
-        # this is unexpected!
-        print '*** Get for', options.callsign, 'failed, ErrorCode =', error_code, '-', error_text
-        sys.exit(1)
+# it looks like this will be caught by the winlink system
+# and give an appropriate error in the response, so this
+# check may not be necessary.
 
-    for sysop_record in sysop_info.findall('Sysop'):
-       if options.DEBUG: print ElementTree.tostring(sysop_record)
+returned_callsign=json_dict['Sysop']['Callsign']
 
-       returned_callsign = sysop_record.find('Callsign').text
+if returned_callsign and returned_callsign.strip():
+    print('Callsign:        ' + returned_callsign)
+else:
+    print('*** No record found for', options.callsign)
+    sys.exit(2)
 
-       # it looks like this will be caught by the winlink system
-       # and give an appropriate error in the response, so this
-       # check may not be necessary any longer, but it hurts nothing
-       if returned_callsign == None:
-           print '*** No record found for', options.callsign
-           sys.exit(2)
+print('GridSquare:      ' + json_dict['Sysop']['GridSquare'])
+print('SysopName:       ' + json_dict['Sysop']['SysopName'])
+print('StreetAddress1:  ' + json_dict['Sysop']['StreetAddress1'])
+print('StreetAddress2:  ' + json_dict['Sysop']['StreetAddress2'])
+print('City:            ' + json_dict['Sysop']['City'])
+print('State:           ' + json_dict['Sysop']['State'])
+print('Country:         ' + json_dict['Sysop']['Country'])
+print('PostalCode:      ' + json_dict['Sysop']['PostalCode'])
+print('Email:           ' + json_dict['Sysop']['Email'])
+print('Phones:          ' + json_dict['Sysop']['Phones'])
+print('Website:         ' + json_dict['Sysop']['Website'])
+print('Comments:        ' + json_dict['Sysop']['Comments'])
 
+# Convert timestamp format /Date(<milliseconds>)/ to a readable form
+timestamp=json_dict['Sysop']['Timestamp']
+timestamp1=timestamp.split('(')
+timestamp=timestamp1[1].split(')')[0]
 
-       #
-       # display the returned data
-       #
-       print '(received from:', server_name, ')'
-       print 'Callsign:', returned_callsign
-       print 'GridSquare:', sysop_record.find('GridSquare').text
-       print 'SysopName:', sysop_record.find('SysopName').text
-       print 'StreetAddress1:', sysop_record.find('StreetAddress1').text
-       print 'StreetAddress2:', sysop_record.find('StreetAddress2').text
-       print 'City:', sysop_record.find('City').text
-       print 'State:', sysop_record.find('State').text
-       print 'Country:', sysop_record.find('Country').text
-       print 'PostalCode:', sysop_record.find('PostalCode').text
-       print 'Email:', sysop_record.find('Email').text
-       print 'Phones:', sysop_record.find('Phones').text
-       print 'Website:', sysop_record.find('Website').text
-       print 'Comments:', sysop_record.find('Comments').text
-       print 'Last Updated:', sysop_record.find('Timestamp').text
+# Convert string to float
+f_timestamp=float(timestamp)
+# Have time stamp in milliseconds, need seconds
+timeformat=datetime.datetime.fromtimestamp(f_timestamp/1000).strftime('%c')
 
+print('Last Updated:    ' + timeformat)
 sys.exit(0)
