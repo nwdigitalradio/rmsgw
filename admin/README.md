@@ -14,28 +14,23 @@
 
 ### Before You update
 * Check if you have an /etc/rmsgw/sysop.xml file
-  * If you don't have a sysop.xml file you need to create one.
+  * If you don't have a sysop.xml file you should create one now.
 
-##### How to create a sysop.xml file BEFORE you update
+##### How to create a sysop.xml file
 ```
 sudo su
 cd /etc/rmsgw
 ./mksysop.py
+
+# Verify new sysop.xml file
 cat new-sysop.xml
+
 # Using an editor modify new-sysop.xml to suit
+# and copy to working file name.
 cp  new-sysop.xml sysop.xml
 ```
-##### If you have already updated your admin files and do NOT have a sysop.xml file
-* Follow the parameter advice from the [CMS Web Services for SysopAdd](https://cms.winlink.org/xml/metadata?op=SysopAdd)
 
-```
-# as root
-cd /etc/rmsgw
-cp sysop-template.xml sysop.xml
-# Using an editor modify sysop.xml to suit
-```
-
-##### If you already have or just created a /etc/rmsgw/sysop.xml file then update the admin files.
+##### Now update the RMS Gateway admin files.
 
 ```
 # as root
@@ -43,7 +38,9 @@ cd admin
 ./admin-update.sh
 ```
 
-* To test the new scripts, either run the following 4 scripts or run testwlapi.sh then check the https://winlink.org/RMSChannels website:
+##### Test your updated admin files
+* To test the new scripts, either run the following 4 scripts or run *testwlapi.sh*
+* Now check the Winlink https://winlink.org/RMSChannels website:
 
 ```
 # as root
@@ -90,10 +87,12 @@ grep -i error /root/tmp/debuglog.txt
 * updatesysop.py
   * An added <Password> xml element is required in /etc/rmsgw/sysop.xml
   * This is done automatically with *admin-update.sh* script
+  * *updatesysop.py* script will copy password found in channels.xml file.
 * getsysop.py
-  * Currently *not functioning*, used to verify sysop record.
+  * Used to verify the sysop record on the Winlink site
 * mksysop.py
-  * Currently *not functioning*, used to make sysop record.
+  * Used to make a new sysop record based on the Winlink sysop information.
+  * Makes a sysop xml record in file new-sysop.xml in directory where *mksysop.py* script is run
 
 ###### Files:
 * /etc/rmsgw/sysop.xml
@@ -114,6 +113,8 @@ grep -i error /root/tmp/debuglog.txt
 * updateversion.py
   * Called from *rmsgw_aci*
   * Check log file for output
+* versionlist.sh [-c][-d][-h][-t][-T]
+  * Calls *getversionlist.py* to get a count of stations that are running down rev software.
 
 ###### Files:
 * **Do Not Modify** this file: /etc/rmsgw/.version_info
