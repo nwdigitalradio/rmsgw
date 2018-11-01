@@ -43,12 +43,9 @@ from pkg_resources import parse_version
 # BEGIN CONFIGURATION SECTION
 #################################
 
-#gateway_config = '/etc/rmsgw/gateway.conf'
-# service_config_xml = '/etc/rmsgw/winlinkservice.xml'
-#version_info = '/etc/rmsgw/.version_info'
-gateway_config = '/home/gunn/tmp/rmsgw/gateway.conf'
-service_config_xml = '/home/gunn/tmp/rmsgw/winlinkservice.xml'
-version_info = '/home/gunn/tmp/rmsgw/.version_info'
+gateway_config = '/etc/rmsgw/gateway.conf'
+service_config_xml = '/etc/rmsgw/winlinkservice.xml'
+version_info = '/etc/rmsgw/.version_info'
 py_version_require='2.7.9'
 
 #################################
