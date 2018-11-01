@@ -171,8 +171,10 @@ fi
 if [ ! -e "$RMS_VERSION_FILE_RAW" ] ; then
     dbgecho "File $RMS_VERSION_FILE_RAW does not exist, running winlink api"
     do_it_flag=1
+    elapsed_time=0
+    elapsed_hours=0
 
-else # Do this, proximity file exists
+else # Do this, if proximity file exists
 
     # Determine how old the tmp file is
 
