@@ -5,7 +5,7 @@
   <svcport>8085</svcport>
   <namespace>http://schemas.datacontract.org/2004/07/winlink.cms.webservices</namespace>
   <svcops>
-    <sysopget paramRoot="SysopGet">/status/sysop/get</sysopget>
+    <sysopget paramRoot="SysopGet">/sysop2/get</sysopget>
     <sysopadd paramRoot="SysopAdd">/status/sysop/add</sysopadd>
     <channelget paramRoot="ChannelGet">/channel/get</channelget>
     <channeladd paramRoot="ChannelAdd">/channel/add</channeladd>
