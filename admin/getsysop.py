@@ -32,6 +32,7 @@
 #
 #
 
+import os
 import sys
 import re
 import requests
@@ -67,6 +68,9 @@ cmdlineparser.add_option("-c", "--callsign",
                          help="get a specific callsign")
 (options, args) = cmdlineparser.parse_args()
 
+if os.geteuid() != 0:
+    print("Must be root, exiting ...")
+#    sys.exit(1)
 #
 # check python version
 #
