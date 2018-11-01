@@ -95,7 +95,7 @@ if parse_version(python_version) >= parse_version(py_version_require):
     if options.DEBUG: syslog.syslog(syslog.LOG_DEBUG, 'Python Version Check: ' + str(python_version) + ' OK')
 else:
     syslog.syslog(syslog.LOG_ERR, 'Need more current Python version, require version: ' + str(py_version_require) + ' or newer')
-    print 'Exiting ...'
+    print('Exiting ...')
     syslog.closelog()
     sys.exit(1)
 
@@ -191,31 +191,31 @@ if options.DEBUG: print(json.dumps(json_data, indent=2))
 json_dict = json.loads(response.text)
 
 # print the return code of this request, should be 200 which is "OK"
-if options.DEBUG: print "Response status code: " + str(response.status_code)
-if options.DEBUG: print 'Debug: Response =', response.content
-if options.DEBUG: print "Debug: Content type: " + response.headers['content-type']
+if options.DEBUG: print("Response status code: " + str(response.status_code))
+if options.DEBUG: print('Debug: Response =', response.content)
+if options.DEBUG: print("Debug: Content type: " + response.headers['content-type'])
 
 #
 # Verify request status code
 #
 if response.ok:
-    if options.DEBUG: print "Debug: Good Response status code"
+    if options.DEBUG: print("Debug: Good Response status code")
 else:
-    print '*** Version update for ', callsign, 'failed, ErrorCode =',  str(response.status_code)
+    print('*** Version update for ', callsign, 'failed, ErrorCode =',  str(response.status_code))
     errors += 1
 
 #
 # get status response (if there is one) and confirm success
 #
 if json_dict['ResponseStatus']:
-    print 'ResponseStatus not NULL: ', json_dict['ResponseStatus']
-    print '*** Channel Update for', callsign, 'failed'
-    print '*** Error code:    ' + json_dict['ResponseStatus']['ErrorCode']
-    print '*** Error message: ' + json_dict['ResponseStatus']['Message']
+    print('ResponseStatus not NULL: ', json_dict['ResponseStatus'])
+    print('*** Channel Update for', callsign, 'failed')
+    print('*** Error code:    ' + json_dict['ResponseStatus']['ErrorCode'])
+    print('*** Error message: ' + json_dict['ResponseStatus']['Message'])
 
     errors += 1
 else:
-    if options.DEBUG: print 'ResponseStatus is NULL: ', json_dict['ResponseStatus']
+    if options.DEBUG: print('ResponseStatus is NULL: ', json_dict['ResponseStatus'])
     syslog.syslog(syslog.LOG_INFO, 'Version update for {} to version {} successful.'.format(callsign, version['LABEL']))
 
 syslog.closelog()
