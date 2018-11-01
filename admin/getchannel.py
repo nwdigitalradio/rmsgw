@@ -199,7 +199,7 @@ if options.DEBUG: print("Debug: Content type: " + response.headers['content-type
 # print 'ResponseStatus : ', response.json().get('ResponseStatus')
 
 json_data = response.json()
-if options.DEBUG: print(json.dumps(json_data, indent=2))
+if options.DEBUG: print((json.dumps(json_data, indent=2)))
 json_dict = json.loads(response.text)
 num_chan = len(json_data['Channels'])
 
@@ -231,7 +231,7 @@ print('=== Record for ' + str(num_chan) + ' Channel(s) In Winlink System ===')
 
 for i in range(num_chan):
     print('== data for record ' + str(i+1) + ' ==')
-    print()
+    print
 
     # Convert non standard UTC date string to a local time
     date_str = json_dict['Channels'][int(i)]['Timestamp']
