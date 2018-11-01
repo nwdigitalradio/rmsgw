@@ -30,6 +30,9 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
+# List of admin tools to install
+ADMIN_TOOLS="mksysop.py getsysop.py getchannel.py updatechannel.py updatesysop.py updateversion.py getversionlist.py versionlist.sh"
+
 ##
 ## fixed installation information
 ##
@@ -147,7 +150,7 @@ install_config() {
 #
 install_tools() {
     echo "Installing the admin tools..."
-    for prog in mksysop.py getsysop.py getchannel.py updatechannel.py updatesysop.py updateversion.py ; do
+    for prog in `echo ${ADMIN_TOOLS}` ; do
 	install --backup=numbered -v -m 755 \
 	    -o $1 -g $2 $prog $3
     done
