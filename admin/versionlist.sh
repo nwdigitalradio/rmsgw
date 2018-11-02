@@ -18,6 +18,8 @@ RMS_VERSION_FILE_RAW="$TMPDIR/rmsgwver.json"
 RMS_VERSION_FILE_PARSE="$TMPDIR/rmsgwver_list.txt"
 RMS_VERSION_FILE_OUT="$TMPDIR/rmsgwver.txt"
 PKG_REQUIRE="jq curl"
+# Intialize default version file refresh interval in hours
+REFRESH_INTERVAL=10
 
 DEBUG=
 
@@ -39,7 +41,7 @@ usage () {
 	echo "Usage: $scriptname [-c][-d][-h][-t][-T]"
         echo "    -c switch to turn on displaying call sign list"
         echo "    -d switch to turn on verbose debug display"
-        echo "    -t <int> Set refresh interval in hours. default: 23 hours"
+        echo "    -t <int> Set refresh interval in hours. default: $REFRESH_INTERVAL hours"
         echo "    -T switch to turn off making Winlink service call."
         echo "    -h display this message."
         echo
@@ -77,8 +79,6 @@ format_space () {
 ## =============== main ===============
 # Are required programs installed?
 
-# Intialize default version file refresh interval in hours
-refresh_interval=23
 # Initial TEST ONLY switch
 TEST_ONLY="false"
 COUNT_ONLY="true"
@@ -101,15 +101,15 @@ while [[ $# -gt 0 ]] ; do
             DEBUG=1
         ;;
         -t)
-            refresh_interval="$2"
+            REFRESH_INTERVAL="$2"
             shift  #past value
             # Verify argument is an integer
             re='^[0-9]+$'
-            if ! [[ $refresh_interval =~ $re ]] ; then
-                echo "Error setting refresh interval: $refresh_interval not an integer"
+            if ! [[ $REFRESH_INTERVAL =~ $re ]] ; then
+                echo "Error setting refresh interval: $REFRESH_INTERVAL not an integer"
                 exit 1
             fi
-            dbgecho "Set time in hours of last Winlink Service call to $refresh_interval hours."
+            dbgecho "Set time in hours of last Winlink Service call to $REFRESH_INTERVAL hours."
         ;;
         -T)
             dbgecho "Turn off making Winlink Service call regardless of refresh_interval"
@@ -167,15 +167,9 @@ else
    dbgecho "Directory: $TMPDIR already exists"
 fi
 
-#  Test if temporary version file already exists
-if [ ! -e "$RMS_VERSION_FILE_RAW" ] ; then
-    dbgecho "File $RMS_VERSION_FILE_RAW does not exist, running winlink api"
-    do_it_flag=1
-    elapsed_time=0
-    elapsed_hours=0
-
-else # Do this, if proximity file exists
-
+#  Test if temporary version file already exists and is not empty
+if [ -s "$RMS_VERSION_FILE_RAW" ] ; then
+    # Version file exists & is not empty
     # Determine how old the tmp file is
 
     current_epoch=$(date "+%s")
@@ -183,22 +177,26 @@ else # Do this, if proximity file exists
     elapsed_time=$((current_epoch - file_epoch))
     elapsed_hours=$((elapsed_time / 3600))
 
-    #echo "File: $RMS_PROXIMITY_FILE_RAW is $elapsed_time seconds old"
-    dbgecho "RMS GW Version file is: $elapsed_hours hours $((($elapsed_time % 3600)/60)) minute(s), $((elapsed_time % 60)) seconds old"
-
     # Only refresh the version file every day or so
-    if ((elapsed_hours >= refresh_interval)) ; then
-        dbgecho "Will refresh version file: elapsed: $elapsed_hours, interval: $refresh_interval"
+    if ((elapsed_hours >= REFRESH_INTERVAL)) ; then
+        dbgecho "Will refresh version file: elapsed: $elapsed_hours hours, check interval: $REFRESH_INTERVAL hours"
         do_it_flag=1
     else
-        dbgecho "Will NOT refresh version file: elapsed: $elapsed_hours, interval: $refresh_interval"
+        dbgecho "Will NOT refresh version file: elapsed: $elapsed_hours hours, check interval: $REFRESH_INTERVAL hours"
     fi
-fi # END Test if temporary version file already exists
+
+else # Do this, if proximity file exists
+    dbgecho "File $RMS_VERSION_FILE_RAW does not exist, running winlink api"
+    do_it_flag=1
+    elapsed_time=0
+    elapsed_hours=0
+
+fi # END Test if temporary version file already exists and not empty
 
 # Check if refresh interval has passed
 if [ $do_it_flag -ne 0 ]; then
     # Get the version information from the winlink server
-    dbgecho "Refreshing version file from Winlink, with refresh interval: $refresh_interval hours"
+    dbgecho "Refreshing version file from Winlink, with refresh interval: $REFRESH_INTERVAL hours"
 
     #  curl -s http://server.winlink.org:8085"/json/reply/GatewayProximity?GridSquare=$grid_square&MaxDistance=$max_distance" > $RMS__VERSION_RAW
     if [ "$TEST_ONLY" = "false" ] ; then
@@ -208,7 +206,7 @@ if [ $do_it_flag -ne 0 ]; then
     fi
 else
     # Display the information in the previously created version file
-    echo "Using existing version file, with refresh interval: $refresh_interval hours"
+    echo "Using existing version file, with refresh interval: $REFRESH_INTERVAL hours"
     echo
 fi
 
@@ -286,6 +284,6 @@ if [ "$COUNT_ONLY" = "false" ] ; then
 fi
 
 echo "Below rev: $(grep -c "2\.4\." $RMS_VERSION_FILE_OUT), Current: $(grep -c "2\.5\." $RMS_VERSION_FILE_OUT), Total: $(wc -l $RMS_VERSION_FILE_OUT | cut -d ' ' -f1)"
-echo "Version file is: $elapsed_hours hours $((($elapsed_time % 3600)/60)) minute(s), $((elapsed_time % 60)) seconds old"
+echo "RMS GS Version file is: $elapsed_hours hours $((($elapsed_time % 3600)/60)) minute(s), $((elapsed_time % 60)) seconds old"
 
 exit 0
