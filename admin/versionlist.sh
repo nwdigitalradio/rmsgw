@@ -284,6 +284,6 @@ if [ "$COUNT_ONLY" = "false" ] ; then
 fi
 
 echo "Below rev: $(grep -c "2\.4\." $RMS_VERSION_FILE_OUT), Current: $(grep -c "2\.5\." $RMS_VERSION_FILE_OUT), Total: $(wc -l $RMS_VERSION_FILE_OUT | cut -d ' ' -f1)"
-echo "RMS GS Version file is: $elapsed_hours hours $((($elapsed_time % 3600)/60)) minute(s), $((elapsed_time % 60)) seconds old"
+echo "RMS GW Version file is: $elapsed_hours hours $((($elapsed_time % 3600)/60)) minute(s), $((elapsed_time % 60)) seconds old"
 
 exit 0
