@@ -11,6 +11,14 @@
   * updatechannel.py
   * updateversion.py
   * updatesysop.py
+  * getsysop.py
+  * mksysop.py
+
+* The following files are new & are used to the above scripts.
+  * getchannel.py
+  * versionlist.sh
+    * calls getversionlist.py
+  * testwlapi.sh
 
 ### Before You update
 * Check if you have an /etc/rmsgw/sysop.xml file
@@ -39,7 +47,7 @@ cd admin
 ```
 
 ##### Test your updated admin files
-* To test the new scripts, either run the following 4 scripts or run *testwlapi.sh*
+* To test the new scripts, either run the following scripts or run *testwlapi.sh*
 * Now check the Winlink https://winlink.org/RMSChannels website:
 
 ```
@@ -47,8 +55,9 @@ cd admin
 cd /etc/rmsgw
 sudo -u rmsgw ./updateversion.py ; echo $?
 sudo -u rmsgw ./updatechannel.py ; echo $?
-sudo -u rmsgw ./updatesysop.py
-sudo -u rmsgw ./getchannel.py
+./updatesysop.py
+./getchannel.py
+./getsysop.py
 ```
 * Alternatively just run the test script
 
@@ -59,8 +68,6 @@ cd admin
 ```
 
 * Search the generated log file for any errors
-  * The log file grabs some of the rms.debug log file and you are only
-concerned with errors found after you ran the test script
 
  ```
 grep -i error /root/tmp/debuglog.txt
