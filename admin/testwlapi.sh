@@ -7,6 +7,7 @@ lowest_pyver="2.7.9"
 rmsgw_dir="/etc/rmsgw"
 debuglog_dir="/root/tmp"
 debuglog_file="debuglog.txt"
+RMSLOG_FILE="/var/log/rms.debug"
 
 # Function ver_lte, compare version numbers
 function ver_lte() {
@@ -25,9 +26,23 @@ if [ ! -d "$debuglog_dir" ] ; then
     mkdir -p "$debuglog_dir"
 fi
 
+echo "Starting test at $(date) ..."
+
 # Output following this is redirected to the debug log file
 {
-echo "Start time: $(date)"
+
+# Verify that the RMS Gateway logfile exists
+if [ ! -e "$RMSLOG_FILE" ] ; then
+    echo "Warning log file: $RMSLOG_FILE doe not exist, using syslog"
+    RMSLOG_FILE="/var/log/syslog"
+fi
+
+# This start time matches log entry times
+starttime=$(date "+%b %_d %H:%M:")
+
+# Get time of last log entry in $RMSLOG_FILE
+logdate=$(tail -1 $RMSLOG_FILE | cut -d':' -f 1-2)
+echo "Start time: $(date), verify with logfile date format: $logdate"
 
 # Get some version info
 cat /etc/*release | grep "VERSION"
@@ -55,6 +70,9 @@ fi
 cd /etc/rmsgw
 
 echo
+echo "Log mask set to: $(grep -i "mask" /etc/rmsgw/gateway.conf)"
+
+echo
 echo "===== getchan ====="
 sudo -u rmsgw ./getchannel.py -d
 echo
@@ -63,6 +81,9 @@ sudo -u rmsgw ./updateversion.py -d; echo $?
 echo
 echo "===== updatechannel ====="
 sudo -u rmsgw ./updatechannel.py -d; echo $?
+echo
+echo "===== getsysop ====="
+./getsysop.py -d; echo $?
 echo
 echo "===== updatesysop ====="
 
@@ -74,7 +95,9 @@ else
 fi
 echo
 echo "===== rms.debug log ====="
-tail -n 50 /var/log/rms.debug
+#tail -n 50 $RMSLOG_FILE
+# List log file from when this script started
+sed -n '/'"$logdate"'/,$p' $RMSLOG_FILE
 
 echo
 echo "===== channels.xml ====="
@@ -93,4 +116,5 @@ sed -i "s|\(<Password>\)[^<>]*\(</Password>\)|\1notyourpassword\2|" $debuglog_di
 sed -i "s|\(<password>\)[^<>]*\(</password>\)|\1notyourpassword\2|" $debuglog_dir/$debuglog_file
 sed -i "s|\(<ns0:password>\)[^<>]*\(</ns0:password>\)|\1notyourpassword\2|g" $debuglog_dir/$debuglog_file
 
+echo "test finished at $(date) ..."
 exit 0
