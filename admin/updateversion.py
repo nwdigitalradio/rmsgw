@@ -124,7 +124,7 @@ with open(version_info) as versionfile:
         if not line.strip().startswith('#'):
             name, val = line.partition("=")[::2]
             version[name.strip()] = val.strip()
-gwfile.close()
+versionfile.close()
 
 if options.DEBUG: syslog.syslog(syslog.LOG_DEBUG, 'ws_config = {}'.format(ws_config))
 if options.DEBUG: syslog.syslog(syslog.LOG_DEBUG, 'svc_calls = {}'.format(svc_calls))

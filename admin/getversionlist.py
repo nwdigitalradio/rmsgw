@@ -43,7 +43,6 @@ from pkg_resources import parse_version
 # BEGIN CONFIGURATION SECTION
 #################################
 
-gateway_config = '/etc/rmsgw/gateway.conf'
 service_config_xml = '/etc/rmsgw/winlinkservice.xml'
 version_info = '/etc/rmsgw/.version_info'
 py_version_require='2.7.9'
@@ -86,23 +85,11 @@ else:
 #
 # dictionaries for config info
 #
-gw_config = {}
+
 ws_config = {}
 svc_calls = {}
 version = {}
 param_roots = {}
-
-#
-# load gateway config
-#
-with open(gateway_config) as gwfile:
-    for line in gwfile:
-        if not line.strip().startswith('#'):
-            name, val = line.partition("=")[::2]
-            gw_config[name.strip()] = val.strip()
-gwfile.close()
-
-if options.DEBUG: print('Gateway config =', gw_config)
 
 #
 # load version info
@@ -112,7 +99,7 @@ with open(version_info) as versionfile:
         if not line.strip().startswith('#'):
             name, val = line.partition("=")[::2]
             version[name.strip()] = val.strip()
-gwfile.close()
+versionfile.close()
 
 if options.DEBUG: print('version_program = {}'.format(version['PROGRAM']))
 
