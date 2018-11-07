@@ -76,9 +76,9 @@ format_space () {
     echo -n "$whitespace"
 }
 
+#
 ## =============== main ===============
-# Are required programs installed?
-
+#
 # Initial TEST ONLY switch
 TEST_ONLY="false"
 COUNT_ONLY="true"
@@ -128,8 +128,13 @@ while [[ $# -gt 0 ]] ; do
     shift # past argument or value
 done
 
+# Check for running as root
+if [[ $EUID != 0 ]] ; then
+    echo "Must be root to run this script"
+    exit 1
+fi
 
-# check if packages are installed
+# check if required packages are installed
 dbgecho "Check packages: $PKG_REQUIRE"
 needs_pkg=false
 
@@ -177,15 +182,16 @@ if [ -s "$RMS_VERSION_FILE_RAW" ] ; then
     elapsed_time=$((current_epoch - file_epoch))
     elapsed_hours=$((elapsed_time / 3600))
 
+    dbgecho "RMS Gateway Version file is: $elapsed_hours hours $((($elapsed_time % 3600)/60)) minute(s), $((elapsed_time % 60)) seconds old"
+
     # Only refresh the version file every day or so
     if ((elapsed_hours >= REFRESH_INTERVAL)) ; then
-        dbgecho "Will refresh version file: elapsed: $elapsed_hours hours, check interval: $REFRESH_INTERVAL hours"
+        echo "Refreshing version file: elapsed: $elapsed_hours hours, check interval: $REFRESH_INTERVAL hours"
         do_it_flag=1
     else
         dbgecho "Will NOT refresh version file: elapsed: $elapsed_hours hours, check interval: $REFRESH_INTERVAL hours"
     fi
-
-else # Do this, if proximity file exists
+else # Do this, if version file does NOT exist
     dbgecho "File $RMS_VERSION_FILE_RAW does not exist, running winlink api"
     do_it_flag=1
     elapsed_time=0
@@ -283,7 +289,7 @@ if [ "$COUNT_ONLY" = "false" ] ; then
     echo
 fi
 
-echo "Below rev: $(grep -c "2\.4\." $RMS_VERSION_FILE_OUT), Current: $(grep -c "2\.5\." $RMS_VERSION_FILE_OUT), Total: $(wc -l $RMS_VERSION_FILE_OUT | cut -d ' ' -f1)"
+echo "Below rev: $(grep -c "2\.4\." $RMS_VERSION_FILE_OUT), Current: $(grep -c "2\.5\." $RMS_VERSION_FILE_OUT), Total: $(wc -l $RMS_VERSION_FILE_OUT | cut -d ' ' -f1) at $(date "+%b %_d %T %Z %Y")"
 echo "RMS GW Version file is: $elapsed_hours hours $((($elapsed_time % 3600)/60)) minute(s), $((elapsed_time % 60)) seconds old"
 
 exit 0
