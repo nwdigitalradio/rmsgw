@@ -40,7 +40,7 @@ import json
 import platform
 from xml.etree import ElementTree
 from optparse import OptionParser
-from pkg_resources import parse_version
+from distutils.version import LooseVersion
 
 #################################
 # BEGIN CONFIGURATION SECTION
@@ -107,11 +107,12 @@ python_version=platform.python_version()
 
 # This does not work with release candidates (Python 2.7.15rc1)
 # if StrictVersion(python_version) >= StrictVersion(py_version_require):
+# if parse_version(python_version) >= parse_version(py_version_require):
 
-if parse_version(python_version) >= parse_version(py_version_require):
+if LooseVersion(python_version) >= LooseVersion(py_version_require):
     if options.DEBUG: print('Python Version Check: ' + str(python_version) + ' OK')
 else:
-    print('Need more current Python version, require version: ' + str(py_version_require) + ' or newer')
+    print('Need more current Python version than: ' + str(python_version) + ' require version: ' + str(py_version_require) + ' or newer')
     print('Exiting ...')
     sys.exit(1)
 
