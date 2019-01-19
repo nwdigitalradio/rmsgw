@@ -26,6 +26,6 @@ AC_HEADER_STDC
 AC_INCLUDES_DEFAULT # Checks for sys/types.h, sys/stat.h, stdlib.h, string.h, memory.h, strings.h, inttypes.h, stdint.h and unistd.h
 
 
-AC_CONFIG_FILES([Makefile lib/Makefile rmsgw/Makefile rmsgw_aci/Makefile])
+AC_CONFIG_FILES([Makefile lib/Makefile rmsgw/Makefile rmsgw_aci/Makefile rmsgwmon/Makefile])
 
 AC_OUTPUT
