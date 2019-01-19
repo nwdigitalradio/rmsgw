@@ -1,3 +1,3 @@
-SUBDIRS = lib
+SUBDIRS = lib rmsgw
 
 ACLOCAL_AMFLAGS = -I m4

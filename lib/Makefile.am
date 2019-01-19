@@ -37,9 +37,8 @@ librms_a_SOURCES = \
 	runhook.c
 
 
-#librms_a_LDFLAGS = $(XML_LIBS)
-
 librms_a_CPPFLAGS = -I$(top_srcdir)/include \
-	$(XML_CFLAGS) \
 	-D_GNU_SOURCE \
 	-DGWMONITOR
+
+librms_a_CFLAGS = $(XML_CFLAGS)
