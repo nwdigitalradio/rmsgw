@@ -30,6 +30,9 @@
  * - Extracted hardcoded path/filenames, placed in pathnames.h and made 
  *   paths variable, depending on what is passed as sysconfdir variable 
  *   to ./configure script.
+ * - Rename chantest to rmsgwchantest to make it more specific to this package 
+ *   and install it by default (it was only built manually before, not so 
+ *   good for packaging/building/installing the source automatically).
  *
  * 20181024:
  * - Updated python scripts to use V5 Winlink Web Services

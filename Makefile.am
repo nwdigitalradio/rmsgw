@@ -1,4 +1,4 @@
-SUBDIRS = lib rmsgw rmsgw_aci rmsgwmon rmschanstat man
+SUBDIRS = lib rmsgw rmsgw_aci rmsgwmon rmschanstat devutils man
 
 ACLOCAL_AMFLAGS = -I m4
 

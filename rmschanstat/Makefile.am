@@ -16,5 +16,3 @@ do_subst:
 CLEANFILES = $(bin_SCRIPTS)
 
 EXTRA_DIST = rmschanstat.in
-
-RMS_SYSCONFDIR = $(sysconfdir)/rmsgw
