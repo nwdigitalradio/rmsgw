@@ -39,6 +39,9 @@ librms_a_SOURCES = \
 
 librms_a_CPPFLAGS = -I$(top_srcdir)/include \
 	-D_GNU_SOURCE \
-	-DGWMONITOR
+	-DGWMONITOR \
+	-DRMS_SYSCONFDIR=\""$(sysconfdir)/rmsgw/"\"
 
 librms_a_CFLAGS = $(XML_CFLAGS)
+
+RMS_SYSCONFDIR = @sysconfdir@/rmsgw/

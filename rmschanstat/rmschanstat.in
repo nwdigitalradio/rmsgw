@@ -44,7 +44,7 @@
 #
 # Note: only type 'ax25' is recognized at this time, but the script should
 # be useful as a base for other specialized setups. The channel definitions
-# found in /etc/rmsgw/channels.xml have a <statuschecker> element which
+# found in @sysconfdir@/rmsgw/channels.xml have a <statuschecker> element which
 # provides the name of the script/program and arguments for the ACI to call
 # to query the availablity of the channel.
 #
@@ -60,7 +60,7 @@ declare -a IP
 #
 # where is the axports file?
 #
-AXPORTS=/etc/ax25/axports
+AXPORTS=@sysconfdir@/ax25/axports
 
 #
 # grab arguments and assign to meaningful variables

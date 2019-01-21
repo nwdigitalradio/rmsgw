@@ -25,6 +25,12 @@
  *
  * Revision history:
  *
+ * 20190119 VE7FET
+ * - Refactoring code to use Autotools for building o improve portability
+ * - Extracted hardcoded path/filenames, placed in pathnames.h and made 
+ *   paths variable, depending on what is passed as sysconfdir variable 
+ *   to ./configure script.
+ *
  * 20181024:
  * - Updated python scripts to use V5 Winlink Web Services
  * - Added a getchannel.py script to verify channel record

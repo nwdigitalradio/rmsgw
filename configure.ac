@@ -2,6 +2,7 @@ AC_PREREQ(2.61)
 AC_INIT(rmsgw, 2.5.0, info@nwdigitalradio.com)
 AM_INIT_AUTOMAKE([-Wall -Werror dist-bzip2])
 AC_CONFIG_HEADERS([config.h])
+AC_CONFIG_SRCDIR([pathnames.h])
 AC_CONFIG_MACRO_DIR([m4])
 m4_pattern_allow([AM_PROG_AR])
 AM_PROG_AR
@@ -26,6 +27,6 @@ AC_HEADER_STDC
 AC_INCLUDES_DEFAULT # Checks for sys/types.h, sys/stat.h, stdlib.h, string.h, memory.h, strings.h, inttypes.h, stdint.h and unistd.h
 
 
-AC_CONFIG_FILES([Makefile lib/Makefile rmsgw/Makefile rmsgw_aci/Makefile rmsgwmon/Makefile man/Makefile])
+AC_CONFIG_FILES([Makefile lib/Makefile rmsgw/Makefile rmsgw_aci/Makefile rmsgwmon/Makefile rmschanstat/Makefile man/Makefile])
 
 AC_OUTPUT

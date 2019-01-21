@@ -15,4 +15,7 @@ AM_CPPFLAGS = -I$(top_srcdir)/include \
         -I$(top_srcdir)/lib \
         $(XML_CFLAGS) \
         -D_GNU_SOURCE \
-        -DGWMONITOR
+        -DGWMONITOR \
+	-DRMS_SYSCONFDIR=\""$(sysconfdir)/rmsgw/"\"
+
+RMS_SYSCONFDIR = @sysconfdir@/rmsgw/
