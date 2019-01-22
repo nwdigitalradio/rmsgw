@@ -60,7 +60,7 @@ declare -a IP
 #
 # where is the axports file?
 #
-AXPORTS=@sysconfdir@/ax25/axports
+AXPORTS=@axports@
 
 #
 # grab arguments and assign to meaningful variables
