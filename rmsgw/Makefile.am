@@ -1,5 +1,6 @@
 bin_PROGRAMS = rmsgw
 rmsgw_SOURCES = rmsgw.c \
+	rmsgw.h \
 	gwinit.c \
 	greet.c \
 	banner.c \

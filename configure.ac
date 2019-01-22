@@ -33,6 +33,7 @@ AC_INCLUDES_DEFAULT # Checks for sys/types.h, sys/stat.h, stdlib.h, string.h, me
 
 
 AC_CONFIG_FILES([Makefile \
+	include/Makefile \
 	lib/Makefile \
 	rmsgw/Makefile \
 	rmsgw_aci/Makefile \

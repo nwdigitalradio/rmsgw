@@ -1,6 +1,7 @@
 bin_PROGRAMS = rmsgw_aci
 
 rmsgw_aci_SOURCES = rmsgw_aci.c \
+	aci.h \
 	run_python_script.c \
 	wl2k_aci.c \
 	sendversion.c \
