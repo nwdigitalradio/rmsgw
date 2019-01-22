@@ -1,19 +1,7 @@
-BUILT_SOURCES = do_subst
+SUBDIRS = lib rmsgw rmsgw_aci rmsgwmon rmschanstat devutils man contrib doc
 
-bin_SCRIPTS = rmschanstat
+ACLOCAL_AMFLAGS = -I m4
 
-edit = sed \
-	-e 's|@sbindir[@]|$(sbindir)|g' \
-	-e 's|@sysconfdir[@]|$(sysconfdir)|g' \
-	-e 's|@prefix[@]|$(prefix)|g' \
-	-e 's|@datadir[@]|$(datadir)|g' \
-	-e 's|@axports[@]|$(AXPORTS)|g'
+EXTRA_DIST = pathnames.h
 
-do_subst:
-	@list='$(bin_SCRIPTS)'; for p in $$list; do \
-	$(edit) $(srcdir)/$$p.in >$$p; \
-	done
-
-CLEANFILES = $(bin_SCRIPTS)
-
-EXTRA_DIST = rmschanstat.in
+RMS_SYSCONFDIR = @sysconfdir@/rmsgw/
