@@ -33,6 +33,9 @@
  * - Rename chantest to rmsgwchantest to make it more specific to this package 
  *   and install it by default (it was only built manually before, not so 
  *   good for packaging/building/installing the source automatically).
+ * - Install the contrib scripts with the package docs in /usr/share/doc/rmsgw 
+ *   or equivalent.
+ * - Install the documentation to /usr/share/doc/rmsgw, or equivalent.
  *
  * 20181024:
  * - Updated python scripts to use V5 Winlink Web Services
