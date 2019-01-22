@@ -20,6 +20,11 @@ PKG_CHECK_MODULES(XML, libxml-2.0 >= 2.4)
 AC_SUBST(NCURSES_LIB)
 AC_CHECK_LIB(ncurses, initscr, NCURSES_LIB="-lncurses", AC_MSG_ERROR(Could not find the ncurses library; aborting))
 
+# Check to see if there is an AX.25 subsystem installed by looking for axports
+# Check and see if it is installed in /usr/local/etc/ax25, and set AXPORTS variable accordingly, 
+# otherwiser we'll just default to /etc/ax25 where it normally would be found
+AC_SUBST([AXPORTS])
+AC_CHECK_FILE([/usr/local/etc/ax25/axports], [AXPORTS="/usr/local/etc/ax25/axports"], [AXPORTS="/etc/ax25/axports"])
 
 
 # Checks for header files.
