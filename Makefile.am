@@ -1,4 +1,4 @@
-SUBDIRS = include lib rmsgw rmsgw_aci rmsgwmon rmschanstat devutils man contrib doc
+SUBDIRS = include lib rmsgw rmsgw_aci rmsgwmon rmschanstat devutils man contrib doc etc
 
 ACLOCAL_AMFLAGS = -I m4
 

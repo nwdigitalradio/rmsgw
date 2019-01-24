@@ -43,6 +43,7 @@ AC_CONFIG_FILES([Makefile \
 	man/Makefile \
 	contrib/Makefile \
 	doc/Makefile \
-	doc/assets/Makefile])
+	doc/assets/Makefile \
+	etc/Makefile])
 
 AC_OUTPUT
