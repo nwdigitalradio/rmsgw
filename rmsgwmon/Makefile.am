@@ -9,5 +9,4 @@ AM_CPPFLAGS = -I$(top_srcdir)/include \
 	-I$(top_srcdir)/lib \
 	$(XML_CFLAGS) \
 	-D_GNU_SOURCE \
-	-DGWMONITOR \
-	-DRMS_SYSCONFDIR=$(sysconfdir)/@PACKAGE@
+	-DGWMONITOR
