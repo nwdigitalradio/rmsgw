@@ -1,16 +1,18 @@
 noinst_SCRIPTS = do_subst
 
-RMS_SYSCONFDIR = $(sysconfdir)/@PACKAGE@
+RMS_SYSCONFDIR = $(sysconfdir)/@PACKAGE@/hooks
 
-etcfiles = acihelp\
-        banner\
-        channels.xml\
-        channels.xsd\
-        gateway.conf\
-        gwhelp\
-        hosts
-
-SUBDIRS = . hooks
+etcfiles = \
+	end-rmsgw\
+	post-rmsgw_aci-channel-update\
+	post-rmsgw-session\
+	pre-rmsgw_aci-version-update\
+	start-rmsgw\
+	end-rmsgw_aci\
+	post-rmsgw_aci-version-update\
+	pre-rmsgw_aci-channel-update\
+	pre-rmsgw-session\
+	start-rmsgw_aci
 
 install-data-hook:
 	$(mkinstalldirs) $(DESTDIR)$(RMS_SYSCONFDIR)
@@ -23,9 +25,6 @@ install-data-hook:
 	  $(INSTALL_DATA) $$p $(DESTDIR)$(RMS_SYSCONFDIR)/$$p; \
 	  fi; \
 	done
-
-uninstall-hook:
-	$(RM) -rf $(DESTDIR)$(RMS_SYSCONFDIR)
 	
 edit = sed \
 	-e 's|@sbindir[@]|$(sbindir)|g' \
@@ -40,10 +39,15 @@ do_subst:
 
 CLEANFILES = $(etcfiles)
 
-EXTRA_DIST = acihelp.in\
-        banner.in\
-        channels.xml.in\
-        channels.xsd.in\
-        gateway.conf.in\
-        gwhelp.in\
-        hosts.in
+EXTRA_DIST = \
+	end-rmsgw.in\
+	post-rmsgw_aci-channel-update.in\
+	post-rmsgw-session.in\
+	pre-rmsgw_aci-version-update.in\
+	start-rmsgw.in\
+	end-rmsgw_aci.in\
+	post-rmsgw_aci-version-update.in\
+	pre-rmsgw_aci-channel-update.in\
+	pre-rmsgw-session.in\
+	start-rmsgw_aci.in
+

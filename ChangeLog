@@ -36,6 +36,10 @@
  * - Install the contrib scripts with the package docs in /usr/share/doc/rmsgw 
  *   or equivalent.
  * - Install the documentation to /usr/share/doc/rmsgw, or equivalent.
+ * - On the first install, install the config files in /etc/rmsgw, or
+ *   equivalent. On subsequent installs, if the config file already exists, 
+ *   install the new file with a .dist suffix, so we don't clobber user 
+ *   files on a upgrade.
  *
  * 20181024:
  * - Updated python scripts to use V5 Winlink Web Services
