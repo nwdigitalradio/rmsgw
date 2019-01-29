@@ -45,6 +45,7 @@ uninstall-hook:
 #This will replace variables in the .in files when make processes them
 edit = sed \
 	-e 's|@sbindir[@]|$(sbindir)|g' \
+	-e 's|@bindir[@]|$(bindir)|g' \
 	-e 's|@sysconfdir[@]|$(sysconfdir)|g' \
 	-e 's|@localstatedir[@]|$(localstatedir)|g' \
 	-e 's|@prefix[@]|$(prefix)|g'

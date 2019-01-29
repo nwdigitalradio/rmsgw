@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rmschannels xmlns="http://www.namespace.org"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="file:///etc/rmsgw/channels.xsd">
+  xsi:schemaLocation="file://@sysconfdir@/channels.xsd">
   <channel name="radio" type="ax25" active="yes">
     <basecall>N0CALL</basecall>
     <callsign>N0CALL-10</callsign>
@@ -19,7 +19,7 @@
     <groupreference>1</groupreference>
     <servicecode>PUBLIC</servicecode>
     <statuschecker>
-      /usr/local/bin/rmschanstat $type $name $callsign
+      @bindir@/rmschanstat $type $name $callsign
     </statuschecker>
   </channel>
 </rmschannels>
