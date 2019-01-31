@@ -45,6 +45,7 @@ AC_CONFIG_FILES([Makefile \
 	doc/Makefile \
 	doc/assets/Makefile \
 	etc/Makefile \
-	etc/hooks/Makefile])
+	etc/hooks/Makefile \
+	admin/Makefile])
 
 AC_OUTPUT
