@@ -8,7 +8,7 @@ Homepage: https://github.com/nwdigitalradio/rmsgw
 
 Package: rmsgw
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libax25 (>= 0.0.12), libxml2, python (>=2.7.9)
+Depends: ${shlibs:Depends}, ${misc:Depends}, libax25 (>= 0.0.12), libxml2, python (>=2.7.9), libncurses5
 Description: provides radio to email tools for Winlink.
  Provides the necessary tools and applications for the Winlink radio to 
  email gateway system. See http://www.winlink.org for details.
