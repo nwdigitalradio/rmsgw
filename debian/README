@@ -1,0 +1,35 @@
+The Debian Package rmsgw
+----------------------------
+
+This version is a modified version of the Github project found at:
+https://github.com/nwdigitalradio/rmsgw
+
+It re-arranges the source code in to proper directorys, updates to
+current autotools, corrects build dependencies, and adds some bug fixes.
+
+***Building a Debian Package***
+
+To build a Debian (Ubuntu) package from this source tarball, you will need
+the following additional packages installed:
+        libtool
+        dpkg-dev
+        debhelper
+        devscripts
+        fakeroot
+        lintian
+        dh-make
+
+From inside the source folder (rmsgw), run the following:
+        ./autogen.sh
+        debuild -us -uc
+
+That should build a set of un-signed packages (.deb) in the parent folder.
+
+To clean up/start over, the following commands are useful:
+        fakeroot debian/rules clean
+        ./autogen.sh clean
+
+Note, you can build a package on a Pi if you want to make armhf packages 
+instead (or do it in a cross-compiler, if you like).
+
+ -- Lee Woldanski <ve7fet@tparc.org>  Fri, 01 Feb 2019 18:50:12 -0800

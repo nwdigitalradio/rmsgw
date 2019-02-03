@@ -1,0 +1,8 @@
+man/cms-hosts.5
+man/getsysop.py.8
+man/mksysop.py.8
+man/rms-channels.5
+man/rms-config.5
+man/rmsgw.1
+man/rmsgw_aci.1
+man/updatesysop.py.8
