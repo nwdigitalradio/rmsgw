@@ -37,6 +37,7 @@
 static char _rms_h_svnid[] = "$Id: rms.h 176 2014-10-27 09:07:54Z eckertb $";
 #endif /* lint */
 
+#include <../pathnames.h>
 #include <stdio.h>
 #include <sys/types.h>
 
@@ -53,19 +54,6 @@ static char _rms_h_svnid[] = "$Id: rms.h 176 2014-10-27 09:07:54Z eckertb $";
 
 #define DFLT_VERSIONUPD	86400	/* version updates daily */
 #define DFLT_CHANNELUPD	7140	/* channel updates every two hours less one minute */
-
-#define RMSCONFIGFILE	"/etc/rmsgw/gateway.conf" /* default config file */
-#define RMSVERSIONFILE	"/etc/rmsgw/.version_info" /* version info file */
-#define RMSBTEXTFILE	"/etc/rmsgw/banner" /* default banner file */
-#define CMSHOSTFILE	"/etc/rmsgw/hosts" /* default cms host file */
-#define CHANNELFILE	"/etc/rmsgw/channels" /* default channels file */
-#define XMLCHANNELFILE	"/etc/rmsgw/channels.xml" /* dflt xml channels file */
-#define GWHELPFILE	"/etc/rmsgw/gwhelp" /* gateway help file */
-#define ACIHELPFILE	"/etc/rmsgw/acihelp" /* aci help file */
-#define CMSSTATDIR	"/etc/rmsgw/stat" /* cms status directory */
-#define CHANNELUPDATER	"/etc/rmsgw/updatechannel.py" /* program to update channels */
-#define VERSIONUPDATER	"/etc/rmsgw/updateversion.py" /* program to update version */
-#define HOOKDIR		"/etc/rmsgw/hooks" /* directory the holds gateway hook scripts */
 
 #define CONNECT_TIMEOUT	5	/* cms host connection timeout value */
 #define CONV_TIMEOUT	60	/* cms conversation timeout value */

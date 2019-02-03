@@ -1,0 +1,19 @@
+rmsgw for Debian
+---------------
+
+This version is a modified version of the Github Project from:
+https://github.com/nwdigitalradio/rmsgw
+
+It re-arranges the source code in to proper directorys, updates to
+current autotools, corrects build dependencies, and adds some bug fixes.
+
+To build the source, run the bootstrap file:
+./autogen.sh
+
+Once the source is bootstrapped, you can run the ./configure script, 
+followed by make, make install.
+
+See ./configure --help for options the configure script will accept.
+
+ -- Lee Woldanski <ve7fet@tparc.org>  Fri, 01 Feb 2019 18:50:12 -0800
+

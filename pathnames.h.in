@@ -1,0 +1,16 @@
+/*filenames and where to find them*/
+
+#define RMSCONFIGFILE   "@rmssysconfdir@gateway.conf" 
+#define RMSVERSIONFILE  "@rmssysconfdir@.version_info" 
+#define RMSBTEXTFILE    "@rmssysconfdir@banner" 
+#define CMSHOSTFILE     "@rmssysconfdir@hosts" 
+#define CHANNELFILE     "@rmssysconfdir@channels" 
+#define XMLCHANNELFILE  "@rmssysconfdir@channels.xml" 
+#define GWHELPFILE      "@rmssysconfdir@gwhelp" 
+#define ACIHELPFILE     "@rmssysconfdir@acihelp" 
+#define CMSSTATDIR      "@rmssysconfdir@stat" 
+#define CHANNELUPDATER  "@rmssysconfdir@updatechannel.py" 
+#define VERSIONUPDATER  "@rmssysconfdir@updateversion.py" 
+#define HOOKDIR         "@rmssysconfdir@hooks" 
+
+

@@ -25,6 +25,22 @@
  *
  * Revision history:
  *
+ * 20190119 VE7FET
+ * - Refactoring code to use Autotools for building o improve portability
+ * - Extracted hardcoded path/filenames, placed in pathnames.h and made 
+ *   paths variable, depending on what is passed as sysconfdir variable 
+ *   to ./configure script.
+ * - Rename chantest to rmsgwchantest to make it more specific to this package 
+ *   and install it by default (it was only built manually before, not so 
+ *   good for packaging/building/installing the source automatically).
+ * - Install the contrib scripts with the package docs in /usr/share/doc/rmsgw 
+ *   or equivalent.
+ * - Install the documentation to /usr/share/doc/rmsgw, or equivalent.
+ * - On the first install, install the config files in /etc/rmsgw, or
+ *   equivalent. On subsequent installs, if the config file already exists, 
+ *   install the new file with a .dist suffix, so we don't clobber user 
+ *   files on a upgrade.
+ *
  * 20181024:
  * - Updated python scripts to use V5 Winlink Web Services
  * - Added a getchannel.py script to verify channel record
