@@ -32,11 +32,24 @@ git clone https://github.com/nwdigitalradio/rmsgw
 ```
 git clone https://github.com/nwdigitalradio/rmsgw
 cd rmsgw
+```
+
+* Verify that directory _/usr/local/etc/rmsgw_ does NOT exist and
+create a symbolic link to it.
+
+```
+ln -s /etc/rmsgw /usr/local/etc/rmsgw
+```
+* Do the build
+
+```
+./autogen.sh
+./configure --enable-postfix
 make
-# Become root
-su
-make install
-# Now edit the config files.
+# Install as root
+sudo make install
+
+# Now edit the config files in /etc/rmsgw
 ```
 
 #### Use scripts
