@@ -14,7 +14,7 @@
   * getsysop.py
   * mksysop.py
 
-* The following files are new & are used to the above scripts.
+* The following files are new & are used with the above scripts.
   * getchannel.py
   * versionlist.sh
     * calls getversionlist.py
