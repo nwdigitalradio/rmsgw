@@ -252,7 +252,7 @@ int main(int argc, char *argv[])
 	       }
 	  }
      }
-	 
+
      /*
       * call gateway startup hook
       */
@@ -274,7 +274,7 @@ int main(int argc, char *argv[])
 	  version_update_interval = DFLT_VERSIONUPD;
      }
      syslog(LOG_DEBUG, "Version update interval = %ld", version_update_interval);
-       
+
      /*
       * check status file for version update -
       * if the version hasn't been updated in an day or more,
