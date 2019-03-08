@@ -44,7 +44,7 @@ ln -s /etc/rmsgw /usr/local/etc/rmsgw
 
 ```
 ./autogen.sh
-./configure --enable-postfix
+./configure
 make
 # Install as root
 sudo make install
