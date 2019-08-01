@@ -7,7 +7,7 @@
   <svcops>
     <sysopget paramRoot="SysopGet">/sysop/get</sysopget>
     <sysop2get paramRoot="Sysop2Get">/sysop2/get</sysop2get>
-    <sysopadd paramRoot="SysopAdd">/status/sysop/add</sysopadd>
+    <sysopadd paramRoot="SysopAdd">/sysop/add</sysopadd>
     <channelget paramRoot="ChannelGet">/channel/get</channelget>
     <channeladd paramRoot="ChannelAdd">/channel/add</channeladd>
     <versionadd paramRoot="VersionAdd">/version/add</versionadd>
