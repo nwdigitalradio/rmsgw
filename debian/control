@@ -2,13 +2,13 @@ Source: rmsgw
 Section: hamradio
 Priority: optional
 Maintainer: Lee Woldanski <ve7fet@tparc.org>
-Build-Depends: debhelper (>= 10), autotools-dev, libncurses5-dev, libxml2-dev, libc6 (>= 2.7-1~), python-requests
+Build-Depends: debhelper (>= 10), autotools-dev, libncurses5-dev, libxml2-dev, libc6 (>= 2.7-1~)
 Standards-Version: 4.1.2
 Homepage: https://github.com/nwdigitalradio/rmsgw
 
 Package: rmsgw
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libax25 (>= 0.0.12), libxml2, python (>=2.7.9), libncurses5
+Depends: ${shlibs:Depends}, ${misc:Depends}, libax25 (>= 0.0.12), libxml2, python (>=2.7.9), libncurses5, python-requests
 Description: provides radio to email tools for Winlink.
  Provides the necessary tools and applications for the Winlink radio to
  email gateway system. See http://www.winlink.org for details.
