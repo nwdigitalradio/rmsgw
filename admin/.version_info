@@ -5,7 +5,7 @@
 #
 PACKAGE=Linux RMS Gateway
 PROGRAM=RMS Gateway
-LABEL=2.5.0
+LABEL=2.5.1
 REVISION=$Revision: 167 $
 DATE=$Date: 2014-09-30 06:27:26 -0400 (Tue, 30 Sep 2014) $
 AUTHOR=$Author: eckertb $

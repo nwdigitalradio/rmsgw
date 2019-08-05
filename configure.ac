@@ -1,5 +1,5 @@
 AC_PREREQ(2.61)
-AC_INIT(rmsgw, 2.5.0, info@nwdigitalradio.com)
+AC_INIT(rmsgw, 2.5.1, info@nwdigitalradio.com)
 AM_INIT_AUTOMAKE([-Wall -Werror dist-bzip2])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_SRCDIR([pathnames.h.in])

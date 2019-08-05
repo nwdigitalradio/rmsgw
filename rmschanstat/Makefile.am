@@ -6,7 +6,8 @@ edit = sed \
 	-e 's|@sbindir[@]|$(sbindir)|g' \
 	-e 's|@sysconfdir[@]|$(sysconfdir)|g' \
 	-e 's|@prefix[@]|$(prefix)|g' \
-	-e 's|@datadir[@]|$(datadir)|g'
+	-e 's|@datadir[@]|$(datadir)|g'\
+	-e 's|@axports[@]|$(AXPORTS)|g'
 
 do_subst:
 	@list='$(bin_SCRIPTS)'; for p in $$list; do \
