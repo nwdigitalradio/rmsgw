@@ -19,10 +19,10 @@ install-data-hook:
 	@for p in $(etcfiles); do \
 	  if test -f $(DESTDIR)$(RMS_SYSCONFDIR)/$$p; then \
 	  echo " $(DESTDIR)$(RMS_SYSCONFDIR)/$$p already exists; installing new file as $$p.dist"; \
-	  $(INSTALL_DATA) $$p $(DESTDIR)$(RMS_SYSCONFDIR)/$$p.dist; \
+	  $(INSTALL) $$p $(DESTDIR)$(RMS_SYSCONFDIR)/$$p.dist; \
 	  else \
 	  echo " Existing $$p not found; installing default $$p"; \
-	  $(INSTALL_DATA) $$p $(DESTDIR)$(RMS_SYSCONFDIR)/$$p; \
+	  $(INSTALL) $$p $(DESTDIR)$(RMS_SYSCONFDIR)/$$p; \
 	  fi; \
 	done
 	

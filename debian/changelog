@@ -1,3 +1,9 @@
+rmsgw (2.5.1) unstable; urgency=low
+
+  * Fix missing python-requests as a required dependency
+
+ -- Lee Woldanski <ve7fet@tparc.org>  Mon, 05 Aug 2019 13:35:00 -0700
+
 rmsgw (2.5.0) unstable; urgency=medium
 
   * Initial Release.
