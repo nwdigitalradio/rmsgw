@@ -3,10 +3,18 @@ Linux RMS Gateway
 
 [![GitPitch](https://gitpitch.com/assets/badge.svg)](https://gitpitch.com/nwdigitalradio/rmsgw/master)
 
-* To get a copy of the repository:
+* To get a copy of the repository using git:
 
 ```
 git clone https://github.com/nwdigitalradio/rmsgw
+```
+* or using wget to create a zipped tarball
+```
+# To create a tar zipped file, rmsgw.tgz
+wget -O rmsgw.tgz https://github.com/nwdigitalradio/rmsgw/tarball/master
+
+# To create a directory with source files from the zipped tarball
+wget -O - https://github.com/nwdigitalradio/rmsgw/tarball/master | tar zxf
 ```
 
 * **NOTE:** Installation & configuration scripts & notes live in [n7nix/rmsgw](https://github.com/nwdigitalradio/n7nix/tree/master/rmsgw)
