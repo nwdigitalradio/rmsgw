@@ -23,7 +23,7 @@ wget -O - https://github.com/nwdigitalradio/rmsgw/tarball/master | tar zxf
 
 #### Build Requirements
 * Install AX.25 library & support utilities
-* xutils-dev libxml2 libxml2-dev
+* xutils-dev libxml2 libxml2-dev libncurses5-dev
 
 #### Installation/runtime requirements
 * AX.25 kernel support
