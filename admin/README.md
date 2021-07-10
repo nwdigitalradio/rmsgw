@@ -67,6 +67,7 @@ sudo -u rmsgw ./updatechannel.py ; echo $?
 * Alternatively just run the test script
 
 ```
+cd <installation_directory>
 # as root
 cd admin
 ./testwlapi.sh
