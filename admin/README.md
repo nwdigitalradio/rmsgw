@@ -40,7 +40,12 @@ cp  new-sysop.xml sysop.xml
 
 ##### Now update the RMS Gateway admin files.
 
+* Note: _admin-update.sh_ script will be in the _admin_ directory of your LinuxRMS install tree.
+  * ie. in the directory where you initially clonded the LinuxRMS repo
+    * If you only see file _admin-update.sh.in_ then use this [link](https://github.com/nwdigitalradio/rmsgw#install--configure-linux-rms-gateway) to complete the install
+
 ```
+cd <installation_directory>
 # as root
 cd admin
 ./admin-update.sh
