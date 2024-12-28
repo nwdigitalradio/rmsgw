@@ -268,7 +268,7 @@ void aciStatus(WINDOW *win)
 	  }
 
      }
-	
+
      wmove(win, 0, 0);
      wrefresh(win);
 }
@@ -347,7 +347,7 @@ void gwStatus(WINDOW *win)
 	  }
 
      }
-	  
+
      wmove(win, 0, 0);
      wrefresh(win);
 }
@@ -466,18 +466,24 @@ void gwStatRun(int interval)
      /*
       * calculate subwindow sizes for the aci and gw
       */
-     splitrow = bstatwin->_maxy / 2; /* where is the split to be */
+     // bg splitrow = bstatwin->_maxy / 2; /* where is the split to be */
+     int ysplit=getmaxy(bstatwin);
+     splitrow = ysplit / 2; /* where is the split to be */
      acistart = 1;
      aciend = splitrow - 1;
      gwstart = splitrow + 1;
-     gwend = bstatwin->_maxy - 2;
+     // bg  gwend = bstatwin->_maxy - 2;
+     gwend = getmaxy(bstatwin) - 2;
 
 /*     aciwin = subwin(bstatwin, bstatwin->_maxy - 2, bstatwin->_maxx - 2,
        1, 1);*/
-     aciwin = subwin(bstatwin, aciend - acistart + 1, bstatwin->_maxx - 2,
-		     acistart, 1);
-     gwwin = subwin(bstatwin, gwend - gwstart + 1, bstatwin->_maxx - 2,
-		    gwstart, 1);
+     // bg aciwin = subwin(bstatwin, aciend - acistart + 1, bstatwin->_maxx - 2, acistart, 1);
+
+     int xsplit=getmaxx(bstatwin);
+     aciwin = subwin(bstatwin, aciend - acistart + 1, xsplit - 2, acistart, 1);
+
+     // bg gwwin = subwin(bstatwin, gwend - gwstart + 1, bstatwin->_maxx - 2, gwstart, 1);
+     gwwin = subwin(bstatwin, gwend - gwstart + 1, xsplit - 2, gwstart, 1);
      scrollok(aciwin, FALSE);
      wmove(msgwin, 0, 0);
 
@@ -492,7 +498,9 @@ void gwStatRun(int interval)
 						     this */
 
 	  box(bstatwin, 0, 0);
-	  mvwhline(bstatwin, splitrow, 1, 0, bstatwin->_maxx - 1);
+	  // mvwhline(bstatwin, splitrow, 1, 0, bstatwin->_maxx - 1);
+	  int xsplit=getmaxx(bstatwin);
+	  mvwhline(bstatwin, splitrow, 1, 0, xsplit - 1);
 	  wrefresh(bstatwin);
 
 
@@ -515,7 +523,7 @@ void gwStatRun(int interval)
 		    continue;
 	       }
 	       scrShut();
-	       
+
 	       syslog(LOG_ERR,"select failed (errno = %d)", errno);
 	       exit(1);
 	  }
