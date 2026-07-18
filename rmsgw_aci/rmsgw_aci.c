@@ -51,7 +51,7 @@ static char svnid[] = "$Id: rmsgw_aci.c 176 2014-10-27 09:07:54Z eckertb $";
 /*
  * aci globals
  */
-char *active_configfile = NULL; /* the config file actually being used */
+const char *active_configfile = NULL; /* the config file actually being used */
 
 /*
  * externs
