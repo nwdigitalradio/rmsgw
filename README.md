@@ -46,7 +46,7 @@ cd rmsgw
 create a symbolic link to it.
 
 ```
-ln -s /etc/rmsgw /usr/local/etc/rmsgw
+ln -s /usr/local/etc/rmsgw /etc/rmsgw
 ```
 * Do the build
 
