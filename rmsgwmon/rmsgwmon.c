@@ -69,9 +69,9 @@ static char svnid[] = "$Id: rmsgwmon.c 168 2014-09-30 23:33:51Z eckertb $";
 #endif
 
 extern rms_status *rms_stat;
-extern char *map_aci_state(ACISTATE s);
-extern char *map_gw_state(GWSTATE s);
-extern char *map_gw_comm(GWSTATE s);
+extern const char *map_aci_state(ACISTATE s);
+extern const char *map_gw_state(GWSTATE s);
+extern const char *map_gw_comm(GWSTATE s);
 
 WINDOW	*msgwin; /* general message window */
 WINDOW	*bstatwin, *aciwin, *gwwin; /* status windows and status border win */
