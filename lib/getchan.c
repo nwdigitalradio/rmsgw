@@ -42,6 +42,7 @@ static char svnid[] = "$Id: getchan.c 149 2013-07-03 02:01:55Z eckertb $";
 #include <libxml/xmlmemory.h>
 #include <libxml/parser.h>
 #include <libxml/tree.h>
+#include <stdlib.h>
 
 #include "rmslib.h"
 #include "symbol.h"

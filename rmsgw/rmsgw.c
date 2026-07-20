@@ -47,7 +47,7 @@ static char svnid[] = "$Id: rmsgw.c 176 2014-10-27 09:07:54Z eckertb $";
 
 #include "rmsgw.h"
 
-char *active_configfile;
+const char *active_configfile;
 
 extern int shm_debug;
 extern void sbset_gw_cms(rms_status *p, char *gwcall, char *cms_host);
